@@ -28,7 +28,7 @@ export default function RootLayout({
           <Navbar/>
         </nav>
 
-        <main>
+        <main className="h-[200dvh]">
           {children}
         </main>
 
