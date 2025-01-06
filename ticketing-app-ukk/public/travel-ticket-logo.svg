@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Main Circle -->
+  <circle cx="100" cy="100" r="90" fill="#2B7FFF"/>
+  
+  <!-- Small Orange Train -->
+  <path d="M85 105 
+           L55 105
+           L55 115
+           L85 115
+           L85 105
+           Z" 
+        fill="#FF7B3F"/>
+  <!-- Train Window -->
+  <rect x="75" y="107" width="6" height="6" fill="#FFF" opacity="0.9"/>
+  <!-- Train Front -->
+  <path d="M55 105
+           L50 107
+           L50 113
+           L55 115
+           L55 105
+           Z"
+        fill="#FF7B3F"/>
+  
+  <!-- Main Airplane Symbol (Solid) -->
+  <path d="M140 80 L100 80 L85 70 L65 80 L85 95 L100 110 L140 110 C145 110 150 105 150 100 C150 95 145 90 140 90 Z" 
+        fill="#E8F4FF"/>
+  
+  <!-- Train Track Base (Solid) -->
+  <rect x="50" y="125" width="100" height="12" fill="#E8F4FF" rx="2"/>
+  
+  <!-- Track Details -->
+  <circle cx="70" cy="131" r="4" fill="#1E6BE6"/>
+  <circle cx="100" cy="131" r="4" fill="#1E6BE6"/>
+  <circle cx="130" cy="131" r="4" fill="#1E6BE6"/>
+</svg>

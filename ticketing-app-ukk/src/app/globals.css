@@ -2,27 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes placeholderAnimation {
-  0% {
-    transform: translateY(80%);
-    opacity: 0;
-  }
-  50% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-40%);
-    opacity: 0;
-  }
-}
-
-.animated-placeholder {
-  display: inline-block;
-  animation: placeholderAnimation 3s infinite;
-  position: relative;
-}
-
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
