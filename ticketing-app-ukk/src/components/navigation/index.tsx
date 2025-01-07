@@ -18,7 +18,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`transition-all duration-300 ${scrolled ? 'fixed bg-white text-black shadow-md' : 'absolute bg-transparent backdrop-blur-sm text-white'} py-2 top-0 w-full z-50`}>
+    <div className={`transition-all duration-300 ${scrolled ? 'fixed bg-white text-black shadow-md' : 'absolute bg-transparent backdrop-blur-sm text-white'} py-2 top-0 w-full z-10`}>
 
       <div className='flex justify-between items-center py-2 px-5 sm:px-20'>
 

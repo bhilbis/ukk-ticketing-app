@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar";
 // import { Kanit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation";
-import Footer from "@/components/footer";
+// import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Ticketing App",
@@ -32,18 +34,22 @@ export default function RootLayout({
       <body
         className={` antialiased`}
       >
-        <nav>
-          <Navbar/>
-        </nav>
+        <SidebarProvider>
+          <nav>
+            <AppSidebar />
+            <SidebarInset />
+            <Navbar/>
+          </nav>
 
-        <main className="">
-          {children}
-        </main>
+          <main className="">
+            <SidebarTrigger />
+            {children}
+          </main>
 
-        <footer>
-          <Footer/>
-        </footer>
-
+          {/* <footer>
+            <Footer/>
+          </footer> */}
+        </SidebarProvider>
       </body>
     </html>
   );
