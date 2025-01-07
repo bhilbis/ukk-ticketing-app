@@ -16,7 +16,7 @@ const Search = () => {
     }, [placeholders.length]);
 
     return (
-        <div>
+        <div className='w-full'>
             <div className='flex items-center gap-x-2 w-full'>
                 <Image
                     src='/navigation/search.svg'
