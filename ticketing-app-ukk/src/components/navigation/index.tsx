@@ -4,9 +4,11 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Search from '../ui/search'
+import { usePathname } from 'next/navigation'
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,7 +20,9 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`transition-all duration-300 ${scrolled ? 'fixed bg-white text-black shadow-md' : 'absolute bg-transparent backdrop-blur-sm text-white'} py-2 top-0 w-full z-10`}>
+    <div className={`transition-all duration-300 ${scrolled ? 'fixed bg-white text-black shadow-md' : 'absolute bg-transparent backdrop-blur-sm text-white'} py-2 top-0 w-full z-20
+      ${pathname.startsWith('/admin') || pathname.startsWith('/login') || pathname.startsWith('/signup') ? 'hidden' : ''}
+    `}>
 
       <div className='flex justify-between items-center py-2 px-5 sm:px-20'>
 
@@ -49,8 +53,8 @@ const Navbar = () => {
         <div className='flex items-center font-medium gap-x-8 w-full justify-end'>
           <Link href={'#'}>Ticketing Rewards</Link>
           <Link href={'#'}>Your Orders</Link>
-          <Link href={'#'}>Masuk</Link>
-          <Link href={'#'} className={`px-4 py-2 rounded-md ${
+          <Link href={'login'}>Masuk</Link>
+          <Link href={'signup'} className={`px-4 py-2 rounded-md ${
             scrolled ? 'bg-blue-500 text-white' : 'bg-blue-700 hover:bg-blue-600 text-white'
           }`}>
             Daftar

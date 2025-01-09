@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
+  CalendarClock,
   Map,
-  Settings2,
-  SquareTerminal,
+  Ticket,
+  LayoutDashboard,
+  Pocket,
 } from "lucide-react"
 
 import { SidebarMain } from "./sidebar-main"
@@ -30,6 +30,7 @@ const data = {
     email: "bilbis@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
+
   teams: [
     {
       name: "Travel Link",
@@ -41,7 +42,7 @@ const data = {
     {
       title: "Dasboards",
       url: "#",
-      icon: SquareTerminal,
+      icon: LayoutDashboard,
       isActive: true,
       items: [
         {
@@ -61,7 +62,7 @@ const data = {
     {
       title: "Ticket",
       url: "#",
-      icon: Bot,
+      icon: Ticket,
       subItems: [
         {
           title: "Airplane",
@@ -102,7 +103,7 @@ const data = {
     {
       title: "Booking",
       url: "#",
-      icon: BookOpen,
+      icon: CalendarClock,
       items: [
         {
           title: "Order List",
@@ -117,7 +118,7 @@ const data = {
     {
       title: "Payment",
       url: "#",
-      icon: Settings2,
+      icon: Pocket,
       items: [
         {
           title: "Payment Confirmation",
@@ -145,7 +146,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <div className="z-20">
+    <div>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <TeamSwitcher teams={data.teams} />
