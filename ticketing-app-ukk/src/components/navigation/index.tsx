@@ -51,7 +51,7 @@ const Navbar = () => {
       </div>
 
         <div className='flex items-center font-medium gap-x-8 w-full justify-end'>
-          <Link href={'#'}>Ticketing Rewards</Link>
+          {/* <Link href={'#'}>Ticketing Rewards</Link> */}
           <Link href={'#'}>Your Orders</Link>
           <Link href={'login'}>Masuk</Link>
           <Link href={'signup'} className={`px-4 py-2 rounded-md ${
