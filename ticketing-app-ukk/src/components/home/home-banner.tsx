@@ -4,53 +4,74 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Search from '../ui/search'
 import { Plane, Train, SearchIcon, ChevronUp, ChevronDown } from 'lucide-react'
+import { Checkbox } from '../ui/checkbox'
 
-const TravelInput = ({ type }) => {
+interface TravelInputProps {
+  activeTab: string;
+}
+const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {  
     const [isRoundTrip, setIsRoundTrip] = useState(false);
     const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
     const [showClassDropdown, setShowClassDropdown] = useState(false);
+    const [departureDate, setDepartureDate] = useState('');
+    const [returnDate, setReturnDate] = useState('');
+
     const [passengerDetails, setPassengerDetails] = useState({
       adults: 1,
       children: 0,
       infants: 0,
     });
-    const [departureDate, setDepartureDate] = useState('');
-    const [returnDate, setReturnDate] = useState('');
-  
-    const handlePassengerChange = (key, value) => {
+
+    const handlePassengerChange = (key: keyof typeof passengerDetails, value: number) => {
       setPassengerDetails((prev) => ({
         ...prev,
         [key]: Math.max(0, value),
       }));
     };
+
+    const validateDates = () => {
+      if (isRoundTrip && returnDate && departureDate > returnDate) {
+        alert("Tanggal pulang tidak bisa lebih awal dari tanggal berangkat!");
+        setReturnDate('');
+      }
+    };
+
+    const types = ["adults", "children", "infants"] as const;
+    
+    const getDropdownOptions = () => {
+      if (activeTab === 'plane') {
+          return ['Ekonomi', 'Bisnis', 'First Class'];
+      } else if (activeTab === 'train') {
+          return ['Eksekutif', 'Bisnis', 'Ekonomi'];
+      }
+      return [];
+  };
   
     return (
       <div className="w-full grid gap-3">
-      
         <div className='flex justify-between items-center'>
-          <button
-            onClick={() => setIsRoundTrip(!isRoundTrip)}
+          <span
             className="px-4 py-2 bg-blue-500 -mt-11 rounded-full"
           >
             <h3 className='text-white text-sm'>Sekali Jalan / Pulang Pergi</h3>
-            {/* {isRoundTrip ? "Pulang Pergi" : "Sekali Jalan"} */}
-          </button>
+          </span>
 
           <div className='flex gap-4'>
+
             <div className="relative">
               <button 
                 onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                className=" border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40"
+                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm"
               >
                 {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
               </button>
-              <span className="ml-2">
-                {showPassengerDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
-              </span>
+                <span className="ml-2 text-sm">
+                  {showPassengerDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
+                </span>
               {showPassengerDropdown && (
-                <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md w-64 -mt-10">
+                <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md w-64 -mt-10 text-sm">
                   <span className='px-4 text-lg font-medium '>Jumlah Penumpang</span>
-                  {["adults", "children", "infants"].map((type) => (
+                  {types.map((type) => (
                     <div
                       key={type}
                       className="flex items-center justify-between px-4 py-2"
@@ -84,35 +105,36 @@ const TravelInput = ({ type }) => {
             <div className="relative">
               <button
                 onClick={() => setShowClassDropdown(!showClassDropdown)}
-                className="border border-gray-300 rounded px-3 py-2 flex items-center"
+                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm"
               >
                 Pilih Kelas
                 <span className="ml-2">
-                  {showClassDropdown ? "▲" : "▼"}
+                  {showClassDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
                 </span>
               </button>
               {showClassDropdown && (
-                <div className="absolute mt-2 bg-white border border-gray-300 rounded shadow-md w-48">
-                  {["Ekonomi", "Bisnis", "First Class"].map((kelas) => (
-                    <div key={kelas} className="px-4 py-2 hover:bg-gray-100">
-                      {kelas}
+                <div className="absolute mt-2 bg-white border border-gray-300 rounded shadow-md w-44 text-sm">
+                  {getDropdownOptions().map((kelas) => (
+                    <div key={kelas} className='px-4 py-2 hover:bg-gray-100 flex items-center gap-3'>
+                      <Checkbox/>
+                      <span>{kelas}</span>
                     </div>
                   ))}
                 </div>
               )}
-          </div>
+            </div>
 
           </div>
         </div>
 
-        <div className='flex gap-x-10'>
+        <div className='w-full flex gap-x-10'>
 
-          <div className='flex gap-3'>
+          <div className='w-full items-center flex gap-2'>
             <div className="flex-1">
               <label className="block text-sm font-medium mb-1">Dari</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
                 placeholder="Kota keberangkatan"
               />
             </div>
@@ -120,39 +142,45 @@ const TravelInput = ({ type }) => {
               <label className="block text-sm font-medium mb-1">Ke</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
                 placeholder="Kota tujuan"
               />
             </div>
           </div>
           
-          <div className="w-full flex items-center gap-4">
-            <div>
+          <div className="w-full flex items-center gap-2">
+            <div className='w-full'>
               <label className="block text-sm font-medium mb-1 text-white">Tanggal Berangkat</label>
               <input
                 type="date"
-                className="border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
                 value={departureDate}
                 onChange={(e) => setDepartureDate(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1 text-white">Tanggal Pulang</label>
+            <div className='w-full'>
+              <div className="flex gap-2">
+                <Checkbox onClick={() => setIsRoundTrip(!isRoundTrip)} className='bg-white mt-[1px]'/>
+                <label className="block text-sm font-medium mb-1 text-white">Tanggal Pulang</label>
+              </div>
               <input
                 type="date"
-                className="border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
                 value={returnDate}
-                onChange={(e) => setReturnDate(e.target.value)}
+                onChange={(e) => {
+                  setReturnDate(e.target.value);
+                  validateDates()
+                }}
                 disabled={!isRoundTrip}
               />
             </div>
           </div>
     
           <button
-            className="bg-blue-600 text-white rounded-full px-2 hover:bg-blue-700 flex items-center justify-center"
+            className="bg-blue-600 text-white rounded-xl p-2 hover:bg-blue-700 flex items-center justify-center text-sm mt-5 gap-3"
           >
-            <SearchIcon className="w-5 h-5" />
+            <SearchIcon className="w-7 h-7" />
           </button>
 
         </div>
@@ -162,7 +190,8 @@ const TravelInput = ({ type }) => {
 };
 
 const HomeBanner = () => {
-  const [ activeTab, setActiveTab ] = useState('');
+  const [ activeTab, setActiveTab ] = useState('plane');
+
   return (
       <div className='flex w-full z-10 bg-black'>
         <Image
@@ -208,7 +237,7 @@ const HomeBanner = () => {
 
             {activeTab && (
               <div className='w-[80%]'>
-                <TravelInput type={activeTab} />
+                <TravelInput activeTab={activeTab}/>
               </div>
             )}
           </div>
