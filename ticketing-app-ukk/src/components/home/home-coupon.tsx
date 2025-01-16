@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { 
   Copy,
   ChevronLeft,
@@ -58,8 +58,12 @@ interface CouponCardProps {
 
 const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
   return (
-    <div className="relative bg-gray-100 border-2 rounded-lg px-6 py-4 items-center shadow-xl w-full max-w-md mx-auto overflow-hidden">
-      <div className="absolute top-4 p-2 bg-blue-200 -left-2 rounded-full"></div>
+    <div className="relative bg-gray-100 rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden">
+
+      <div className="absolute top-3 p-4 bg-gray-300 -left-4 rounded-full"></div>
+      <div className="absolute top-14 p-4 bg-gray-300 -left-4 rounded-full"></div>
+      <div className="absolute bottom-2 p-4 bg-gray-300 -left-4 rounded-full"></div>
+
       <div className="flex items-center">
         <div className="mr-4">
           {coupon.type === "kereta" ? (
@@ -105,18 +109,13 @@ const HomeCoupon: React.FC = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  useEffect(() => {
-    if (prevRef.current && nextRef.current) {
-      // Pastikan Swiper memperbarui referensi tombol navigasi
-      console.log("Prev Ref:", prevRef.current);
-      console.log("Next Ref:", nextRef.current);
-    }
-  }, [prevRef, nextRef] )
+  console.log("isBeginning:", isBeginning);
+  console.log("isEnd", isEnd)
 
   return (
     <>
       {copied && (
-        <div className="absolute top-4 right-4 bg-green-500 text-white text-sm px-4 py-2 rounded shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn">
+        <div className="absolute top-4 right-4 bg-red-500 text-white text-sm px-4 py-2 rounded shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn z-10">
           Kode Tersalin!
         </div>
       )}
@@ -125,14 +124,17 @@ const HomeCoupon: React.FC = () => {
 
       <div className="flex gap-3 mb-4">
         <TicketPercent className="w-7 h-7 text-blue-500"/>
-        <h2 className="text-xl font-bold mb-4">Daftar Kupon yang Bisa Dipakai</h2>
+        <h2 className="text-xl font-bold mb-4 pointer-events-none text-blue-500">Daftar Kupon yang Bisa Dipakai</h2>
       </div>
 
       {!isBeginning && (
       <button
         type="button"
         ref={prevRef}
-        className="absolute top-[60%] left-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-20"
+        className={`absolute top-[60%] left-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-[15] ${
+          isBeginning ? "hidden" : ""
+        }`}
+        onClick={() => console.log("Prev button clicked")}
       >
         <ChevronLeft className="w-6 h-6"/>
       </button>
@@ -141,7 +143,7 @@ const HomeCoupon: React.FC = () => {
       <button
         type="button"
         ref={nextRef}
-        className="absolute top-[60%] right-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-20"
+        className="absolute top-[60%] right-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-[15]"
       >
         <ChevronRight className="w-6 h-6"/>
       </button>
@@ -150,6 +152,7 @@ const HomeCoupon: React.FC = () => {
       <Swiper
         modules={[Navigation]}
         slidesPerView={3}
+        spaceBetween={20}
         navigation={{
           prevEl: prevRef.current,
           nextEl: nextRef.current,
@@ -160,6 +163,8 @@ const HomeCoupon: React.FC = () => {
             navigation.prevEl = prevRef.current;
             navigation.nextEl = nextRef.current;
           }
+          swiper.navigation.init();
+          swiper.navigation.update();
         }}
         onSlideChange={(swiper) => {
           setIsBeginning(swiper.isBeginning);
@@ -169,19 +174,24 @@ const HomeCoupon: React.FC = () => {
         breakpoints={{
           640: {
             slidesPerView: 1,
+            spaceBetween: 10,
           },
           768: {
             slidesPerView: 2,
+            spaceBetween: 15,
           },
           1024: {
             slidesPerView: 3,
+            spaceBetween: 20,
           },
         }}
       >
         {coupons.map((coupon, index) => (
           <SwiperSlide key={index}>
-            <CouponCard coupon={coupon} onCopy={handleCopy} />
-          </SwiperSlide>
+              <div className="bg-gray-300 z-10 p-[2px] rounded-lg">
+              <CouponCard coupon={coupon} onCopy={handleCopy} />
+              </div>
+            </SwiperSlide>
         ))}
       </Swiper>
     </div>

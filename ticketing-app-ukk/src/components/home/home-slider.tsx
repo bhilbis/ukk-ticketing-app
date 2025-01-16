@@ -16,8 +16,8 @@ const sliderItems: SliderItemProps[] = [
 const HomeSlider: React.FC = () => {
   return (
     <div className="home">
-      <div className="bg-blue-50 p-4">
-        <Marquee gradient={false} speed={50}>
+      <div className="bg-blue-50 p-4  pointer-events-none">
+        <Marquee gradient={false} speed={60} autoFill>
           {sliderItems.map((item, index) => (
             <span key={index} className="mr-6 font-semibold text-blue-600">
                 {item.message}

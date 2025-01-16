@@ -51,35 +51,35 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
       <div className="w-full grid gap-3">
         <div className='flex justify-between items-center'>
           <span
-            className="px-4 py-2 bg-blue-500 -mt-11 rounded-full"
+            className="px-4 py-2 bg-blue-500 rounded-full"
           >
-            <h3 className='text-white text-sm'>Sekali Jalan / Pulang Pergi</h3>
+            <h3 className='text-white text-sm pointer-events-none'>Sekali Jalan / Pulang Pergi</h3>
           </span>
 
-          <div className='flex gap-4'>
+          <div className='flex gap-4 items-center'>
 
-            <div className="relative">
+            <div className="relative items-center min-w-64 max-w-64">
               <button 
                 onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm"
+                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm gap-x-5"
               >
                 {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
-              </button>
                 <span className="ml-2 text-sm">
                   {showPassengerDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
                 </span>
+              </button>
               {showPassengerDropdown && (
-                <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md w-64 -mt-10 text-sm">
-                  <span className='px-4 text-lg font-medium '>Jumlah Penumpang</span>
+                <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md w-64 mt-2 text-sm">
+                  <span className='px-4 py-2 text-lg font-medium '>Jumlah Penumpang</span>
                   {types.map((type) => (
                     <div
                       key={type}
                       className="flex items-center justify-between px-4 py-2"
                     >
                       <span className="capitalize">{type}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between w-20">
                         <button
-                          className="px-2 py-1 bg-gray-200 rounded"
+                          className="px-2 py-1"
                           onClick={() =>
                             handlePassengerChange(type, passengerDetails[type] - 1)
                           }
@@ -88,7 +88,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                         </button>
                         <span>{passengerDetails[type]}</span>
                         <button
-                          className="px-2 py-1 bg-gray-200 rounded"
+                          className="px-2 py-1 "
                           onClick={() =>
                             handlePassengerChange(type, passengerDetails[type] + 1)
                           }
@@ -127,22 +127,22 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
           </div>
         </div>
 
-        <div className='w-full flex gap-x-10'>
+        <div className='w-full flex gap-x-10 mt-10'>
 
           <div className='w-full items-center flex gap-2'>
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">Dari</label>
+              <label className="block text-lg font-medium mb-1 text-white">Dari</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
                 placeholder="Kota keberangkatan"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-1">Ke</label>
+              <label className="block text-lg font-medium mb-1 text-white">Ke</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
                 placeholder="Kota tujuan"
               />
             </div>
@@ -150,10 +150,10 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
           
           <div className="w-full flex items-center gap-2">
             <div className='w-full'>
-              <label className="block text-sm font-medium mb-1 text-white">Tanggal Berangkat</label>
+              <label className="block text-lg font-medium mb-1 text-white">Tanggal Berangkat</label>
               <input
                 type="date"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
                 value={departureDate}
                 onChange={(e) => setDepartureDate(e.target.value)}
               />
@@ -161,12 +161,12 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
 
             <div className='w-full'>
               <div className="flex gap-2">
-                <Checkbox onClick={() => setIsRoundTrip(!isRoundTrip)} className='bg-white mt-[1px]'/>
-                <label className="block text-sm font-medium mb-1 text-white">Tanggal Pulang</label>
+                <Checkbox onClick={() => setIsRoundTrip(!isRoundTrip)} className='bg-white mt-[5px]'/>
+                <label className="block text-lg font-medium mb-1 text-white">Tanggal Pulang</label>
               </div>
               <input
                 type="date"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm h-10 focus:outline-none"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
                 value={returnDate}
                 onChange={(e) => {
                   setReturnDate(e.target.value);
@@ -178,9 +178,9 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
           </div>
     
           <button
-            className="bg-blue-600 text-white rounded-xl p-2 hover:bg-blue-700 flex items-center justify-center text-sm mt-5 gap-3"
+            className="bg-blue-600 text-white rounded-lg px-3 hover:bg-blue-700 flex items-center justify-center mt-8"
           >
-            <SearchIcon className="w-7 h-7" />
+            <SearchIcon className="w-6 h-6" />
           </button>
 
         </div>
@@ -204,7 +204,7 @@ const HomeBanner = () => {
         <div>
 
           <div className='absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center z-10 text-white -mt-24'>
-            <h1 className='text-2xl mb-10'>Hei, Sedang Mau Pergi Kemana</h1>
+            <h1 className='text-2xl mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
             <div className='px-5 py-2 rounded-xl border border-gray-300 bg-white text-black text-[1em] w-full'>
               <Search/>
             </div>

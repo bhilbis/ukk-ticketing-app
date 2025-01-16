@@ -153,7 +153,7 @@ const HomeCarousel = () => {
   return (
     <div className="px-[10rem] py-10 items-start">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">Tiket Pesawat Terbaik</h1>
+        <h1 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h1>
         <p className="text-gray-600">Temukan penerbangan yang sesuai dengan kebutuhan Anda</p>
       </div>
       <div className="flex mb-6 gap-5">
@@ -197,11 +197,12 @@ const HomeCarousel = () => {
         </button>
       </div>
       <div className='overflow-hidden w-full'>
-      <AnimatePresence>
+      <AnimatePresence mode='wait'>
             <motion.div 
               key={filter}
-              initial={{ opacity: 0, x: 900 }}
+              initial={{ opacity: 0, x: 1100 }}
               animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 1200 }}
               transition={{ duration: 1.5 }}
               className='overflow-hidden w-full'>
         <Swiper
@@ -247,7 +248,7 @@ const HomeCarousel = () => {
           ))}
         </Swiper>
             </motion.div>
-          </AnimatePresence>
+      </AnimatePresence>
       </div>
     </div>
   )

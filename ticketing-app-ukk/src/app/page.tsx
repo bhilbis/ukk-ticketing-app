@@ -6,6 +6,7 @@ import HomeSlider from "@/components/home/home-slider";
 import 'swiper/css'
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
+import HomeSuggest from "@/components/home/home-suggest";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
           <HomeSlider />
           <HomeCoupon />
           <HomeCarousel />
+          <HomeSuggest />
         </div>
       </div>
   );
