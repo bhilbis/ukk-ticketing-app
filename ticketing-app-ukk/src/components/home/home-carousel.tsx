@@ -226,6 +226,7 @@ const HomeCarousel = () => {
                     alt={`Flight from ${airplane.from} to ${airplane.to}`}
                     width={400}
                     height={400}
+                    draggable={false}
                     className="rounded-t-lg object-cover !w-full !h-full"
                   />
                   <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-2 rounded-md">

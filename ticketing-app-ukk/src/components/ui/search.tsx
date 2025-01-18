@@ -12,7 +12,7 @@ const Search = () => {
         if (!isFocused) {
             const interval = setInterval(() => {
                 setPlaceholderIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
-            }, 3000);
+            }, 5000);
             
             return () => clearInterval(interval);
         }
@@ -35,7 +35,7 @@ const Search = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{}}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 1 }}
                                 className='absolute inset-0 flex items-center pointer-events-none z-[1]'
                                 style={{ zIndex: 1 }}
                             >

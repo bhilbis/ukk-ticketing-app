@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Search from '../ui/search'
 import { Plane, Train, SearchIcon, ChevronUp, ChevronDown } from 'lucide-react'
@@ -14,7 +14,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
     const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
     const [showClassDropdown, setShowClassDropdown] = useState(false);
     const [departureDate, setDepartureDate] = useState('');
-    const [returnDate, setReturnDate] = useState('');
+    const [selectedClass, setSelectedClass] = useState('');
 
     const [passengerDetails, setPassengerDetails] = useState({
       adults: 1,
@@ -23,16 +23,12 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
     });
 
     const handlePassengerChange = (key: keyof typeof passengerDetails, value: number) => {
-      setPassengerDetails((prev) => ({
-        ...prev,
-        [key]: Math.max(0, value),
-      }));
-    };
-
-    const validateDates = () => {
-      if (isRoundTrip && returnDate && departureDate > returnDate) {
-        alert("Tanggal pulang tidak bisa lebih awal dari tanggal berangkat!");
-        setReturnDate('');
+      const newTotal = Object.values(passengerDetails).reduce((acc, curr) => acc + curr, 0) + value - passengerDetails[key];
+      if (newTotal <= 7) {
+        setPassengerDetails((prev) => ({
+          ...prev,
+          [key]: Math.max(0, value),
+        }));
       }
     };
 
@@ -58,13 +54,13 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
 
           <div className='flex gap-4 items-center'>
 
-            <div className="relative items-center min-w-64 max-w-64">
+            <div className="relative items-center max-w-[14rem] min-w-[14rem]">
               <button 
                 onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm gap-x-5"
+                className="border w-full border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm gap-x-1"
               >
                 {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
-                <span className="ml-2 text-sm">
+                <span className="text-sm">
                   {showPassengerDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
                 </span>
               </button>
@@ -115,8 +111,19 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
               {showClassDropdown && (
                 <div className="absolute mt-2 bg-white border border-gray-300 rounded shadow-md w-44 text-sm">
                   {getDropdownOptions().map((kelas) => (
-                    <div key={kelas} className='px-4 py-2 hover:bg-gray-100 flex items-center gap-3'>
-                      <Checkbox/>
+                    <div 
+                      key={kelas} className='px-4 py-2 hover:bg-gray-100 flex items-center gap-3' 
+                      onClick={() => 
+                        {setSelectedClass(kelas);
+                        setShowClassDropdown(false);
+                      }}
+                    >
+                      <input
+                      type="radio"
+                      name="kelas"
+                      checked={selectedClass === kelas}
+                      onChange={() => setSelectedClass(kelas)}
+                      />
                       <span>{kelas}</span>
                     </div>
                   ))}
@@ -131,7 +138,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
 
           <div className='w-full items-center flex gap-2'>
             <div className="flex-1">
-              <label className="block text-lg font-medium mb-1 text-white">Dari</label>
+              <label className="block text-lg font-medium mb-1 text-white">Asal</label>
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
@@ -139,7 +146,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
               />
             </div>
             <div className="flex-1">
-              <label className="block text-lg font-medium mb-1 text-white">Ke</label>
+              <label className="block text-lg font-medium mb-1 text-white">Tujuan</label>
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
@@ -155,6 +162,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                 type="date"
                 className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
                 value={departureDate}
+                min={new Date().toISOString().split('T')[0]}
                 onChange={(e) => setDepartureDate(e.target.value)}
               />
             </div>
@@ -167,11 +175,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
               <input
                 type="date"
                 className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
-                value={returnDate}
-                onChange={(e) => {
-                  setReturnDate(e.target.value);
-                  validateDates()
-                }}
+                min={departureDate}
                 disabled={!isRoundTrip}
               />
             </div>
@@ -191,6 +195,16 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
 
 const HomeBanner = () => {
   const [ activeTab, setActiveTab ] = useState('plane');
+  const [ scrolled, setScrolled ] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 110);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
       <div className='flex w-full z-10 bg-black'>
@@ -199,9 +213,12 @@ const HomeBanner = () => {
           alt='home-banner'
           width={1600}
           height={1000}
+          draggable={false}
           className='z-0 h-[40rem] object-cover object-center opacity-60'
         />
         <div>
+
+        {!scrolled && (
 
           <div className='absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center z-10 text-white -mt-24'>
             <h1 className='text-2xl mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
@@ -209,6 +226,7 @@ const HomeBanner = () => {
               <Search/>
             </div>
           </div>
+          )}
 
           <div className='absolute w-full top-[30%] left-1/2 -translate-x-1/2 flex flex-col justify-center items-center z-10'>
             <div className='flex gap-x-5'>
@@ -218,7 +236,7 @@ const HomeBanner = () => {
                 className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
                   activeTab === 'plane' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
                 }`}>
-                <Plane className={`w-7 h-7 items-center ${activeTab === 'plane' ? 'text-blue-500' : ''}`} />
+                <Plane className={`w-9 h-9 items-center ${activeTab === 'plane' ? 'text-blue-500' : ''}`} />
                 <h3>Tiket Pesawat</h3>
               </div>
 
@@ -227,7 +245,7 @@ const HomeBanner = () => {
                 className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
                   activeTab === 'train' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
                 }`}>
-                <Train className={`w-7 h-7 items-center ${activeTab === 'train' ? 'text-yellow-300' : ''}`} />
+                <Train className={`w-9 h-9 items-center ${activeTab === 'train' ? 'text-yellow-300' : ''}`} />
                 <h3>Tiket Kereta Api</h3>
               </div>
 

@@ -1,53 +1,56 @@
 "use client"
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { 
   Copy,
-  ChevronLeft,
-  ChevronRight,
   TicketPercent,
 } from "lucide-react";
 import { Swiper,  SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { NavigationOptions } from "swiper/types";
 
 interface Coupon {
-    type: 'kereta' | 'pesawat';
+    type: 'train' | 'plane';
     discount: number;
     minPrice: number;
     code: string;
+    category: 'cashback' | 'discount';
 }
 
 const coupons: Coupon[] = [
     { 
-        type: 'kereta', 
+        type: 'train', 
         discount: 50, 
         minPrice: 500, 
-        code: 'KERETA50' 
+        code: 'KERETA50',
+        category: 'cashback'
     },
     { 
-        type: 'pesawat', 
+        type: 'plane', 
         discount: 25, 
         minPrice: 100, 
-        code: 'PESAWAT25' 
+        code: 'PESAWAT25',
+        category: 'discount'
     },
     { 
-        type: 'kereta', 
+        type: 'train', 
         discount: 10, 
         minPrice: 75, 
-        code: 'KERETA10' 
+        code: 'KERETA10',
+        category: 'cashback'
     },
     { 
-      type: 'kereta', 
+      type: 'train', 
       discount: 15, 
       minPrice: 80, 
-      code: 'KERETA20' 
+      code: 'KERETA20',
+      category: 'cashback'
     },
     { 
-      type: 'pesawat', 
+      type: 'plane', 
       discount: 20, 
       minPrice: 150, 
-      code: 'PESAWAT15' 
+      code: 'PESAWAT15',
+      category: 'discount'
     },
 ];
 
@@ -57,16 +60,27 @@ interface CouponCardProps {
 }
 
 const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
+  const getCategoryColor = () => {
+    switch (coupon.category) {
+      case 'cashback':
+        return 'bg-yellow-200';
+      case 'discount':
+        return 'bg-green-200';
+      default:
+        return 'bg-gray-100';
+    }
+  };
+
   return (
-    <div className="relative bg-gray-100 rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden">
+    <div className={`relative ${getCategoryColor()} rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden coupon-card`}>
 
-      <div className="absolute top-3 p-4 bg-gray-300 -left-4 rounded-full"></div>
-      <div className="absolute top-14 p-4 bg-gray-300 -left-4 rounded-full"></div>
-      <div className="absolute bottom-2 p-4 bg-gray-300 -left-4 rounded-full"></div>
-
+      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-3"></div>
+      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-[27%] translate-y-1/2"></div>
+      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 bottom-3"></div>
+      
       <div className="flex items-center">
         <div className="mr-4">
-          {coupon.type === "kereta" ? (
+          {coupon.type === "train" ? (
             <span role="img" aria-label="train" className="text-4xl">🚆</span>
           ) : (
             <span role="img" aria-label="plane" className="text-4xl">✈️</span>
@@ -96,11 +110,6 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
 };
 
 const HomeCoupon: React.FC = () => {
-  const prevRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
   const handleCopy = (code: string) => {
@@ -109,16 +118,16 @@ const HomeCoupon: React.FC = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  console.log("isBeginning:", isBeginning);
-  console.log("isEnd", isEnd)
-
   return (
     <>
       {copied && (
-        <div className="absolute top-4 right-4 bg-red-500 text-white text-sm px-4 py-2 rounded shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn z-10">
+        <div
+          className="fixed top-24 right-4 bg-green-400 text-white text-sm px-4 py-2 rounded-md shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn z-10"
+        >
           Kode Tersalin!
         </div>
       )}
+
 
     <div className="py-10 px-[10rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
 
@@ -127,70 +136,17 @@ const HomeCoupon: React.FC = () => {
         <h2 className="text-xl font-bold mb-4 pointer-events-none text-blue-500">Daftar Kupon yang Bisa Dipakai</h2>
       </div>
 
-      {!isBeginning && (
-      <button
-        type="button"
-        ref={prevRef}
-        className={`absolute top-[60%] left-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-[15] ${
-          isBeginning ? "hidden" : ""
-        }`}
-        onClick={() => console.log("Prev button clicked")}
-      >
-        <ChevronLeft className="w-6 h-6"/>
-      </button>
-      )}
-      {!isEnd && (
-      <button
-        type="button"
-        ref={nextRef}
-        className="absolute top-[60%] right-[9rem] -translate-y-1/2 p-2 bg-white text-blue-500 rounded-full shadow-md hover:bg-gray-200 z-[15]"
-      >
-        <ChevronRight className="w-6 h-6"/>
-      </button>
-      )}
-
       <Swiper
         modules={[Navigation]}
         slidesPerView={3}
-        spaceBetween={20}
-        navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
-        } as NavigationOptions}
-        onBeforeInit={(swiper) => {
-          if (swiper.params.navigation) {
-            const navigation = swiper.params.navigation as NavigationOptions;
-            navigation.prevEl = prevRef.current;
-            navigation.nextEl = nextRef.current;
-          }
-          swiper.navigation.init();
-          swiper.navigation.update();
-        }}
-        onSlideChange={(swiper) => {
-          setIsBeginning(swiper.isBeginning);
-          setIsEnd(swiper.isEnd);
-        }}
+        spaceBetween={15}
+        navigation
         className="w-full"
-        breakpoints={{
-          640: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 15,
-          },
-          1024: {
-            slidesPerView: 3,
-            spaceBetween: 20,
-          },
-        }}
       >
         {coupons.map((coupon, index) => (
           <SwiperSlide key={index}>
-              <div className="bg-gray-300 z-10 p-[2px] rounded-lg">
               <CouponCard coupon={coupon} onCopy={handleCopy} />
-              </div>
+              
             </SwiperSlide>
         ))}
       </Swiper>

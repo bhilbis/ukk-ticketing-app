@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Search from '../ui/search'
 import { usePathname } from 'next/navigation'
+import { Avatar, AvatarImage } from '../ui/avatar'
+import { AvatarFallback } from '@radix-ui/react-avatar'
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -51,7 +53,6 @@ const Navbar = () => {
       </div>
 
         <div className='flex items-center font-medium gap-x-8 w-full justify-end'>
-          {/* <Link href={'#'}>Ticketing Rewards</Link> */}
           <Link href={'#'}>Your Orders</Link>
           <Link href={'login'}>Masuk</Link>
           <Link href={'signup'} className={`px-4 py-2 rounded-md ${
@@ -59,6 +60,12 @@ const Navbar = () => {
           }`}>
             Daftar
           </Link>
+          <button>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </button>
         </div>
 
       </div>

@@ -47,6 +47,7 @@ const HomeSuggest = () => {
                   <Image 
                     src={place.image} 
                     alt={place.namaTempat} 
+                    draggable={false}
                     width={1000}
                     height={1000}
                     className='w-full h-full object-cover hover:shadow-lg transition-shadow duration-300 ease-in-out rounded-xl'/>
@@ -67,6 +68,7 @@ const HomeSuggest = () => {
                   alt={place.namaTempat} 
                   width={1000}
                   height={1000}
+                  draggable={false}
                   className='w-full h-full object-cover hover:shadow-lg transition-shadow duration-300 ease-in-out rounded-xl'/>
                 <div className='absolute top-3 left-4 bg-opacity-50 text-lg text-white px-2 py-1'>
                   {place.namaTempat}
