@@ -10,10 +10,11 @@ export default function Page() {
           layout="fill"
           objectFit="cover"
           objectPosition="center"
+          draggable={false}
           className="opacity-40"
         />
       </div>
-      <div className="w-full max-w-md p-6 rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-5">
         <LoginForm />
       </div>
     </div>

@@ -74,9 +74,9 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
   return (
     <div className={`relative ${getCategoryColor()} rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden coupon-card`}>
 
-      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-3"></div>
-      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-[27%] translate-y-1/2"></div>
-      <div className="absolute -left-4 w-8 h-8 rounded-[50%] bg-white border border-[#e5e7eb] z-10 bottom-3"></div>
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-3"></div>
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-[27%] translate-y-1/2"></div>
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-white border border-[#e5e7eb] z-10 bottom-3"></div>
       
       <div className="flex items-center">
         <div className="mr-4">
@@ -122,7 +122,7 @@ const HomeCoupon: React.FC = () => {
     <>
       {copied && (
         <div
-          className="fixed top-24 right-4 bg-green-400 text-white text-sm px-4 py-2 rounded-md shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn z-10"
+          className="fixed top-24 right-4 bg-green-400 text-white text-sm pointer-events-none px-4 py-2 rounded-md shadow-md transition-all duration-300 scale-110 opacity-100 animate-fadeIn z-10"
         >
           Kode Tersalin!
         </div>
@@ -131,9 +131,9 @@ const HomeCoupon: React.FC = () => {
 
     <div className="py-10 px-[10rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
 
-      <div className="flex gap-3 mb-4">
+      <div className="flex gap-3 mb-4 ">
         <TicketPercent className="w-7 h-7 text-blue-500"/>
-        <h2 className="text-xl font-bold mb-4 pointer-events-none text-blue-500">Daftar Kupon yang Bisa Dipakai</h2>
+        <h2 className="text-xl font-bold mb-4 text-blue-500">Daftar Kupon yang Bisa Dipakai</h2>
       </div>
 
       <Swiper

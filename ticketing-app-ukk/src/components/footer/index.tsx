@@ -3,49 +3,58 @@
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Footer = () => {
   const pathname = usePathname();
+
+  const hiddenPaths = ['/admin', '/login', '/signup', '/myaccount']
+
+  if (hiddenPaths.some((path) => pathname.startsWith(path))) {
+    return null;
+  }
 
   return (
     <div className={`flex px-[10rem] flex-col w-full text-black py-4 ${
       pathname.startsWith('/admin') || 
       pathname.startsWith('/login') || 
-      pathname.startsWith('/signup') ? 'hidden' : ''
+      pathname.startsWith('/signup') ||
+      pathname.startsWith('/profile')
+      ? 'hidden' : ''
     }`}>
 
       <div className="flex justify-between items-start w-full py-4 mr-5 min-h-[16rem]">
         <div className="space-y-12">
           <h4 className="font-bold text-xl">Support</h4>
           <ul className="space-y-4 text-base">
-            <li>Manage your trips</li>
-            <li>Contact Customer Service</li>
-            <li>Safety Resource Center</li>
+            <li>Kelola perjalanan Anda</li>
+            <li>Hubungi Layanan Pelanggan</li>
+            <li>Pusat Sumber Daya Keselamatan</li>
           </ul>
         </div>
         <div className="space-y-12">
           <h4 className="font-bold text-xl">Discover</h4>
           <ul className="space-y-4 text-base">
-            <li>Genius loyalty program</li>
-            <li>Seasonal and holiday deals</li>
-            <li>Travel articles</li>
-            <li>TravelLink for Business</li>
+            <li>Program loyalitas Genius</li>
+            <li>Penawaran musiman dan liburan</li>
+            <li>Artikel perjalanan</li>
+            <li>TravelLink untuk Bisnis</li>
           </ul>
         </div>
         <div className="space-y-12">
           <h4 className="font-bold text-xl">Terms and Settings</h4>
           <ul className="space-y-4 text-base">
-            <li>Privacy & cookies</li>
-            <li>Terms & conditions</li>
-            <li>Human Rights Statement</li>
+            <li>Privasi & cookie</li>
+            <li>Syarat & ketentuan</li>
+            <li>Pernyataan Hak Asasi Manusia</li>
           </ul>
         </div>
         <div className="space-y-12">
           <h4 className="font-bold text-xl">About</h4>
           <ul className="space-y-4 text-base">
-            <li>About TravelLink</li>
-            <li>How We Work</li>
-            <li>Sustainability</li>
+            <li>Tentang TravelLink</li>
+            <li>Cara Kerja Kami</li>
+            <li>Keberlanjutan</li>
           </ul>
         </div>
 
@@ -68,7 +77,7 @@ const Footer = () => {
             />
             <div>
               <p className="font-bold">WhatsApp</p>
-              <a href="https://wa.me/0859183953992">+62 859183953992</a>
+              <Link href="https://wa.me/0859183953992" target="_blank">+62 859183953992</Link>
             </div>
           </div>
           <div className="flex items-center space-x-4 mt-5">
@@ -80,7 +89,7 @@ const Footer = () => {
             />
             <div>
               <p className="font-bold">Email</p>
-              <a href='mailto:bhilbis@hotmail.com'>bhilbis@gmail.com</a>
+              <Link href='mailto:bhilbis@hotmail.com'>bhilbis@gmail.com</Link>
             </div>
           </div>
         </div>

@@ -1,256 +1,208 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, FreeMode, Mousewheel } from 'swiper/modules'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import Image from 'next/image'
-
-interface Airplane {
-  id: number;
-  image: string;
-  from: string;
-  to: string;
-  date: string;
-  type: string;
-  class: string;
-  price: string;
-  trip: string;
-  discount?: string;
-}
+import React, { useEffect, useState } from 'react'
+import AirplaneCard, { Airplane } from '../ui/airplane-card'
 
 const airplaneList: Airplane[] = [
   {
-    id: 1,
-    image: "/home/airplanes.jpg",
-    from: "Jakarta",
-    to: "Bali",
-    date: "10-01-2025",
-    type: "Boeing 737",
-    class: "Ekonomi",
-    price: "IDR 1.200.000",
-    trip: "Sekali Jalan",
-    discount: "s.d 10%"
+    "id": 1,
+    "image": "/home/airplanes.jpg",
+    "from": "Jakarta",
+    "to": "Denpasar",
+    "date": "2024-11-20",
+    "type": "Boeing 737-800",
+    "class": "Ekonomi",
+    "price": "IDR 1850000",
+    "trip": "Sekali Jalan",
+    "typeDiscount": "cashback",
+    "discount": "Diskon Hingga 15%"
   },
   {
-    id: 2,
-    image: "/home/airplanes.jpg",
-    from: "Surabaya",
-    to: "Yogyakarta",
-    date: "15-01-2025",
-    type: "Airbus A320",
-    class: "Bisnis",
-    price: "IDR 2.500.000",
-    trip: "Pulang Pergi",
-    discount: "Beli 2 lebih hemat"
+    "id": 2,
+    "image": "/home/airplanes.jpg",
+    "from": "Surabaya",
+    "to": "Balikpapan",
+    "date": "2025-03-12",
+    "type": "Airbus A320",
+    "class": "Bisnis",
+    "price": "IDR 3100000",
+    "trip": "Pulang Pergi",
+    "typeDiscount": "flash sale",
+    "discount": "Diskon Hingga 40%"
   },
   {
-    id: 3,
-    image: "/home/airplanes.jpg",
-    from: "Makassar",
-    to: "Jakarta",
-    date: "2025-03-01",
-    type: "ATR 72-600",
-    class: "Ekonomi",
-    price: "IDR 1.200.000",
-    trip: "Sekali Jalan",
-    discount: "Special Deals"
+    "id": 3,
+    "image": "/home/airplanes.jpg",
+    "from": "Medan",
+    "to": "Yogyakarta",
+    "date": "2024-09-05",
+    "type": "ATR 72",
+    "class": "Ekonomi",
+    "price": "IDR 1200000",
+    "trip": "Sekali Jalan",
+    "typeDiscount": "double deals",
+    "discount": "Beli 2 Lebih Hemat"
   },
   {
-    id: 4,
-    image: "/home/airplanes.jpg",
-    from: "Bandung",
-    to: "Surabaya",
-    date: "2025-04-20",
-    type: "Airbus A330-300",
-    class: "First Class",
-    price: "IDR 2.800.000",
-    trip: "Pulang Pergi",
-    
+    "id": 4,
+    "image": "/home/airplanes.jpg",
+    "from": "Makassar",
+    "to": "Bandung",
+    "date": "2025-06-28",
+    "type": "Bombardier CRJ1000",
+    "class": "Bisnis",
+    "price": "IDR 2750000",
+    "trip": "Pulang Pergi",
+    "typeDiscount": "cashback",
+    "discount": "Diskon Hingga 25%"
+  },
+  {
+    "id": 5,
+    "image": "/home/airplanes.jpg",
+    "from": "Palembang",
+    "to": "Jakarta",
+    "date": "2024-12-01",
+    "type": "Airbus A330",
+    "class": "Ekonomi",
+    "price": "IDR 2000000",
+    "trip": "Sekali Jalan",
+    "typeDiscount": "flash sale",
+    "discount": "Diskon Hingga 30%"
   },
     {
-    id: 5,
-    image: "/home/airplanes.jpg",
-    from: "Yogyakarta",
-    to: "Balikpapan",
-    date: "2025-05-12",
-    type: "Boeing 777-300ER",
-    class: "Bisnis",
-    price: "IDR 3.500.000",
-    trip: "Pulang Pergi"
+    "id": 6,
+    "image": "/home/airplanes.jpg",
+    "from": "Denpasar",
+    "to": "Semarang",
+    "date": "2025-02-18",
+    "type": "Boeing 737-900",
+    "class": "Bisnis",
+    "price": "IDR 3500000",
+    "trip": "Pulang Pergi",
+    "typeDiscount": "double deals",
+    "discount": "Diskon Hingga 45%"
   },
   {
-    id: 6,
-    image: "/home/airplanes.jpg",
-    from: "Palembang",
-    to: "Batam",
-    date: "2025-06-05",
-    type: "Airbus A321",
-    class: "Ekonomi",
-    price: "IDR 900.000",
-    trip: "Sekali Jalan"
-  },
-  {
-    id: 7,
-    image: "/home/airplanes.jpg",
-    from: "Semarang",
-    to: "Padang",
-    date: "2025-07-28",
-    type: "Boeing 737 MAX 8",
-    class: "Bisnis",
-    price: "IDR 2.200.000",
-    trip: "Pulang Pergi"
-  },
-  {
-    id: 8,
-    image: "/home/airplanes.jpg",
-    from: "Manado",
-    to: "Jayapura",
-    date: "2025-08-19",
-    type: "Embraer 190",
-    class: "Ekonomi",
-    price: "IDR 1.800.000",
-    trip: "Sekali Jalan"
-  },
-  {
-    id: 9,
-    image: "/home/airplanes.jpg",
-    from: "Lombok",
-    to: "Medan",
-    date: "2025-09-02",
-    type: "Airbus A350-900",
-    class: "First Class",
-    price: "IDR 4.000.000",
-    trip: "Pulang Pergi"
+    "id": 7,
+    "image": "/home/airplanes.jpg",
+    "from": "Bandung",
+    "to": "Medan",
+    "date": "2024-08-10",
+    "type": "Airbus A320",
+    "class": "Ekonomi",
+    "price": "IDR 1500000",
+    "trip": "Sekali Jalan",
+    "typeDiscount": "cashback",
+    "discount": "Diskon Hingga 20%"
   },
     {
-    id: 10,
-    image: "/home/airplanes.jpg",
-    from: "Banjarmasin",
-    to: "Pontianak",
-    date: "2025-10-25",
-    type: "Boeing 787-9 Dreamliner",
-    class: "Bisnis",
-    price: "IDR 2.500.000",
-    trip: "Pulang Pergi"
+    "id": 8,
+    "image": "/home/airplanes.jpg",
+    "from": "Yogyakarta",
+    "to": "Makassar",
+    "date": "2025-04-03",
+    "type": "ATR 72",
+    "class": "Bisnis",
+    "price": "IDR 2900000",
+    "trip": "Pulang Pergi",
+    "typeDiscount": "flash sale",
+    "discount": "Diskon Hingga 35%"
   },
+    {
+    "id": 9,
+    "image": "/home/airplanes.jpg",
+    "from": "Semarang",
+    "to": "Palembang",
+    "date": "2024-10-25",
+    "type": "Bombardier CRJ1000",
+    "class": "Ekonomi",
+    "price": "IDR 1700000",
+    "trip": "Sekali Jalan",
+    "typeDiscount": "double deals",
+    "discount": "Diskon Hingga 10%"
+  },
+    {
+    "id": 10,
+    "image": "/home/airplanes.jpg",
+    "from": "Balikpapan",
+    "to": "Surabaya",
+    "date": "2025-05-15",
+    "type": "Airbus A330",
+    "class": "Bisnis",
+    "price": "IDR 3300000",
+    "trip": "Pulang Pergi",
+    "typeDiscount": "cashback",
+    "discount": "Diskon Hingga 50%"
+  }
 ]
 
 const HomeCarousel = () => {
   const [filter, setFilter] = useState<string>('');
+  const [randomAirplanes, setRandomAirplanes] = useState<Airplane[]>([]);
 
-  const filteredAirplanes = airplaneList.filter((airplane) => {
-    if (filter === "Promo") {
-      return airplane.discount; 
-    }
-    if (filter) {
-      return airplane.class === filter; 
-    }
-    return true;
-  })
+  useEffect(() => {
+    const filteredAirplanes = airplaneList.filter((airplane) => {
+      if (filter === "Promo") {
+        return airplane.discount;
+      }
+      if (filter) {
+        return airplane.class === filter;
+      }
+      return true;
+    });
+
+    const shuffleArray = (array: Airplane[]) =>
+      array.sort(() => Math.random() - 0.5);
+    setRandomAirplanes(shuffleArray(filteredAirplanes).slice(0, 10));
+  }, [filter]);
 
   return (
     <div className="px-[10rem] py-10 items-start">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h1>
+        <h2 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h2>
         <p className="text-gray-600">Temukan penerbangan yang sesuai dengan kebutuhan Anda</p>
       </div>
       <div className="flex mb-6 gap-5">
       <button
           onClick={() => setFilter("Ekonomi")}
-          className={`px-3 py-2 border border-zinc-600 text-black text-sm rounded-xl mb-2 ${
-            filter === "Ekonomi" ? "bg-blue-500 text-white" : ""
+          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+            filter === "Ekonomi" ? "bg-blue-200 text-blue-700 border border-blue-600" : "border-zinc-600"
           }`}
         >
           Ekonomi
         </button>
         <button
           onClick={() => setFilter("Bisnis")}
-          className={`px-3 py-2 border border-zinc-600 text-black text-sm rounded-xl mb-2 ${
-            filter === "Bisnis" ? "bg-blue-500 text-white" : ""
+          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+            filter === "Bisnis" ? "bg-blue-100 text-blue-700 border border-blue-600" : "border-zinc-600"
           }`}
         >
           Bisnis
         </button>
         <button
           onClick={() => setFilter("First Class")}
-          className={`px-3 py-2 border border-zinc-600 text-black text-sm rounded-xl mb-2 ${
-            filter === "First Class" ? "bg-blue-500 text-white" : ""
+          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+            filter === "First Class" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
           }`}
         >
           First Class
         </button>
         <button
           onClick={() => setFilter("Promo")}
-          className={`px-3 py-2 border border-zinc-600 text-black text-sm rounded-xl mb-2 ${
-            filter === "Promo" ? "bg-blue-500 text-white" : ""
+          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+            filter === "Promo" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
           }`}
         >
           Promo
         </button>
         <button
           onClick={() => setFilter("")}
-          className="px-3 py-2 border border-zinc-600 text-black text-sm rounded-xl mb-2"
+          className="px-3 py-2 border border-zinc-600 text-black text-sm rounded-2xl mb-2"
         >
           Reset
         </button>
       </div>
-      <div className='overflow-hidden w-full'>
-      <AnimatePresence mode='wait'>
-            <motion.div 
-              key={filter}
-              initial={{ opacity: 0, x: 1100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 1200 }}
-              transition={{ duration: 1.5 }}
-              className='overflow-hidden w-full'>
-        <Swiper
-          spaceBetween={15}
-          slidesPerView={"auto"}
-          freeMode={true}
-          mousewheel={true}
-          modules={[Autoplay, FreeMode, Mousewheel]}
-          className='flex justify-center items-center xl:min-h-[21rem]'
-        >
-          
-            {filteredAirplanes.map((airplane) => (
-            <SwiperSlide
-              key={airplane.id}
-              className="!w-[16rem] !h-[24rem] bg-white rounded-lg shadow-md !flex !gap-16"
-            >
-              <Link href={"/"}>
-                <div className="relative !w-full h-[12rem]">
-                  <Image
-                    src={airplane.image}
-                    alt={`Flight from ${airplane.from} to ${airplane.to}`}
-                    width={400}
-                    height={400}
-                    draggable={false}
-                    className="rounded-t-lg object-cover !w-full !h-full"
-                  />
-                  <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-2 rounded-md">
-                    {airplane.trip}
-                  </span>
-                  {airplane.discount && (<span className="absolute -bottom-2 -right-1 bg-red-500 text-white text-xs px-2 py-2 rounded-md">
-                    {airplane.trip}
-                  </span>)}
-                </div>
-                <div className="p-4 bg-gray-300 rounded-b-lg h-full">
-                  <h2 className="text-base font-bold mb-4 text-ellipsis ">{`${airplane.from}  →  ${airplane.to}`}</h2>
-                  <p className="text-gray-600 text-sm">{airplane.date}</p>
-                  <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${airplane.type}`}</p>
-                  <p className="text-gray-600 text-sm mb-4 truncate sm:max-w-[13rem]">{`${airplane.class}`}</p>
-                  <p className="text-green-500 font-bold mt-2 truncate">{`${airplane.price}`}</p>
-                </div>
-              </Link>
-
-            </SwiperSlide>
-          ))}
-        </Swiper>
-            </motion.div>
-      </AnimatePresence>
-      </div>
+      <AirplaneCard airplanes={randomAirplanes} filterKey={filter}/>
     </div>
   )
 }

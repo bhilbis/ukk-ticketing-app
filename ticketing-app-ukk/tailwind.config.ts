@@ -9,6 +9,20 @@ export default {
   ],
   theme: {
   	extend: {
+		screens: {
+			xs: "375px",
+			sm: "425px",
+			md: "576px",
+			lg: "768px",
+			xl: "1024px",
+			"1xl": "1279.98px",
+			"2xl": "1440px",
+		},
+		backgroundColor: {
+			"blue-base": "#3b82f6",
+			"blue-medium": "#2563eb",
+			"blue-dark": "#1d4ed8",
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -66,15 +80,39 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-		animation: {
-			fadeIn: 'fadeIn 0.2s ease-in-out',
-		},
-		keyframes: {
-			fadeIn: {
-				"0%": { opacity: "0", transform: "scale(0.9)" },
-                "100%": { opacity: "1", transform: "scale(1)" },
-			}
-		}
+  		animation: {
+  			fadeIn: 'fadeIn 0.2s ease-in-out',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		},
+  		keyframes: {
+  			fadeIn: {
+  				'0%': {
+  					opacity: '0',
+  					transform: 'scale(0.9)'
+  				},
+  				'100%': {
+  					opacity: '1',
+  					transform: 'scale(1)'
+  				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

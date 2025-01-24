@@ -31,7 +31,7 @@ const destinationPlace = [
 ]
 const HomeSuggest = () => {
   return (
-    <div className='px-[10rem] pb-10 w-full items-center justify-center'>
+    <div className='px-[10rem] py-10 w-full items-center justify-center'>
       
       <div className='mb-6'>
         <h2 className='text-2xl font-bold mb-3'>Destinasi yang sedang populer</h2>
@@ -42,7 +42,7 @@ const HomeSuggest = () => {
 
         <div className='flex space-x-5'>
           {destinationPlace.slice(0, 2).map(place => (
-            <div key={place.id} className='relative w-1/2 h-64'>
+            <div key={place.id} className='relative h-64 flex-1 group transition-all duration-300 ease-in-out overflow-hidden rounded-xl'>
               <Link href={"#"}>
                   <Image 
                     src={place.image} 
@@ -50,8 +50,8 @@ const HomeSuggest = () => {
                     draggable={false}
                     width={1000}
                     height={1000}
-                    className='w-full h-full object-cover hover:shadow-lg transition-shadow duration-300 ease-in-out rounded-xl'/>
-                  <div className='absolute top-3 left-4 bg-opacity-50 text-lg text-white px-2 py-1'>
+                    className='w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:duration-500 rounded-xl'/>
+                  <div className='absolute top-3 left-4 bg-opacity-50 text-lg text-white px-2 py-1 pointer-events-none'>
                     {place.namaTempat}
                   </div>
               </Link>
@@ -61,7 +61,7 @@ const HomeSuggest = () => {
 
         <div className='flex space-x-5'>
           {destinationPlace.slice(2).map(place => (
-            <div key={place.id} className='relative w-1/3 h-64'>
+            <div key={place.id} className='relative h-64 flex-1 group transition-all duration-300 ease-in-out overflow-hidden rounded-xl'>
               <Link href="#">
                 <Image 
                   src={place.image} 
@@ -69,8 +69,8 @@ const HomeSuggest = () => {
                   width={1000}
                   height={1000}
                   draggable={false}
-                  className='w-full h-full object-cover hover:shadow-lg transition-shadow duration-300 ease-in-out rounded-xl'/>
-                <div className='absolute top-3 left-4 bg-opacity-50 text-lg text-white px-2 py-1'>
+                  className='w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:duration-500 rounded-xl'/>
+                <div className='absolute top-3 left-4 bg-opacity-50 text-lg text-white px-2 py-1 pointer-events-none'>
                   {place.namaTempat}
                 </div>
               </Link>

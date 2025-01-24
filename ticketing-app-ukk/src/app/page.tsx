@@ -2,12 +2,9 @@ import HomeBanner from "@/components/home/home-banner";
 import HomeCarousel from "@/components/home/home-carousel";
 import HomeCoupon from "@/components/home/home-coupon";
 import HomeSlider from "@/components/home/home-slider";
-
-import 'swiper/css'
-import 'swiper/swiper-bundle.css';
-import 'swiper/css/navigation';
 import HomeSuggest from "@/components/home/home-suggest";
-import HomePromo from "@/components/home/home-promo";
+import { HomeAccordion } from "@/components/home/home-accordion";
+import HomeAds from "@/components/home/home-ads";
 
 export default function Home() {
   return (
@@ -17,8 +14,9 @@ export default function Home() {
           <HomeSlider />
           <HomeCoupon />
           <HomeCarousel />
+          <HomeAds />
           <HomeSuggest />
-          <HomePromo />
+          <HomeAccordion />
         </div>
       </div>
   );

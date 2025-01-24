@@ -220,7 +220,7 @@ const HomeBanner = () => {
 
         {!scrolled && (
 
-          <div className='absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center z-10 text-white -mt-24'>
+          <div className='absolute top-[35%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center z-10 text-white -mt-24'>
             <h1 className='text-2xl mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
             <div className='px-5 py-2 rounded-xl border border-gray-300 bg-white text-black text-[1em] w-full'>
               <Search/>
@@ -228,7 +228,7 @@ const HomeBanner = () => {
           </div>
           )}
 
-          <div className='absolute w-full top-[30%] left-1/2 -translate-x-1/2 flex flex-col justify-center items-center z-10'>
+          <div className='absolute w-full top-[35%] left-1/2 -translate-x-1/2 flex flex-col justify-center items-center z-10'>
             <div className='flex gap-x-5'>
 
               <div

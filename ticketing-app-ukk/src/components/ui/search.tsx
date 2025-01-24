@@ -34,7 +34,7 @@ const Search = () => {
                                 key={placeholderIndex}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                exit={{}}
+                                exit={{ opacity: 0, y: -15 }}
                                 transition={{ duration: 1 }}
                                 className='absolute inset-0 flex items-center pointer-events-none z-[1]'
                                 style={{ zIndex: 1 }}
@@ -45,26 +45,12 @@ const Search = () => {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                    {isFocused && (
-                        <div className='absolute inset-0 flex items-center pointer-events-none z-[1]'>
-                            <span className='text-gray-500'>
-                                {placeholders[placeholderIndex]}
-                            </span>
-                        </div>
-                    )}
                     <input 
                         type="text" 
                         className='focus:outline-none bg-transparent w-full relative z-10'
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                     />
-                {/* <input 
-                    type="text" 
-                    placeholder={placeholders[placeholderIndex]}
-                    className={`focus:outline-none bg-transparent w-full placeholderAnimation`}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                /> */}
                 </div>
             </div>
         </div>
