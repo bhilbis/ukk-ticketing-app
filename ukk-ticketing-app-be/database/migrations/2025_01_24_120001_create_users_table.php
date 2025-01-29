@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['administrator', 'staff', 'passenger'])->default('passenger');
+            $table->foreignId('level_id')->nullable()->constrained('levels')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -10,7 +10,6 @@ import {
 } from "lucide-react"
 
 import { SidebarMain } from "./sidebar-main"
-import { SidebarProjects } from "./sidebar-projects"
 import { SidebarUser } from "./sidebar-user"
 import { TeamSwitcher } from "./team-switcher"
 import {
@@ -20,10 +19,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-// import { url } from "inspector"
-// import { title } from "process"
-
-// This is sample data.
 const data = {
   user: {
     name: "Bilbis",
@@ -41,23 +36,9 @@ const data = {
   navMain: [
     {
       title: "Dasboards",
-      url: "#",
+      url: "/admin/dashboard",
       icon: LayoutDashboard,
       isActive: true,
-      items: [
-        {
-          title: "Sales Statistics ",
-          url: "#",
-        },
-        {
-          title: "Order Chart",
-          url: "#",
-        },
-        {
-          title: "Schedule Information",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Ticket",
@@ -128,10 +109,6 @@ const data = {
           title: "Refund",
           url: "#",
         },
-        {
-          title: "Financial Summary",
-          url: "#",
-        },
       ],
     },
   ],
@@ -153,7 +130,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMain items={data.navMain} />
-          <SidebarProjects projects={data.Data} />
+          {/* <SidebarProjects projects={data.Data} /> */}
         </SidebarContent>
         <SidebarFooter>
           <SidebarUser user={data.user} />

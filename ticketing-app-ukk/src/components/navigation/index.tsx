@@ -4,21 +4,21 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Search from '../ui/search'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import { AvatarFallback } from '../ui/avatar'
 import { motion, AnimatePresence } from "framer-motion";
+import { Logout } from '@/services/auth'
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const hiddenPaths = ["/admin", "/login", "/signup"];
+  const router = useRouter();
+  const hiddenPaths = ["/admin", "/login", "/daftar"];
 
   useEffect(() => {
-
     if (pathname === "/") {
       const handleScroll = () => {
         setScrolled(window.scrollY > 110);
@@ -40,6 +40,15 @@ const Navbar = () => {
   if (hiddenPaths.some((path) => pathname.startsWith(path))) {
     return null;
   }
+
+  const handleLogout = async() => {
+      try {
+        await Logout();
+        router.push('/login'); 
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+  };
 
   return (
     <div 
@@ -81,7 +90,7 @@ const Navbar = () => {
         <div className='flex items-center font-medium gap-x-8 w-full justify-end'>
           <Link href={'#'}>Kupon</Link>
           <Link href={'login'}>Masuk</Link>
-          <Link href={'signup'} className={`px-4 py-2 rounded-md ${
+          <Link href={'daftar'} className={`px-4 py-2 rounded-md ${
             scrolled ? 'bg-blue-base text-white' : 'bg-blue-dark hover:bg-blue-medium text-white'
           }`}>
             Daftar
@@ -125,12 +134,12 @@ const Navbar = () => {
                   >
                     Pengaturan
                   </Link>
-                  <Link
-                    href="#"
+                  <button
+                    onClick={handleLogout}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Keluar
-                  </Link>
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -22,6 +22,7 @@ export default {
 			"blue-base": "#3b82f6",
 			"blue-medium": "#2563eb",
 			"blue-dark": "#1d4ed8",
+			"blue-navy": "#172554",
 		  },
   		colors: {
   			background: 'hsl(var(--background))',

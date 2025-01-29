@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar";
 import '../globals.css';
+import { ClientOnly } from "@/lib/ClientOnly";
 
 export const metadata: Metadata = {
   title: "Ticketing App",
@@ -14,18 +15,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
-        <SidebarProvider>
-          <nav>
-            <AppSidebar />
-            <SidebarInset />
-          </nav>
-
-          <main>
-            <SidebarTrigger className="fixed top-3 z-20"/>
-            {children}
-          </main>
-        </SidebarProvider>
-      
+    <ClientOnly>
+      <SidebarProvider>
+        <nav>
+          <AppSidebar />
+          <SidebarInset />
+        </nav>
+        <main>
+          <SidebarTrigger className="fixed top-2 z-20"/>
+          {children}
+        </main>
+      </SidebarProvider>
+    </ClientOnly>
   );
 }

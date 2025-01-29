@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('booking_place', 100);
             $table->foreignId('passenger_id')->constrained('passengers');
             $table->string('seat_code', 10);
+            $table->foreignId('route_id')->constrained('routes');
             $table->string('destination', 100);
             $table->date('departure_date');
             $table->time('check_in_time');

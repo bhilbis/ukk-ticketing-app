@@ -45,7 +45,6 @@ export default function RootLayout({
           </main>
 
           <footer>
-            <hr className="bg-black"/>
             <Footer/>
           </footer>
       </body>

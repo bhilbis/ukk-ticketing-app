@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('passengers', function (Blueprint $table) {
             $table->id('id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->nullable();
             $table->string('email')->unique();
             $table->string('username', 50)->unique();
             $table->string('password');
