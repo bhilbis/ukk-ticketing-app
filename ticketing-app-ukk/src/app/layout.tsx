@@ -3,6 +3,8 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation";
 import Footer from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
+import { LenisProvider } from "@/context/LenisScroll";
 
 import 'swiper/css'
 import 'swiper/swiper-bundle.css';
@@ -41,7 +43,10 @@ export default function RootLayout({
           </nav>
 
           <main>
+            <LenisProvider>
             {children}
+            <Toaster />
+            </LenisProvider>
           </main>
 
           <footer>

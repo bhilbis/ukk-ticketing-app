@@ -4,7 +4,7 @@ import React from 'react'
 
 const HomeAds = () => {
     return (
-        <div className='w-full px-[10rem] py-10'>
+        <div className='w-full px-[8rem] py-10'>
             <Link href={"/"} className='cursor-pointer'>
                 <Image
                     src="/home/ads.png"

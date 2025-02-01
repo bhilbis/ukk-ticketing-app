@@ -157,12 +157,12 @@ const HomeCarousel = () => {
   }, [filter]);
 
   return (
-    <div className="px-[10rem] py-10 items-start">
+    <div className="px-[8rem] py-10 items-start">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h2>
         <p className="text-gray-600">Temukan penerbangan yang sesuai dengan kebutuhan Anda</p>
       </div>
-      <div className="flex mb-6 gap-5">
+      <div className="flex mb-6 gap-5 overflow-hidden">
       <button
           onClick={() => setFilter("Ekonomi")}
           className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${

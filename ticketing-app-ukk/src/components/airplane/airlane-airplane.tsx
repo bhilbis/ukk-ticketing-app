@@ -154,12 +154,12 @@ const AirlaneAirplane = () => {
     }, [filter]);
 
   return (
-    <div className='w-full px-[10rem] py-10'>
+    <div className='w-full px-[8rem] py-10 overflow-hidden'>
         <div className='mb-6'>
             <h2 className='text-2xl font-bold mb-3'>Tipe Pesawat</h2>
             <p className='text-gray-600'>Beli Tiket Pesawat dan pilih pesawat yang ingin anda naiki</p>
         </div>
-        <div className='flex mb-6 gap-5'>
+        <div className='flex mb-6 gap-5 overflow-hidden'>
             {airplaneTypes.map((type) => (
                     <button
                         key={type}

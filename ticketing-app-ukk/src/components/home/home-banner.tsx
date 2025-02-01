@@ -1,21 +1,27 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Search from '../ui/search'
-import { Plane, Train, SearchIcon, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plane, Train, SearchIcon, ChevronDown, AlertCircle } from 'lucide-react'
+import { Button } from '../ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '../ui/tooltip'
+import { format } from "date-fns";
+import { Calendar } from '../ui/calendar'
+import { Label } from '../ui/label'
 import { Checkbox } from '../ui/checkbox'
 
 interface TravelInputProps {
   activeTab: string;
 }
+
 const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {  
     const [isRoundTrip, setIsRoundTrip] = useState(false);
-    const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
-    const [showClassDropdown, setShowClassDropdown] = useState(false);
-    const [departureDate, setDepartureDate] = useState('');
+    const [departureDate, setDepartureDate] = useState(new Date());
+    const [returnDate, setReturnDate] = useState<Date | null>(null);
     const [selectedClass, setSelectedClass] = useState('');
-
+    
     const [passengerDetails, setPassengerDetails] = useState({
       adults: 1,
       children: 0,
@@ -31,8 +37,6 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
         }));
       }
     };
-
-    const types = ["adults", "children", "infants"] as const;
     
     const getDropdownOptions = () => {
       if (activeTab === 'plane') {
@@ -42,154 +46,122 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
       }
       return [];
   };
+  const totalPassengers = Object.values(passengerDetails).reduce((acc, curr) => acc + curr, 0);
   
     return (
-      <div className="w-full grid gap-3">
-        <div className='flex justify-between items-center'>
-          <span
-            className="px-4 py-2 bg-blue-500 rounded-full"
-          >
-            <h3 className='text-white text-sm pointer-events-none'>Sekali Jalan / Pulang Pergi</h3>
-          </span>
+      <TooltipProvider>
+        <div className="hidden lg:block w-full gap-3">
+          <div className='flex justify-between items-center'>
+            <span className=" px-4 py-2 bg-blue-500 rounded-full text-white text-sm pointer-events-none">
+              Sekali Jalan / Pulang Pergi
+            </span>
 
-          <div className='flex gap-4 items-center'>
-
-            <div className="relative items-center max-w-[14rem] min-w-[14rem]">
-              <button 
-                onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
-                className="border w-full border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm gap-x-1"
-              >
-                {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
-                <span className="text-sm">
-                  {showPassengerDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
-                </span>
-              </button>
-              {showPassengerDropdown && (
-                <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md w-64 mt-2 text-sm">
-                  <span className='px-4 py-2 text-lg font-medium '>Jumlah Penumpang</span>
-                  {types.map((type) => (
-                    <div
-                      key={type}
-                      className="flex items-center justify-between px-4 py-2"
-                    >
-                      <span className="capitalize">{type}</span>
-                      <div className="flex items-center justify-between w-20">
-                        <button
-                          className="px-2 py-1"
-                          onClick={() =>
-                            handlePassengerChange(type, passengerDetails[type] - 1)
-                          }
-                        >
-                          -
-                        </button>
-                        <span>{passengerDetails[type]}</span>
-                        <button
-                          className="px-2 py-1 "
-                          onClick={() =>
-                            handlePassengerChange(type, passengerDetails[type] + 1)
-                          }
-                        >
-                          +
-                        </button>
+            <div className='flex gap-4 items-center'>
+              <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="bg-white bg-opacity-40 text-white">
+                        {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
+                        <ChevronDown className="ml-2 w-5 h-5" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64">
+                  <span className='text-lg font-medium'>Jumlah Penumpang</span>
+                  {['adults', 'children', 'infants'].map((type) => (
+                      <div key={type} className="flex justify-between py-2">
+                          <span className="capitalize">{type}</span>
+                          <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="icon" onClick={() => handlePassengerChange(type as keyof typeof passengerDetails, passengerDetails[type as keyof typeof passengerDetails] - 1)}>-</Button>
+                              <span>{passengerDetails[type as keyof typeof passengerDetails]}</span>
+                              <Button variant="ghost" size="icon" onClick={() => handlePassengerChange(type as keyof typeof passengerDetails, passengerDetails[type as keyof typeof passengerDetails] + 1)}>+</Button>
+                          </div>
                       </div>
-                    </div>
                   ))}
-                </div>
-              )}
-            </div>
-
-            <div className="relative">
-              <button
-                onClick={() => setShowClassDropdown(!showClassDropdown)}
-                className="border border-gray-300 rounded-lg px-3 py-2 flex items-center text-white bg-white bg-opacity-40 text-sm"
-              >
-                Pilih Kelas
-                <span className="ml-2">
-                  {showClassDropdown ? <ChevronUp className='w-5 h-5'/> : <ChevronDown className='w-5 h-5'/>}
-                </span>
-              </button>
-              {showClassDropdown && (
-                <div className="absolute mt-2 bg-white border border-gray-300 rounded shadow-md w-44 text-sm">
-                  {getDropdownOptions().map((kelas) => (
-                    <div 
-                      key={kelas} className='px-4 py-2 hover:bg-gray-100 flex items-center gap-3' 
-                      onClick={() => 
-                        {setSelectedClass(kelas);
-                        setShowClassDropdown(false);
-                      }}
-                    >
-                      <input
-                      type="radio"
-                      name="kelas"
-                      checked={selectedClass === kelas}
-                      onChange={() => setSelectedClass(kelas)}
-                      />
-                      <span>{kelas}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-          </div>
-        </div>
-
-        <div className='w-full flex gap-x-10 mt-10'>
-
-          <div className='w-full items-center flex gap-2'>
-            <div className="flex-1">
-              <label className="block text-lg font-medium mb-1 text-white">Asal</label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
-                placeholder="Kota keberangkatan"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-lg font-medium mb-1 text-white">Tujuan</label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
-                placeholder="Kota tujuan"
-              />
+                  {totalPassengers >= 7 && (
+                      <Tooltip>
+                          <TooltipTrigger asChild>
+                              <div className="flex items-center text-red-500 mt-2">
+                                  <AlertCircle className="mr-1" /> Tidak bisa melebihi 7
+                              </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                              Maksimal 7 penumpang diperbolehkan per pemesanan.
+                          </TooltipContent>
+                      </Tooltip>
+                  )}
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="bg-white bg-opacity-40 min-w-[9rem] text-white">
+                        {selectedClass || 'Pilih Kelas'}
+                        <ChevronDown className="ml-2 w-5 h-5" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                    {getDropdownOptions().map((kelas) => (
+                        <div key={kelas} className="flex items-center gap-3 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedClass(kelas)}>
+                            <input type="radio" name="kelas" checked={selectedClass === kelas} readOnly />
+                            <span>{kelas}</span>
+                        </div>
+                    ))}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
-          
-          <div className="w-full flex items-center gap-2">
-            <div className='w-full'>
-              <label className="block text-lg font-medium mb-1 text-white">Tanggal Berangkat</label>
-              <input
-                type="date"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
-                value={departureDate}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={(e) => setDepartureDate(e.target.value)}
-              />
-            </div>
 
-            <div className='w-full'>
-              <div className="flex gap-2">
-                <Checkbox onClick={() => setIsRoundTrip(!isRoundTrip)} className='bg-white mt-[5px]'/>
-                <label className="block text-lg font-medium mb-1 text-white">Tanggal Pulang</label>
+          <div className="grid grid-cols-2 gap-4 items-center w-full xl:mt-10">
+              <div className="grid grid-cols-2 gap-4 items-center w-full">
+                  <div className='flex flex-col'>
+                    <Label className='text-sm font-medium mb-2 text-white'>Asal</Label>
+                    <input type="text" className="border rounded px-3 py-[0.3rem]" placeholder="Kota keberangkatan" />
+                  </div>
+                  <div className='flex flex-col'>
+                    <Label className='text-sm font-medium mb-2 text-white'>Tujuan</Label>
+                    <input type="text" className="border rounded px-3 py-[0.3rem]" placeholder="Kota tujuan" />
+                  </div>
               </div>
-              <input
-                type="date"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-base h-10 focus:outline-none"
-                min={departureDate}
-                disabled={!isRoundTrip}
-              />
-            </div>
+
+              <div className="grid grid-cols-2 gap-4 items-center w-full">
+                <div className='flex flex-col'>
+                  <Label className="text-sm font-medium mb-2 text-white">Tanggal Berangkat</Label>
+                  <Popover>
+                      <PopoverTrigger asChild>
+                          <Button variant="outline" className="w-full">{format(departureDate, "dd MMM yyyy")}</Button>
+                      </PopoverTrigger>
+                      <PopoverContent align="start">
+                          <Calendar mode="single" selected={departureDate} onSelect={(day) => {
+                            if (day) setDepartureDate(day);
+                          }} />
+                      </PopoverContent>
+                  </Popover>
+                </div>
+                <div>
+                  <div className='flex gap-2'>
+                    <Checkbox className='border-white mt-[2px] ml-2' onClick={() => setIsRoundTrip(!isRoundTrip)} />
+                    <Label className="text-sm font-medium mb-2 text-white">Tanggal Pulang</Label>
+                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full" disabled={!isRoundTrip}>
+                            {returnDate ? format(returnDate, "dd MMM yyyy") : "Pilih Tanggal"}
+                        </Button>
+                    </PopoverTrigger>
+                    {isRoundTrip && (
+                            <PopoverContent align="start">
+                                <Calendar mode="single" selected={returnDate || undefined} onSelect={(day) => {
+                                  if (day) setReturnDate(day);
+                                }} disabled={(date) => date <= departureDate} />
+                            </PopoverContent>
+                    )}
+                  </Popover>
+                </div>
+              </div>
           </div>
-    
-          <button
-            className="bg-blue-600 text-white rounded-lg px-3 hover:bg-blue-700 flex items-center justify-center mt-8"
-          >
-            <SearchIcon className="w-6 h-6" />
-          </button>
-
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4 flex items-center justify-center">
+              <SearchIcon className="w-5 h-5 mr-2" /> Cari Tiket
+          </Button>
         </div>
-
-      </div>
+      </TooltipProvider>
     );
 };
 
@@ -207,61 +179,55 @@ const HomeBanner = () => {
   }, []);
 
   return (
-      <div className='flex w-full z-10 bg-black'>
-        <Image
-          src='/home/banner-view.jpg'
-          alt='home-banner'
-          width={1600}
-          height={1000}
-          draggable={false}
-          className='z-0 h-[40rem] object-cover object-center opacity-60'
-        />
-        <div>
+    <div className="relative w-full z-10 h-[21rem] sm:h-[24rem] md:h-[27rem] xl:h-[35rem] 1xl:h-[42rem] overflow-hidden bg-[url('/home/banner-view.jpg')] bg-cover bg-no-repeat bg-center">
+      <div className='relative 1xl:pb-6 h-full w-full flex justify-center overflow-hidden'>
+        <div className="inset-0 mt-6 flex flex-col items-center justify-center text-white px-8  max-w-full md:max-w-md-content lg:max-w-lg-content xl:max-w-full  z-20  w-full">
+            {!scrolled && (
 
-        {!scrolled && (
+              <div className='flex absolute lg:top-[50%] xl:top-[40%] 2xl:top-[35%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col justify-center items-center z-10 text-white lg:-mt-24'>
+                <h1 className='text-base lg:text-xl xl:text-2xl mb-4 2xl:mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
+                <div className='px-5 py-2 rounded-xl border border-gray-300 bg-white text-black text-[1em] w-full'>
+                  <Search/>
+                </div>
+              </div>
+              )}
 
-          <div className='absolute top-[35%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center z-10 text-white -mt-24'>
-            <h1 className='text-2xl mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
-            <div className='px-5 py-2 rounded-xl border border-gray-300 bg-white text-black text-[1em] w-full'>
-              <Search/>
-            </div>
-          </div>
-          )}
+              <div className='hidden lg:flex absolute w-full top-[35%] left-1/2 -translate-x-1/2 flex-col justify-center items-center z-10'>
+                <div className='flex gap-x-5 mt-7 xl:mt-0'>
 
-          <div className='absolute w-full top-[35%] left-1/2 -translate-x-1/2 flex flex-col justify-center items-center z-10'>
-            <div className='flex gap-x-5'>
+                  <div
+                    onClick={() => setActiveTab('plane')}
+                    className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
+                      activeTab === 'plane' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
+                    }`}>
+                    <Plane className={`w-7 xl:w-9 h-7 xl:h-9 items-center ${activeTab === 'plane' ? 'text-blue-500' : ''}`} />
+                    <h3 className='text-sm xl:text-base'>Tiket Pesawat</h3>
+                  </div>
 
-              <div
-                onClick={() => setActiveTab('plane')}
-                className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
-                  activeTab === 'plane' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
-                }`}>
-                <Plane className={`w-9 h-9 items-center ${activeTab === 'plane' ? 'text-blue-500' : ''}`} />
-                <h3>Tiket Pesawat</h3>
+                  <div 
+                    onClick={() => setActiveTab('train')}
+                    className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
+                      activeTab === 'train' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
+                    }`}>
+                    <Train className={`w-7 xl:w-9 h-7 xl:h-9 items-center ${activeTab === 'train' ? 'text-yellow-300' : ''}`} />
+                    <h3 className='text-sm xl:text-base'>Tiket Kereta Api</h3>
+                  </div>
+
+                </div>
+                
+                <hr className='w-[80%] border border-white my-5' />
+
+                {activeTab && (
+                  <div className='w-[80%]'>
+                    <TravelInput activeTab={activeTab}/>
+                  </div>
+                )}
               </div>
 
-              <div 
-                onClick={() => setActiveTab('train')}
-                className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
-                  activeTab === 'train' ? 'border border-white rounded-3xl bg-white text-black' : 'text-white'
-                }`}>
-                <Train className={`w-9 h-9 items-center ${activeTab === 'train' ? 'text-yellow-300' : ''}`} />
-                <h3>Tiket Kereta Api</h3>
-              </div>
-
-            </div>
-            
-            <hr className='w-[80%] border border-white my-5' />
-
-            {activeTab && (
-              <div className='w-[80%]'>
-                <TravelInput activeTab={activeTab}/>
-              </div>
-            )}
-          </div>
+          
         </div>
-
       </div>
+    </div>
   )
 }
 

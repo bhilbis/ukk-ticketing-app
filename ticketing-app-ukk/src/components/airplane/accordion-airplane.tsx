@@ -7,7 +7,7 @@ import {
 
 export function AccordionAirplane() {
     return (
-        <div className="px-[10rem] py-5 w-full">
+        <div className="px-[8rem] py-5 w-full">
             <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger className="text-xl font-medium">Bagaimana cara memesan tiket pesawat?</AccordionTrigger>

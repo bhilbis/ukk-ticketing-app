@@ -9,6 +9,7 @@ import { Avatar, AvatarImage } from '../ui/avatar'
 import { AvatarFallback } from '../ui/avatar'
 import { motion, AnimatePresence } from "framer-motion";
 import { Logout } from '@/services/auth'
+import { Menu, X } from 'lucide-react'
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -16,7 +17,9 @@ const Navbar = () => {
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const hiddenPaths = ["/admin", "/login", "/daftar"];
+  const hiddenPaths = ["/admin", "/login", "/daftar", '/reset-password', ];
+  const [isOpen, setIsOpen] = useState(false);
+  // const [dropdownOpenMobile, setDropdownOpenMobile] = useState(false);
 
   useEffect(() => {
     if (pathname === "/") {
@@ -74,9 +77,9 @@ const Navbar = () => {
             height={50}
           />
           {pathname === "/" ? (
-            !scrolled && <h1 className={`sm:text-xl text-white`}>Travel Link</h1>
+            !scrolled && <h1 className={`hidden sm:block sm:text-xl text-white`}>Travel Link</h1>
           ) : (
-            <h1 className="sm:text-xl text-black">Travel Link</h1>
+            <h1 className="hidden sm:block sm:text-xl text-black">Travel Link</h1>
           )}
         </Link>
 
@@ -87,7 +90,7 @@ const Navbar = () => {
           : null }
       </div>
 
-        <div className='flex items-center font-medium gap-x-8 w-full justify-end'>
+        <div className='hidden lg:flex items-center font-medium gap-x-8 w-full justify-end'>
           <Link href={'#'}>Kupon</Link>
           <Link href={'login'}>Masuk</Link>
           <Link href={'daftar'} className={`px-4 py-2 rounded-md ${
@@ -136,7 +139,7 @@ const Navbar = () => {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Keluar
                   </button>
@@ -144,11 +147,116 @@ const Navbar = () => {
               )}
             </AnimatePresence>
           </div>
-
         </div>
 
-      </div>
+        {/* Mobile Hamburger Button */}
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="lg:hidden p-2"
+        >
+          <Menu size={24} />
+        </button>
 
+        {/* Mobile Bottom Sheet Navigation */}
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              {/* Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black z-30"
+                onClick={() => setIsOpen(false)}
+              />
+              
+              {/* Bottom Sheet */}
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg z-40 p-6"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold">Menu</h2>
+                  <button onClick={() => setIsOpen(false)}>
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <Link 
+                    href="#" 
+                    className="p-3 hover:bg-gray-100 rounded-lg"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Kupon
+                  </Link>
+                  <Link 
+                    href="login" 
+                    className="p-3 hover:bg-gray-100 rounded-lg"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Masuk
+                  </Link>
+                  <Link 
+                    href="daftar" 
+                    className="p-3 bg-blue-base text-white rounded-lg text-center"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Daftar
+                  </Link>
+                  
+                  <div className="border-t pt-4 mt-2">
+                    <div className="flex items-center gap-4 p-3">
+                      <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">User Name</p>
+                        <p className="text-sm text-gray-500">user@email.com</p>
+                      </div>
+                    </div>
+                    
+                    <Link 
+                      href="/myaccount" 
+                      className="p-3 hover:bg-gray-100 rounded-lg block"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Profil
+                    </Link>
+                    <Link 
+                      href="/myaccount/your-orders" 
+                      className="p-3 hover:bg-gray-100 rounded-lg block"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Order Anda
+                    </Link>
+                    <Link 
+                      href="/settings" 
+                      className="p-3 hover:bg-gray-100 rounded-lg block"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Pengaturan
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsOpen(false);
+                      }}
+                      className="w-full p-3 hover:bg-gray-100 rounded-lg text-left text-red-500"
+                    >
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

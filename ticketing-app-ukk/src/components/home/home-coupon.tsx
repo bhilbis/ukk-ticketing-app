@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Copy,
   TicketPercent,
 } from "lucide-react";
 import { Swiper,  SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { Skeleton } from "../ui/skeleton";
 
 interface Coupon {
     type: 'train' | 'plane';
@@ -60,6 +61,13 @@ interface CouponCardProps {
 }
 
 const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500); // Simulasi delay loading
+    return () => clearTimeout(timer);
+  }, []);
+
   const getCategoryColor = () => {
     switch (coupon.category) {
       case 'cashback':
@@ -71,8 +79,8 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
     }
   };
 
-  return (
-    <div className={`relative ${getCategoryColor()} rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden coupon-card`}>
+  return !isLoading ? (
+    <div className={`relative ${getCategoryColor()} rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden`}>
 
       <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-3"></div>
       <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-white border border-[#e5e7eb] z-10 top-[27%] translate-y-1/2"></div>
@@ -92,10 +100,10 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
         </div>
       </div>
 
-      <div className="flex justify-between mt-8">
+      <div className="flex justify-between items-center mt-8">
         <div className="flex gap-2">
           <Copy className="w-5 h-5" />
-          <p className="text-sm font-mono rounded-md mb-2">{coupon.code}</p>
+          <p className="text-sm font-mono rounded-md">{coupon.code}</p>
         </div>
         <button
           className="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-600"
@@ -106,7 +114,25 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
 
       </div>
     </div>
-  );
+  ) : (
+    <div className="relative bg-gray-100 rounded-lg px-6 py-4 items-center shadow-xl w-full sm:min-w-md mx-auto overflow-hidden">
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-gray-200 border border-[#e5e7eb] z-10 top-3"></div>
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-gray-200 border border-[#e5e7eb] z-10 top-[27%] translate-y-1/2"></div>
+      <div className="absolute -left-4 w-8 h-8 outline-none rounded-[50%] bg-gray-200 border border-[#e5e7eb] z-10 bottom-3"></div>
+
+      <div className="flex">
+        <Skeleton className="w-14 h-14 rounded-full mr-4" />
+        <div>
+          <Skeleton className="h-6 w-[9rem] mb-2" />
+          <Skeleton className="h-4 w-[5rem]" />
+        </div>
+      </div>
+      <div className="mt-8 flex justify-between">
+        <Skeleton className="h-6 w-[7rem]" />
+        <Skeleton className="h-6 w-[7rem] rounded" />
+      </div>
+    </div>
+  )
 };
 
 const HomeCoupon: React.FC = () => {
@@ -129,7 +155,7 @@ const HomeCoupon: React.FC = () => {
       )}
 
 
-    <div className="py-10 px-[10rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
+    <div className="py-10 px-[8rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
 
       <div className="flex gap-3 mb-4 ">
         <TicketPercent className="w-7 h-7 text-blue-500"/>
