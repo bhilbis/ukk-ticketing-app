@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeClosed } from "lucide-react";
+import Link from "next/link";
 
 export function LoginForm({
   className,
@@ -80,12 +81,12 @@ export function LoginForm({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    href="/reset-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                  Lupa password?
-                  </a>
+                    Lupa password?
+                  </Link>
                 </div>
                 <div className="relative">
                   <Input

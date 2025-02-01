@@ -69,7 +69,7 @@ class AuthController extends Controller
                 'name' => $validatedData['username'],
                 'password' => $validatedData['password'],
                 'email' => $validatedData['email'],
-                'role' => 'passenger',
+                'role' => 'Passenger',
             ]);
 
             $validatedData['user_id'] = $user->id;
@@ -138,7 +138,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-            'role' => 'staff',
+            'role' => 'Staff',
         ]);
 
         Staff::create([
