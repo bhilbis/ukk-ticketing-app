@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import '../globals.css';
+import ProfileLayout from "@/layouts/ProfileLayouts";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -11,10 +12,5 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <main>
-            {children}
-        </main>
-
-    );
+    return <ProfileLayout><div>{children}</div></ProfileLayout>;
 }   

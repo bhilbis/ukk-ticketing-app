@@ -53,7 +53,7 @@ const Footer = () => {
           </div>
 
           {/* Contact Section */}
-          <div className="sm:colspan-2 md:col-span-1 flex flex-col items-start mt-5 md:mt-0 xl:-mt-3">
+          <div className="sm:colspan-2 md:col-span-1 flex flex-col items-start mt-5 md:mt-6 xl:-mt-3">
             <div className="flex space-x-4 items-center">
               <Image
                 src="/travel-ticket-logo.svg"
