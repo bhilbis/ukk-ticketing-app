@@ -50,15 +50,15 @@ const data = {
           items: [
             {
               title: "List of Airlines",
-              url: "#",
+              url: "/admin/ticket/airplane/list-airlines",
             },
             {
               title: "Flight Schedule",
-              url: "#",
+              url: "/admin/ticket/airplane/schedule",
             },
             {
               title: "Class & Ticket Price",
-              url: "#",
+              url: "/admin/ticket/airplane/class-price",
             },
           ]
         },
@@ -88,11 +88,11 @@ const data = {
       items: [
         {
           title: "Order List",
-          url: "#",
+          url: "/admin/booking/order-list",
         },
         {
           title: "Order History",
-          url: "#",
+          url: "/admin/booking/order-history",
         },
       ],
     },
