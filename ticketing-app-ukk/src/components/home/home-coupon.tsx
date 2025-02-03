@@ -10,48 +10,48 @@ import { Navigation } from "swiper/modules";
 import { Skeleton } from "../ui/skeleton";
 
 interface Coupon {
-    type: 'train' | 'plane';
+    type: 'kereta' | 'pesawat';
     discount: number;
     minPrice: number;
     code: string;
-    category: 'cashback' | 'discount';
+    category: "cashback" | "double deals" | "flash sale";
 }
 
 const coupons: Coupon[] = [
     { 
-        type: 'train', 
+        type: 'kereta', 
         discount: 50, 
         minPrice: 500, 
         code: 'KERETA50',
         category: 'cashback'
     },
     { 
-        type: 'plane', 
+        type: 'pesawat', 
         discount: 25, 
         minPrice: 100, 
         code: 'PESAWAT25',
-        category: 'discount'
+        category: 'flash sale'
     },
     { 
-        type: 'train', 
+        type: 'kereta', 
         discount: 10, 
         minPrice: 75, 
         code: 'KERETA10',
         category: 'cashback'
     },
     { 
-      type: 'train', 
+      type: 'kereta', 
       discount: 15, 
       minPrice: 80, 
       code: 'KERETA20',
       category: 'cashback'
     },
     { 
-      type: 'plane', 
+      type: 'pesawat', 
       discount: 20, 
       minPrice: 150, 
       code: 'PESAWAT15',
-      category: 'discount'
+      category: 'flash sale'
     },
 ];
 
@@ -70,12 +70,14 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
 
   const getCategoryColor = () => {
     switch (coupon.category) {
-      case 'cashback':
-        return 'bg-yellow-200';
-      case 'discount':
-        return 'bg-green-200';
+      case "cashback":
+      return "bg-green-100 border-green-500 text-green-800";
+      case "double deals":
+        return "bg-blue-100 border-blue-500 text-blue-800";
+      case "flash sale":
+        return "bg-red-100 border-red-500 text-red-800";
       default:
-        return 'bg-gray-100';
+        return "bg-gray-100 border-gray-500 text-gray-800";
     }
   };
 
@@ -88,10 +90,10 @@ const CouponCard: React.FC<CouponCardProps> = ({ coupon, onCopy }) => {
       
       <div className="flex items-center">
         <div className="mr-4">
-          {coupon.type === "train" ? (
-            <span role="img" aria-label="train" className="text-4xl">🚆</span>
+          {coupon.type === "kereta" ? (
+            <span role="img" aria-label="kereta" className="text-4xl">🚆</span>
           ) : (
-            <span role="img" aria-label="plane" className="text-4xl">✈️</span>
+            <span role="img" aria-label="pesawat" className="text-4xl">✈️</span>
           )}
         </div>
         <div>

@@ -63,17 +63,13 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
                     <div className="relative !w-[16rem] h-[12rem] flex items-center justify-center bg-gray-200 rounded-t-lg">
                       <Skeleton className="!w-full !h-full rounded-t-lg bg-gray-200" />
                       <Skeleton className="absolute top-2 left-2 w-[4rem] h-5 bg-gray-300 px-2 py-2 rounded-md" />
-                      { airplanes && airplanes[index] && airplanes[index].discount && (
-                        <Skeleton className="absolute -bottom-2 -right-2 w-[5rem] h-6 bg-gray-300 px-2 py-2 rounded-md" />
-                      )
-                      }
                     </div>
                     <div className="p-4 bg-gray-300 rounded-b-lg h-full">
-                      <Skeleton className="h-6 w-3/4 mb-4" />
-                      <Skeleton className="h-4 w-1/2 mb-2" />
-                      <Skeleton className="h-4 w-2/3 mb-2" />
-                      <Skeleton className="h-4 w-1/3 mb-4" />
-                      <Skeleton className="h-6 w-1/4" />
+                      <Skeleton className="h-6 w-3/4 mb-4 bg-gray-200" />
+                      <Skeleton className="h-4 w-1/2 mb-2 bg-gray-200" />
+                      <Skeleton className="h-4 w-2/3 mb-2 bg-gray-200" />
+                      <Skeleton className="h-4 w-1/3 mb-4 bg-gray-200" />
+                      <Skeleton className="h-6 w-1/4 bg-gray-200" />
                     </div>
                   </div>
                 </SwiperSlide>

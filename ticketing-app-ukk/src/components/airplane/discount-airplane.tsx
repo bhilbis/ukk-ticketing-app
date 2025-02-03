@@ -164,7 +164,7 @@ const DiscountAirplane = () => {
             <h2 className='text-2xl font-bold mb-3'>Diskon & Promo</h2>
             <p className='text-gray-600'>Beli Tiket Pesawat lebih murah dengan promo dan diskon yang tersedia</p>
         </div>
-        <div className='flex mb-6 gap-5'>
+        <div className='flex mb-6 gap-5 overflow-hidden'>
             <button
                 onClick={() => setFilter("cashback")}
                 className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${

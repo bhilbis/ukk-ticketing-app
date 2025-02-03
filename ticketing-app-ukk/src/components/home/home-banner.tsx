@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { Calendar } from '../ui/calendar'
 import { Label } from '../ui/label'
 import { Checkbox } from '../ui/checkbox'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface TravelInputProps {
   activeTab: string;
@@ -50,24 +51,24 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
   
     return (
       <TooltipProvider>
-        <div className="hidden lg:block w-full gap-3">
-          <div className='flex justify-between items-center'>
-            <span className=" px-4 py-2 bg-blue-500 rounded-full text-white text-sm pointer-events-none">
+        <div className="hidden lg:block w-full">
+          <div className='flex justify-between items-center lg:mb-4 xl:mb-0'>
+            <span className="px-3 py-2 bg-blue-500 rounded-full text-white text-xs xl:text-sm pointer-events-none">
               Sekali Jalan / Pulang Pergi
             </span>
 
             <div className='flex gap-4 items-center'>
               <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" className="bg-white bg-opacity-40 text-white">
+                    <Button variant="outline" className="bg-white bg-opacity-40 text-white text-sm">
                         {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
                         <ChevronDown className="ml-2 w-5 h-5" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64">
-                  <span className='text-lg font-medium'>Jumlah Penumpang</span>
+                  <span className='text-base xl:text-lg font-medium'>Jumlah Penumpang</span>
                   {['adults', 'children', 'infants'].map((type) => (
-                      <div key={type} className="flex justify-between py-2">
+                      <div key={type} className="flex justify-between py-2 lg:text-sm xl:text-base items-center">
                           <span className="capitalize">{type}</span>
                           <div className="flex items-center gap-2">
                               <Button variant="ghost" size="icon" onClick={() => handlePassengerChange(type as keyof typeof passengerDetails, passengerDetails[type as keyof typeof passengerDetails] - 1)}>-</Button>
@@ -126,7 +127,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                   <Label className="text-sm font-medium mb-2 text-white">Tanggal Berangkat</Label>
                   <Popover>
                       <PopoverTrigger asChild>
-                          <Button variant="outline" className="w-full">{format(departureDate, "dd MMM yyyy")}</Button>
+                          <Button variant="outline" className="w-full bg-transparent">{format(departureDate, "dd MMM yyyy")}</Button>
                       </PopoverTrigger>
                       <PopoverContent align="start">
                           <Calendar mode="single" selected={departureDate} onSelect={(day) => {
@@ -142,7 +143,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                   </div>
                   <Popover>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full" disabled={!isRoundTrip}>
+                        <Button variant="outline" className="w-full bg-transparent" disabled={!isRoundTrip}>
                             {returnDate ? format(returnDate, "dd MMM yyyy") : "Pilih Tanggal"}
                         </Button>
                     </PopoverTrigger>
@@ -168,6 +169,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
 const HomeBanner = () => {
   const [ activeTab, setActiveTab ] = useState('plane');
   const [ scrolled, setScrolled ] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -179,13 +181,13 @@ const HomeBanner = () => {
   }, []);
 
   return (
-    <div className="relative w-full z-10 h-[21rem] sm:h-[24rem] md:h-[27rem] xl:h-[35rem] 1xl:h-[42rem] overflow-hidden bg-[url('/home/banner-view.jpg')] bg-cover bg-no-repeat bg-center">
+    <div className="relative w-full z-10 h-[21rem] sm:h-[24rem] md:h-[27rem] lg:h-[32rem] xl:h-[40rem] 1xl:[43rem] overflow-hidden bg-[url('/home/banner-view.jpg')] bg-cover bg-no-repeat bg-center">
       <div className='relative 1xl:pb-6 h-full w-full flex justify-center overflow-hidden'>
         <div className="inset-0 mt-6 flex flex-col items-center justify-center text-white px-8  max-w-full md:max-w-md-content lg:max-w-lg-content xl:max-w-full  z-20  w-full">
-            {!scrolled && (
+            {!scrolled && !isMobile && (
 
-              <div className='flex absolute lg:top-[50%] xl:top-[40%] 2xl:top-[35%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col justify-center items-center z-10 text-white lg:-mt-24'>
-                <h1 className='text-base lg:text-xl xl:text-2xl mb-4 2xl:mb-10 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
+              <div className='flex absolute lg:top-[45%] xl:top-[40%] 2xl:top-[35%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col justify-center items-center z-10 text-white lg:-mt-24'>
+                <h1 className='text-base lg:text-xl xl:text-2xl mb-4 2xl:mb-8 pointer-events-none'>Hei, Sedang Mau Pergi Kemana</h1>
                 <div className='px-5 py-2 rounded-xl border border-gray-300 bg-white text-black text-[1em] w-full'>
                   <Search/>
                 </div>
@@ -193,8 +195,7 @@ const HomeBanner = () => {
               )}
 
               <div className='hidden lg:flex absolute w-full top-[35%] left-1/2 -translate-x-1/2 flex-col justify-center items-center z-10'>
-                <div className='flex gap-x-5 mt-7 xl:mt-0'>
-
+                <div className='flex gap-x-5 mt-4 xl:mt-0'>
                   <div
                     onClick={() => setActiveTab('plane')}
                     className={`flex flex-col justify-center items-center text-center px-4 py-2 gap-y-2 cursor-pointer ${
