@@ -59,13 +59,11 @@ class UserController extends Controller
         $randomPassword = Str::random(rand(8, 10));
 
         return DB::transaction(function () use ($validated, $randomPassword) {
-            $role = $validated['level_id'] == 1 ? 'Super Admin' : 'Staff';
-
             $user = User::create([
                 'name' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => bcrypt($randomPassword),
-                'role' => $role,
+                'level_id' => $validated['level_id'],
             ]);
 
             Staff::create([
@@ -74,6 +72,7 @@ class UserController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'level_id' => $validated['level_id'],
+                'password' => bcrypt($randomPassword),
             ]);
 
             Mail::to($user->email)->send(new SendStaffPassword($user, $randomPassword));

@@ -56,10 +56,8 @@ class AuthController extends Controller
                 'gender' => 'required|in:Laki-laki,Perempuan',
                 'birth' => 'required|date',
             ]);
-    
             
             $validatedData['password'] = Hash::make($validatedData['password']);
-    
             
             $user = User::create([
                 'name' => $validatedData['username'],

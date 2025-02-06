@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 class TransportClassController extends Controller
 {
     public function index() {
-        return response()->json(TransportClass::with('transport')->get());
+        return response()->json([
+            'message' => 'Data kelas transportasi berhasil ditemukan',
+            'data' => TransportClass::with('transport')->get()
+        ], 200);
     }
 
     public function store(Request $request) {
@@ -20,7 +23,10 @@ class TransportClassController extends Controller
         ]);
 
         $class = TransportClass::create($validated);
-        return response()->json($class, 201);
+        return response()->json([
+            'message' => 'Kelas transportasi berhasil di tambahkan',
+            'data' => $class
+        ], 201);
     }
 
     public function getById($id) {
@@ -53,6 +59,6 @@ class TransportClassController extends Controller
         $class = TransportClass::find($id);
         $class->delete();
 
-        return response()->json(['message' => 'Kelas transportasi berhasil di hapus'], 201);
+        return response()->json(['message' => 'Kelas transportasi berhasil di hapus'], 200);
     }
 }

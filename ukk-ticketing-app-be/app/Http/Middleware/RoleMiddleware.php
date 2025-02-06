@@ -28,8 +28,12 @@ class RoleMiddleware
                 return response()->json(['error' => 'User not found'], 401);
             }
     
-            if (!in_array($user->role, $roles)) { 
-                return response()->json(['error' => 'Forbidden'], 403); 
+            if (!in_array($user->level->level_name, $roles)) { 
+                return response()->json([
+                    'error' => 'Forbidden',
+                    'your_role' => $user->level->level_name,
+                    'required_roles' => $roles
+                ], 403); 
             }
         } catch (JWTException $e) { 
             return response()->json(['error' => $e->getMessage()], 401); 

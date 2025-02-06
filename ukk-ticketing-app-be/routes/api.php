@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\transport\TransportClassController;
 use App\Http\Controllers\transport\TransportController;
+use App\Http\Controllers\transport\TransportTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -45,7 +47,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // 🟡 Group untuk (Super Admin Only)
     Route::middleware(['role:Super Admin'])->group(function () {
-        //routes users
+        
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'getAllUser']);
             Route::get('/{id}', [UserController::class, 'getUserById']);
@@ -53,11 +55,13 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/create-staff', [UserController::class, 'createStaff']);
         });
 
+        //get all levesRole
+        Route::get('levels', [LevelController::class, 'index']);
 
-        Route::prefix('transport')->group(function () {
-            Route::apiResource('', TransportController::class);
+        Route::prefix('transport-type')->group(function () {
+            Route::get('/', [TransportTypeController::class, 'index']);
+            Route::get('/{id}', [TransportTypeController::class, 'show']);
         });
-
     });
 
     // 🟠 Group untuk (Staff & Super Admin)
@@ -65,6 +69,15 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('transport-classes')->group(function () {
             Route::apiResource('', TransportClassController::class);  
+        });
+
+        Route::prefix('transport-type')->group(function () {
+            Route::get('/', [TransportTypeController::class, 'index']);
+            Route::get('/{id}', [TransportTypeController::class, 'show']);
+        });
+        
+        Route::prefix('transport')->group(function () {
+            Route::apiResource('', TransportController::class);
         });
 
     });
