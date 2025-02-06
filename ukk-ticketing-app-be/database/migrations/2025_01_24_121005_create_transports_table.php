@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->id('id');
+            $table->string('image')->nullable();
             $table->string('code', 50)->unique();
             $table->string('name_transport', 100);
-            $table->integer('seat_count');
             $table->boolean('has_discount')->default(false);
             $table->text('description');
             $table->foreignId('type_id')->constrained('transport_types');

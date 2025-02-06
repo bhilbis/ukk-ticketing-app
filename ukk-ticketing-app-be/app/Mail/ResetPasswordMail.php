@@ -15,8 +15,7 @@ class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $code;
-    public $name;
+    public $code,$name;
 
     /**
      * Create a new message instance.
@@ -44,43 +43,43 @@ class ResetPasswordMail extends Mailable
 
      public function build()
      {
-         return $this->subject('Important: Your Password Reset Code for [Account Name]')
+         return $this->subject('Penting: Kode Reset Password anda untuk [Account Name]')
                      ->html('
                          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px;">
                              <div style="text-align: center; margin-bottom: 30px;">
                                  <h1 style="color: #2b6cb0;">Travel Link</h1>
-                                 <h2 style="color: #2d3748;">Password Reset Request</h2>
+                                 <h2 style="color: #2d3748;">Permintaan Reset Password</h2>
                              </div>
      
                              <div style="background-color: #f7fafc; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                 <p style="color: #4a5568; line-height: 1.6;">Dear ' . $this->name . ',</p>
+                                 <p style="color: #4a5568; line-height: 1.6;">Untuk ' . $this->name . ',</p>
                                  
-                                 <p style="color: #4a5568; line-height: 1.6;">We received a request to reset your password. Please use the following verification code to proceed:</p>
+                                 <p style="color: #4a5568; line-height: 1.6;">Kita menerima permintaan reset password. Mohon gunakan kode berikut:</p>
      
                                  <div style="background-color: #ffffff; padding: 15px; border-radius: 6px; text-align: center; margin: 25px 0; font-weight: bold; font-size: 24px; color: #2b6cb0; border: 2px dashed #c3dafe;">
                                      ' . $this->code . '
                                  </div>
      
-                                 <p style="color: #4a5568; line-height: 1.6;">This code will be valid for 15 minutes. If you did not request this password reset, please ignore this email or contact our support team immediately.</p>
+                                 <p style="color: #4a5568; line-height: 1.6;">Kode ini hanya berlaku selama 15 menit. Jika anda tidak tidak melakukan permintaan ini, abaikan email atau hubungi tim kami secepat mungkin.</p>
      
-                                 <p style="color: #4a5568; line-height: 1.6;">For security reasons:
+                                 <p style="color: #4a5568; line-height: 1.6;">Untuk alasan keamanan:
                                      <ul style="color: #4a5568; margin: 10px 0; padding-left: 20px;">
-                                         <li>Do not share this code with anyone</li>
-                                         <li>Our team will never ask for this code</li>
-                                         <li>Delete this email after password reset</li>
+                                         <li>Jangan mengirim/membagikan kode ini kepada siapapun</li>
+                                         <li>Tim kami tidak akan pernah meminta kode ini</li>
+                                         <li>Hapus email ini setelah kata sandi disetel ulang</li>
                                      </ul>
                                  </p>
      
                                  <p style="color: #4a5568; line-height: 1.6;">Best regards,<br>
-                                 TravelLink Security Team</p>
+                                 TravelLink Tim Keamanan</p>
                              </div>
      
                              <div style="text-align: center; margin-top: 30px; color: #718096; font-size: 12px;">
-                                 <p>Need help? Contact our support team at <a href="mailto:bhilbis123@gmail.com" style="color: #4299e1;">[Support-Email]</a></p>
+                                 <p>Butuh bantuan? Hubungi tim dukungan kami di <a href="mailto:bhilbis123@gmail.com" style="color: #4299e1;">[Support-Email]</a></p>
                                  <p>TravelLink • [Company Address]</p>
                                  <div style="margin-top: 15px;">
-                                     <a href="[Website-URL]" style="color: #4299e1; text-decoration: none; margin: 0 10px;">Our Website</a>
-                                     <a href="[Privacy-Policy-URL]" style="color: #4299e1; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
+                                     <a href="[Website-URL]" style="color: #4299e1; text-decoration: none; margin: 0 10px;">Website Kami</a>
+                                     <a href="[Privacy-Policy-URL]" style="color: #4299e1; text-decoration: none; margin: 0 10px;">Kebijakan Privasi</a>
                                  </div>
                              </div>
                          </div>

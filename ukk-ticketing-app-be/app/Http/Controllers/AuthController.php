@@ -39,11 +39,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login berhasil',
             'token' => $token,
-            'user' => [
-                'username' => $user->name,
-                'role' => $user->role,
-                'email' => $user->email,
-            ],
+            'data' => $user,
         ], 201);
     }
 
@@ -69,7 +65,7 @@ class AuthController extends Controller
                 'name' => $validatedData['username'],
                 'password' => $validatedData['password'],
                 'email' => $validatedData['email'],
-                'role' => 'Passenger',
+                'level_id' => 3,
             ]);
 
             $validatedData['user_id'] = $user->id;
@@ -85,12 +81,15 @@ class AuthController extends Controller
                 'gender' => $validatedData['gender'],
                 'birth' => $validatedData['birth'],
             ]);
+
+            $user = User::with('level')->find($user->id);
     
             return response()->json([
                 'message' => 'Registrasi berhasil',
                 'user' => [
-                    'username' => $user->name,
-                    'role' => $user->role,
+                    'username' => $user->username,
+                    'level_id' => $user->level_id,
+                    'level_name' => $user->level->level_name,
                     'email' => $user->email,
                 ],
             ], 201);
@@ -110,42 +109,17 @@ class AuthController extends Controller
         ]);
     }
 
+
     public function refresh() {
-        try {
-            $newToken = JWTAuth::refresh(JWTAuth::getToken());
-            return response()->json([
-                'status' => 'success',
-                'token' => $newToken,
-            ]);
-        } catch (JWTException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Could not refresh token',
-            ], 500);
-        }
+        return $this->respondWithToken(auth()->$this->refresh());
     }
 
-    public function createStaff(Request $request)
+    protected function respondWithToken($token)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'level_id' => 'required|exists:levels,id',
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => config('jwt.ttl') * 60
         ]);
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-            'role' => 'Staff',
-        ]);
-
-        Staff::create([
-            'user_id' => $user->id,
-            'level_id' => $validated['level_id'],
-        ]);
-
-        return response()->json(['message' => 'Akun staff berhasil dibuat']);
     }
 }

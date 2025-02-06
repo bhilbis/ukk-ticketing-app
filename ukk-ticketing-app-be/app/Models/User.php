@@ -63,4 +63,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Staff::class);
     }
 
+    public function level()
+    {
+        return $this->belongsTo(Levels::class, 'level_id');
+    }
+
 }
