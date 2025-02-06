@@ -43,15 +43,15 @@ export function TeamSwitcher({
                 <Image
                   src={activeTeam.logo}
                   alt={activeTeam.name}
-                  width={40}
-                  height={40}
+                  width={50}
+                  height={50}
                 />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-semibold text-base">
                   {activeTeam.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate text-sm">{activeTeam.plan}</span>
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>

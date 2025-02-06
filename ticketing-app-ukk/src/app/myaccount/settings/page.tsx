@@ -26,23 +26,20 @@ const Page = () => {
       return;
     }
 
-    // TODO: Lakukan proses update password ke backend
     alert("Password berhasil diperbarui!");
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto ">
       <h1 className="text-3xl font-bold mb-4 text-center">Pengaturan</h1>
       <p className="text-gray-600 mb-6 text-center">Kelola informasi dan keamanan akun Anda.</p>
 
-      {/* Tabs for Settings Sections */}
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-2 rounded-lg">
           <TabsTrigger value="general">Umum</TabsTrigger>
           <TabsTrigger value="security">Keamanan</TabsTrigger>
         </TabsList>
 
-        {/* General Settings */}
         <TabsContent value="general">
           <Card>
             <CardContent className="p-4 space-y-4">
@@ -60,7 +57,6 @@ const Page = () => {
           </Card>
         </TabsContent>
 
-        {/* Security Settings */}
         <TabsContent value="security">
           <Card>
             <CardContent className="p-4 space-y-4">

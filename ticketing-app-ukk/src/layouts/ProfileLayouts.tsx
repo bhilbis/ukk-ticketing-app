@@ -18,9 +18,12 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
-    <div className="flex min-h-screen px-[8rem]">
+    <div className="flex min-h-screen px-[8rem] w-full">
       
-      <div className="fixed w-[15rem] border border-gray-200 mt-[8rem] bg-white rounded-lg shadow-sm">
+      <div className="fixed w-[15rem] border border-gray-200 bg-white rounded-lg shadow-sm" style={{
+        marginTop: '8rem',
+
+      }}>
         <div className="text-center mb-6 pt-4">
           <div className='flex items-center justify-center gap-4 mb-2 mx-auto'>
             <Avatar>
@@ -50,8 +53,11 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
         </nav>
       </div>
 
-      <div className="flex-1 p-8 ml-[15rem] pt-[8rem] overflow-y-auto">
-        <div className="border border-gray-200 shadow-md rounded-lg bg-white p-6">
+      <div className="flex p-8 w-full" style={{
+        marginLeft: '16rem',
+        paddingTop: '8rem'
+      }}>
+        <div className="border border-gray-200 shadow-md rounded-lg bg-white p-6 w-full">
           {children}
         </div>
       </div>

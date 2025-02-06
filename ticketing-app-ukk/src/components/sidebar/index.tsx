@@ -7,6 +7,7 @@ import {
   Ticket,
   LayoutDashboard,
   Pocket,
+  User,
 } from "lucide-react"
 
 import { SidebarMain } from "./sidebar-main"
@@ -19,6 +20,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { SidebarSettings } from "./sidebar-setting"
 const data = {
   user: {
     name: "Bilbis",
@@ -114,7 +116,12 @@ const data = {
   ],
   Data: [
     {
-      name: "Travel",
+      name: "User Management",
+      url: "#",
+      icon: User,
+    },
+    {
+      name: "Role management",
       url: "#",
       icon: Map,
     },
@@ -130,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMain items={data.navMain} />
-          {/* <SidebarProjects projects={data.Data} /> */}
+          <SidebarSettings settings={data.Data} />
         </SidebarContent>
         <SidebarFooter>
           <SidebarUser user={data.user} />
