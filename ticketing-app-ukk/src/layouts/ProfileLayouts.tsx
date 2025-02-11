@@ -2,12 +2,13 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Cog, CreditCard, HomeIcon, Package, Ticket } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  // const [activeTab, setActiveTab] = useState('dashboard');
+  const pathname = usePathname();
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon size={24} /> },
@@ -35,21 +36,23 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-sm text-gray-600">john.doe@example.com</div>
         </div>
         <nav>
-          {sidebarItems.map((item) => (
-            <Link
-              key={item.id}
-              href={`/myaccount/${item.id}`}
-              className={`flex items-center justify-start px-4 py-2 my-1 mx-2 rounded-lg transition-colors ${
-                activeTab === item.id
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-              onClick={() => setActiveTab(item.id)}
-            >
-              <span className="mr-2">{item.icon}</span>
-              {item.label}
-            </Link>
-          ))}
+        {sidebarItems.map((item) => {
+            const isActive = pathname === `/myaccount/${item.id}`;
+            return (
+              <Link
+                key={item.id}
+                href={`/myaccount/${item.id}`}
+                className={`flex items-center justify-start px-4 py-2 my-1 mx-2 rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <span className="mr-2">{item.icon}</span>
+                {item.label}
+              </Link>
+            );
+          })} 
         </nav>
       </div>
 

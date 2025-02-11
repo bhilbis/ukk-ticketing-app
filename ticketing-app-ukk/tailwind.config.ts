@@ -18,6 +18,12 @@ export default {
 			"1xl": "1279.98px",
 			"2xl": "1440px",
 		},
+		textColor: {
+			"blue-base": "#3b82f6",
+			"blue-medium": "#2563eb",
+			"blue-dark": "#1d4ed8",
+			"blue-navy": "#172554",
+		},
 		backgroundColor: {
 			"blue-base": "#3b82f6",
 			"blue-medium": "#2563eb",

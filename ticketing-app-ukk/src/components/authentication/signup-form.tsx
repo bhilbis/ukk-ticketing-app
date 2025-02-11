@@ -15,6 +15,7 @@ import { useState } from "react"
 import { Eye, EyeClosed } from "lucide-react"
 import { postRegister } from "@/services/auth"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export function SignupForm({
   className,
@@ -129,7 +130,7 @@ export function SignupForm({
               </Button>
             </div>
             <div className="col-span-2 text-center text-sm">
-              Sudah punya akun? <a href="/login" className="underline underline-offset-4">Masuk</a>
+              Sudah punya akun? <Link href="/login" className="underline underline-offset-4">Masuk</Link>
             </div>
           </form>
         </CardContent>

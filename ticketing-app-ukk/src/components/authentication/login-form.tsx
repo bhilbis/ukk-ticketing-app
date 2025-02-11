@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
+import { Checkbox } from "../ui/checkbox";
 
 export function LoginForm({
   className,
@@ -39,12 +40,12 @@ export function LoginForm({
       }
 
       const userData = response.user;
-      const level = userData.role;
+      const level = userData.level_id;
       
       console.log(level);
 
-      if (level === "Super Admin" || level === "Staff") {
-        router.push("/admin"); 
+      if (level === 1 || level === 2) {
+        router.push("/admin/dashboard"); 
       } else {
         router.push("/");
       }
@@ -107,13 +108,11 @@ export function LoginForm({
                       <Eye className="w-5 h-5" />
                     )}
                   </button>
-                {/* <Input 
-                  id="password" 
-                  type={showPassword ? "text" : "password" }
-                  required  
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}/> */}
                   
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox />
+                  <span className="text-sm">Ingat saya</span>
                 </div>
               {error && <p className="text-red-500 text-center">{error}</p>}
               <Button type="submit" className="w-full">
@@ -122,9 +121,9 @@ export function LoginForm({
               </div>
             <div className="mt-4 text-center text-sm">
               Tidak punya akun?{" "}
-              <a href="/daftar" className="underline underline-offset-4">
+              <Link href="/daftar" className="underline underline-offset-4">
                 Daftar
-              </a>
+              </Link>
             </div>
             </div>
           </form>

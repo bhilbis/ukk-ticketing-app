@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function SidebarMain({
   items,
@@ -53,15 +54,17 @@ export function SidebarMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton
-                  tooltip={item.title}
-                >
-                  {item.icon && <item.icon />}
-                  <span className="text-base">{item.title}</span>
-                  {(item.items || item.subItems) && (
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  )}
-                </SidebarMenuButton>
+                <Link href={item.url}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    >
+                    {item.icon && <item.icon />}
+                    <span className="text-base">{item.title}</span>
+                    {(item.items || item.subItems) && (
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    )}
+                  </SidebarMenuButton>
+                </Link>
               </CollapsibleTrigger>
 
               {(item.items || item.subItems) && (
@@ -74,9 +77,9 @@ export function SidebarMain({
                         <SidebarMenuSubButton
                           asChild
                         >
-                          <a href={subItem.url}>
+                          <Link href={subItem.url}>
                             <span className="text-sm">{subItem.title}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
@@ -104,9 +107,9 @@ export function SidebarMain({
                                   <SidebarMenuSubButton
                                     asChild
                                   >
-                                    <a href={nestedSubItem.url}>
+                                    <Link href={nestedSubItem.url}>
                                       <span className="text-sm">{nestedSubItem.title}</span>
-                                    </a>
+                                    </Link>
                                   </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                               ))}

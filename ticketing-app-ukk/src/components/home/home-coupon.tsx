@@ -1,13 +1,15 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
-import { 
+import {
+  ArrowRightIcon,
   Copy,
   TicketPercent,
 } from "lucide-react";
 import { Swiper,  SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 interface Coupon {
     type: 'kereta' | 'pesawat';
@@ -159,9 +161,15 @@ const HomeCoupon: React.FC = () => {
 
     <div className="py-10 px-[8rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
 
-      <div className="flex gap-3 mb-4 ">
-        <TicketPercent className="w-7 h-7 text-blue-500"/>
-        <h2 className="text-xl font-bold mb-4 text-blue-500">Daftar Kupon yang Bisa Dipakai</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex gap-3">
+          <TicketPercent className="w-7 h-7 text-blue-base"/>
+          <h2 className="text-xl font-bold mb-4 text-blue-base">Daftar Kupon yang Bisa Dipakai</h2>
+        </div>
+        <div className="flex gap-1 items-center">
+          <Link href="/myaccount/coupons" className="text-blue-base">View More</Link>
+          <ArrowRightIcon className="w-5 h-5 text-blue-base"/>
+        </div>
       </div>
 
       <Swiper

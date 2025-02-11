@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 
 export default function AirlinesAdmin() {
   const [airlines, setAirlines] = useState([
@@ -45,12 +45,11 @@ export default function AirlinesAdmin() {
   };
 
   return (
-    <div className="max-h-screen container mx-auto px-6 mt-[6rem]">
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage Airlines</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="max-h-screen w-full mx-auto p-8">
+        <h1 className="text-2xl font-bold mb-6">
+          Manage Airlines
+        </h1>
+        <div className="relative ">
           <div className="mb-4 flex gap-2 sticky top-0 bg-white p-4 z-10">
             <Input 
               type="text" 
@@ -58,35 +57,35 @@ export default function AirlinesAdmin() {
               value={newAirline} 
               onChange={(e) => setNewAirline(e.target.value)} 
             />
-            <Button variant={"secondary"} onClick={addAirline}>Add</Button>
+            <Button onClick={addAirline}><Plus /></Button>
           </div>
-          <div className="max-h-[400px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-            <ul className="space-y-2">
+          <div className="max-h-[60dvh] overflow-y-auto">
+            {/* <ul className="space-y-2 overflow-y-auto"> */}
                 {airlines.map((plane, index) => (
-                <li key={index} className="p-2 bg-gray-100 rounded-md flex justify-between items-center">
+                <div key={index} className="p-2 bg-gray-100 rounded-md flex justify-between items-center">
                     {editingIndex === index ? (
                     <Input 
                         type="text" 
                         value={editValue} 
                         onChange={(e) => setEditValue(e.target.value)} 
+                        className="mr-2"
                     />
                     ) : (
                     <span>{plane}</span>
                     )}
                     <div className="flex gap-2">
                     {editingIndex === index ? (
-                        <Button onClick={saveEditAirline}>Save</Button>
+                        <Button onClick={saveEditAirline}><Check /></Button>
                     ) : (
-                        <Button onClick={() => editAirline(index)}>Edit</Button>
+                        <Button onClick={() => editAirline(index)}><Pencil /></Button>
                     )}
-                    <Button onClick={() => deleteAirline(index)} variant="destructive">Delete</Button>
+                    <Button onClick={() => deleteAirline(index)} variant="destructive"><Trash2 /></Button>
                     </div>
-                </li>
+                </div>
                 ))}
-            </ul>
+            {/* </ul> */}
           </div>
-        </CardContent>
-      </Card>
+        </div>
     </div>
   );
 }

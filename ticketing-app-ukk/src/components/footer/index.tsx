@@ -57,7 +57,7 @@ const Footer = () => {
             <div className="flex space-x-4 items-center">
               <Image
                 src="/travel-ticket-logo.svg"
-                alt="Travel Link"
+                alt="TravelLink"
                 width={50}
                 height={50}
               />

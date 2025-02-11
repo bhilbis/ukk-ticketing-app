@@ -30,7 +30,7 @@ const data = {
 
   teams: [
     {
-      name: "Travel Link",
+      name: "TravelLink",
       logo: "/travel-ticket-logo.svg",
       plan: "Travel",
     },
