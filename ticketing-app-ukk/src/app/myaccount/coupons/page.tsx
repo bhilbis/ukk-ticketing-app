@@ -46,7 +46,7 @@ const MyCoupons = () => {
 
   const handleUseCoupon = (coupon: Coupon) => {
     navigator.clipboard.writeText(coupon.code);
-    router.push(coupon.type === "pesawat" ? "/airplane" : "/kereta-api");
+    router.push(coupon.type === "pesawat" ? "/pesawat" : "/kereta-api");
   };
 
   return (

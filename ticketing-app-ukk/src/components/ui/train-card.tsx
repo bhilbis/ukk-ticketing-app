@@ -52,7 +52,7 @@ const TrainCard: React.FC<TrainListProps> = ({ train, filterKey }) => {
                 className="!w-[18rem] !h-[11rem] bg-white rounded-lg shadow-md !flex !gap-16"
               >
                 <Link href={"/"} className="w-full">
-                  <div className="p-4 bg-gray-300 rounded-b-lg w-full h-full">
+                  <div className="p-4 bg-slate-200 rounded-b-lg w-full h-full">
                     <div className="flex gap-5">
                         {train.trainType === "Whoosh" ? 
                         <TrainFront/> : <TrainIcon/> }
@@ -62,7 +62,11 @@ const TrainCard: React.FC<TrainListProps> = ({ train, filterKey }) => {
                     </div>
                     <div className="space-y-3">
                       <div className="space-y-1">
-                        <p className="text-gray-600 text-sm">{train.date}</p>
+                        <p className="text-gray-600 text-sm">{new Date(train.date).toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          })}</p>
                         <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${train.type}`}</p>
                         <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${train.class}`}</p>
                       </div>

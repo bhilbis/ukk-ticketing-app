@@ -7,7 +7,7 @@ import {
 
 export function HomeAccordion() {
     return (
-        <div className="flex px-[8rem] py-5 w-full">
+        <div className="flex px-[8rem] pb-5 w-full">
             <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
                     <AccordionTrigger className="text-xl font-medium">Bagaimana cara memesan tiket?</AccordionTrigger>

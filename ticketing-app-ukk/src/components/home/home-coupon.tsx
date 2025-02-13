@@ -166,10 +166,10 @@ const HomeCoupon: React.FC = () => {
           <TicketPercent className="w-7 h-7 text-blue-base"/>
           <h2 className="text-xl font-bold mb-4 text-blue-base">Daftar Kupon yang Bisa Dipakai</h2>
         </div>
-        <div className="flex gap-1 items-center">
-          <Link href="/myaccount/coupons" className="text-blue-base">View More</Link>
-          <ArrowRightIcon className="w-5 h-5 text-blue-base"/>
-        </div>
+        <Link href="/myaccount/coupons" className="flex gap-1 items-center hover:underline underline-offset-2 decoration-blue-500">
+          <span className="text-blue-base text-xl">View More</span>
+          <ArrowRightIcon className="w-6 h-6 text-blue-base"/>
+        </Link>
       </div>
 
       <Swiper

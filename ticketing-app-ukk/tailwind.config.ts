@@ -23,12 +23,14 @@ export default {
 			"blue-medium": "#2563eb",
 			"blue-dark": "#1d4ed8",
 			"blue-navy": "#172554",
+			"sky": '#0ea5e9',
 		},
 		backgroundColor: {
 			"blue-base": "#3b82f6",
 			"blue-medium": "#2563eb",
 			"blue-dark": "#1d4ed8",
 			"blue-navy": "#172554",
+			"sky": '#0284c7',
 		  },
   		colors: {
   			background: 'hsl(var(--background))',
@@ -37,6 +39,10 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
+			sky: {
+				DEFAULT: 'hsl(var(--sky))',
+				foreground: 'hsl(var(--sky-foreground))'
+			},
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'

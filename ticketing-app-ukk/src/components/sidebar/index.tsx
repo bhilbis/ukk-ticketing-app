@@ -55,12 +55,12 @@ const data = {
               url: "/admin/ticket/airplane/list-airlines",
             },
             {
-              title: "Flight Schedule",
-              url: "/admin/ticket/airplane/schedule",
-            },
-            {
               title: "Class & Ticket Price",
               url: "/admin/ticket/airplane/class-price",
+            },
+            {
+              title: "Flight Schedule",
+              url: "/admin/ticket/airplane/schedule",
             },
           ]
         },
@@ -72,12 +72,12 @@ const data = {
               url: "#",
             },
             {
-              title: "Train Schedule",
-              url: "#",
-            },
-            {
               title: "Class & Ticket Price",
               url: "#"
+            },
+            {
+              title: "Train Schedule",
+              url: "#",
             },
           ]
         },

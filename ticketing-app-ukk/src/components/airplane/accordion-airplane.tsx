@@ -54,7 +54,7 @@ export function AccordionAirplane() {
 
       
     return (
-        <section className="py-12 px-4">
+        <section className="pb-12 pt-6 px-4">
             <div className="max-w-[78rem] mx-auto">
                 <h2 className="text-3xl font-bold text-center mb-8">Pertanyaan Umum</h2>
                 <Accordion type="single" collapsible className="w-full">

@@ -31,7 +31,7 @@ const destinationPlace = [
 ]
 const HomeSuggest = () => {
   return (
-    <div className='px-[8rem] py-10 w-full items-center justify-center'>
+    <div className='px-[8rem] pb-10 w-full items-center justify-center'>
       
       <div className='mb-6'>
         <h2 className='text-2xl font-bold mb-3'>Destinasi yang sedang populer</h2>

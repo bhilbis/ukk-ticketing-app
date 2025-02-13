@@ -159,7 +159,7 @@ const DiscountAirplane = () => {
     }, [filter]);
 
   return (
-    <div className='w-full px-[8rem] py-10'>
+    <div className='w-full px-[8rem] pb-10'>
         <div className='mb-6'>
             <h2 className='text-2xl font-bold mb-3'>Diskon & Promo</h2>
             <p className='text-gray-600'>Beli Tiket Pesawat lebih murah dengan promo dan diskon yang tersedia</p>

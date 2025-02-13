@@ -12,6 +12,7 @@ import { Calendar } from '../ui/calendar'
 import { Label } from '../ui/label'
 import { Checkbox } from '../ui/checkbox'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Input } from '../ui/input'
 
 interface TravelInputProps {
   activeTab: string;
@@ -52,20 +53,16 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
     return (
       <TooltipProvider>
         <div className="hidden lg:block w-full">
-          <div className='flex justify-between items-center lg:mb-4 xl:mb-0'>
-            <span className="px-3 py-2 bg-blue-500 rounded-full text-white text-xs xl:text-sm pointer-events-none">
-              Sekali Jalan / Pulang Pergi
-            </span>
-
+          <div className='flex justify-center items-center lg:mb-4 xl:mb-0'>
             <div className='flex gap-4 items-center'>
               <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" className="bg-white bg-opacity-40 text-white text-sm">
+                    <Button variant="outline" className="bg-white bg-opacity-40 text-white text-sm rounded">
                         {`${passengerDetails.adults} Dewasa, ${passengerDetails.children} Anak, ${passengerDetails.infants} Bayi`}
                         <ChevronDown className="ml-2 w-5 h-5" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64">
+                <PopoverContent className="w-60">
                   <span className='text-base xl:text-lg font-medium'>Jumlah Penumpang</span>
                   {['adults', 'children', 'infants'].map((type) => (
                       <div key={type} className="flex justify-between py-2 lg:text-sm xl:text-base items-center">
@@ -93,7 +90,7 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
               </Popover>
               <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" className="bg-white bg-opacity-40 min-w-[9rem] text-white">
+                    <Button variant="outline" className="bg-white bg-opacity-40 min-w-[9rem] text-white rounded">
                         {selectedClass || 'Pilih Kelas'}
                         <ChevronDown className="ml-2 w-5 h-5" />
                     </Button>
@@ -114,11 +111,11 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
               <div className="grid grid-cols-2 gap-4 items-center w-full">
                   <div className='flex flex-col'>
                     <Label className='text-sm font-medium mb-2 text-white'>Asal</Label>
-                    <input type="text" className="border rounded px-3 py-[0.3rem]" placeholder="Kota keberangkatan" />
+                    <Input type="text" className="border bg-white focus-visible:ring-0 text-black rounded px-3 py-[0.3rem]" placeholder="Kota keberangkatan" />
                   </div>
                   <div className='flex flex-col'>
                     <Label className='text-sm font-medium mb-2 text-white'>Tujuan</Label>
-                    <input type="text" className="border rounded px-3 py-[0.3rem]" placeholder="Kota tujuan" />
+                    <Input type="text" className="border bg-white focus-visible:ring-0 text-black rounded px-3 py-[0.3rem]" placeholder="Kota tujuan" />
                   </div>
               </div>
 
@@ -127,12 +124,13 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                   <Label className="text-sm font-medium mb-2 text-white">Tanggal Berangkat</Label>
                   <Popover>
                       <PopoverTrigger asChild>
-                          <Button variant="outline" className="w-full bg-transparent">{format(departureDate, "dd MMM yyyy")}</Button>
+                          <Button variant="outline" className="w-full bg-transparent rounded">{format(departureDate, "dd MMM yyyy")}</Button>
                       </PopoverTrigger>
-                      <PopoverContent align="start">
-                          <Calendar mode="single" selected={departureDate} onSelect={(day) => {
+                      <PopoverContent align="start" className='rounded-xl'>
+                          <Calendar mode="single"  selected={departureDate} onSelect={(day) => {
                             if (day) setDepartureDate(day);
-                          }} />
+                            }}
+                          />
                       </PopoverContent>
                   </Popover>
                 </div>
@@ -143,12 +141,12 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                   </div>
                   <Popover>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full bg-transparent" disabled={!isRoundTrip}>
+                        <Button variant="outline" className="w-full bg-transparent rounded" disabled={!isRoundTrip}>
                             {returnDate ? format(returnDate, "dd MMM yyyy") : "Pilih Tanggal"}
                         </Button>
                     </PopoverTrigger>
                     {isRoundTrip && (
-                            <PopoverContent align="start">
+                            <PopoverContent align="start" className='rounded-xl'>
                                 <Calendar mode="single" selected={returnDate || undefined} onSelect={(day) => {
                                   if (day) setReturnDate(day);
                                 }} disabled={(date) => date <= departureDate} />
@@ -216,10 +214,10 @@ const HomeBanner = () => {
 
                 </div>
                 
-                <hr className='w-[80%] border border-white my-5' />
+                <hr className='w-[83%] border border-white my-5' />
 
                 {activeTab && (
-                  <div className='w-[80%]'>
+                  <div className='w-[83%]'>
                     <TravelInput activeTab={activeTab}/>
                   </div>
                 )}

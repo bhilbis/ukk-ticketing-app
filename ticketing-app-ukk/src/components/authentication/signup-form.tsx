@@ -99,7 +99,7 @@ export function SignupForm({
             </div>
             <div className="grid gap-2">
               <Label htmlFor="birth">Tanggal Lahir</Label>
-              <Input id="birth" type="date" className="w-full" required value={formData.birth} onChange={handleChange} />
+              <Input id="birth" type="date" className="block w-full placeholder:placeholder-input" required value={formData.birth} onChange={handleChange} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="gender">Jenis Kelamin</Label>

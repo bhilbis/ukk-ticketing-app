@@ -12,9 +12,9 @@ const Page = () => {
     <div>
       <AirplaneBanner />
       <div ref={discountSectionRef}>
-        <DiscountAirplane />
+        <HomeCarousel />
       </div>
-      <HomeCarousel />
+      <DiscountAirplane />
       <AirlaneAirplane />
       <AccordionAirplane />
     </div>

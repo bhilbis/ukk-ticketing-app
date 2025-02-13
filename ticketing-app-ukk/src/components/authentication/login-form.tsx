@@ -69,6 +69,7 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
+
               <div className="grid gap-2">
                 <Label htmlFor="email">Username</Label>
                 <Input
@@ -79,16 +80,9 @@ export function LoginForm({
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
+
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/reset-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Lupa password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -110,16 +104,24 @@ export function LoginForm({
                   </button>
                   
                 </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox />
-                  <span className="text-sm">Ingat saya</span>
+                <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-1">
+                    <Checkbox />
+                    <span className="text-sm">Ingat saya</span>
+                  </div>
+                    <Link
+                      href="/reset-password"
+                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    >
+                      Lupa password?
+                    </Link>
                 </div>
               {error && <p className="text-red-500 text-center">{error}</p>}
               <Button type="submit" className="w-full">
                 Login
               </Button>
               </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="text-center text-sm">
               Tidak punya akun?{" "}
               <Link href="/daftar" className="underline underline-offset-4">
                 Daftar

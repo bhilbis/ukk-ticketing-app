@@ -2,18 +2,33 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-    // const token = req.cookies.get('token')?.value;
-    const level = req.cookies.get('level')?.value;
+    console.log('Middleware running...');
+    const token = localStorage.get('token')?.value;
+    console.log('Token:', token);
 
-    const url = req.nextUrl.pathname; 
+    if (!token) {
+      console.log('No token, redirecting to login');
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
 
-    if (url.startsWith('/admin') && level === 'Passenger') {
-        return NextResponse.redirect(new URL('/', req.url));
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Payload:', payload);
+
+      const level_id = payload.level_id;
+      console.log('Level ID:',level_id);
+  
+      if (level_id !== 1 && level_id !== 2) {
+        console.log('Access denied, redirecting to forbidden');
+        return NextResponse.redirect(new URL('/forbidden', req.url));
+      }
+    } catch {
+      return NextResponse.redirect(new URL('/login', req.url));
     }
 
     return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/'],
+  matcher: ['/admin/:path*'],
 };

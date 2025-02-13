@@ -12,7 +12,7 @@ const airplaneList: Airplane[] = [
     "date": "2024-11-20",
     "type": "Boeing 737-800",
     "class": "Ekonomi",
-    "price": "IDR 1850000",
+    "price": "1850000",
     "trip": "Sekali Jalan",
     "typeDiscount": "cashback",
     "discount": "Diskon Hingga 15%"
@@ -25,7 +25,7 @@ const airplaneList: Airplane[] = [
     "date": "2025-03-12",
     "type": "Airbus A320",
     "class": "Bisnis",
-    "price": "IDR 3100000",
+    "price": "3100000",
     "trip": "Pulang Pergi",
     "typeDiscount": "flash sale",
     "discount": "Diskon Hingga 40%"
@@ -38,7 +38,7 @@ const airplaneList: Airplane[] = [
     "date": "2024-09-05",
     "type": "ATR 72",
     "class": "Ekonomi",
-    "price": "IDR 1200000",
+    "price": "1200000",
     "trip": "Sekali Jalan",
     "typeDiscount": "double deals",
     "discount": "Beli 2 Lebih Hemat"
@@ -51,7 +51,7 @@ const airplaneList: Airplane[] = [
     "date": "2025-06-28",
     "type": "Bombardier CRJ1000",
     "class": "Bisnis",
-    "price": "IDR 2750000",
+    "price": "2750000",
     "trip": "Pulang Pergi",
     "typeDiscount": "cashback",
     "discount": "Diskon Hingga 25%"
@@ -64,7 +64,7 @@ const airplaneList: Airplane[] = [
     "date": "2024-12-01",
     "type": "Airbus A330",
     "class": "Ekonomi",
-    "price": "IDR 2000000",
+    "price": "2000000",
     "trip": "Sekali Jalan",
     "typeDiscount": "flash sale",
     "discount": "Diskon Hingga 30%"
@@ -77,7 +77,7 @@ const airplaneList: Airplane[] = [
     "date": "2025-02-18",
     "type": "Boeing 737-900",
     "class": "Bisnis",
-    "price": "IDR 3500000",
+    "price": "3500000",
     "trip": "Pulang Pergi",
     "typeDiscount": "double deals",
     "discount": "Diskon Hingga 45%"
@@ -90,7 +90,7 @@ const airplaneList: Airplane[] = [
     "date": "2024-08-10",
     "type": "Airbus A320",
     "class": "Ekonomi",
-    "price": "IDR 1500000",
+    "price": "1500000",
     "trip": "Sekali Jalan",
     "typeDiscount": "cashback",
     "discount": "Diskon Hingga 20%"
@@ -103,7 +103,7 @@ const airplaneList: Airplane[] = [
     "date": "2025-04-03",
     "type": "ATR 72",
     "class": "Bisnis",
-    "price": "IDR 2900000",
+    "price": "2900000",
     "trip": "Pulang Pergi",
     "typeDiscount": "flash sale",
     "discount": "Diskon Hingga 35%"
@@ -116,7 +116,7 @@ const airplaneList: Airplane[] = [
     "date": "2024-10-25",
     "type": "Bombardier CRJ1000",
     "class": "Ekonomi",
-    "price": "IDR 1700000",
+    "price": "1700000",
     "trip": "Sekali Jalan",
     "typeDiscount": "double deals",
     "discount": "Diskon Hingga 10%"
@@ -129,7 +129,7 @@ const airplaneList: Airplane[] = [
     "date": "2025-05-15",
     "type": "Airbus A330",
     "class": "Bisnis",
-    "price": "IDR 3300000",
+    "price": "3300000",
     "trip": "Pulang Pergi",
     "typeDiscount": "cashback",
     "discount": "Diskon Hingga 50%"

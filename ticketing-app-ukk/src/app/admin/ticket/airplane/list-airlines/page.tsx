@@ -60,7 +60,6 @@ export default function AirlinesAdmin() {
             <Button onClick={addAirline}><Plus /></Button>
           </div>
           <div className="max-h-[60dvh] overflow-y-auto">
-            {/* <ul className="space-y-2 overflow-y-auto"> */}
                 {airlines.map((plane, index) => (
                 <div key={index} className="p-2 bg-gray-100 rounded-md flex justify-between items-center">
                     {editingIndex === index ? (
@@ -83,7 +82,6 @@ export default function AirlinesAdmin() {
                     </div>
                 </div>
                 ))}
-            {/* </ul> */}
           </div>
         </div>
     </div>
