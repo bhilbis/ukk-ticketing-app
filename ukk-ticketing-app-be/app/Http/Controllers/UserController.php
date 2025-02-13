@@ -35,7 +35,7 @@ class UserController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'password' => 'sometimes|string|min:8',
-            'role' => 'sometimes|string|in:Super Admin,Staff,Passenger',
+            'level_id' => 'sometimes|int|in:1,2,3',
         ]);
     
         $user = User::findOrFail($id);
@@ -82,6 +82,22 @@ class UserController extends Controller
                 'data' => $user
             ], 201);
         });
+    }
+
+    public function deleteUser($id): JsonResponse
+    {
+        $user = User::findOrFail($id);
+        if ($user->level_id == 1) {
+            return response()->json([
+                'message' => 'Super Admin tidak dapat dihapus.'
+            ], 403);
+        }
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Data user berhasil dihapus',
+            'data' => $user
+        ], 200);
     }
 
 }

@@ -14,51 +14,5 @@ class TransportClassController extends Controller
             'data' => TransportClass::with('transport')->get()
         ], 200);
     }
-
-    public function store(Request $request) {
-        $validated = $request->validate([
-            'transport_id' => 'required|exists:transports,id',
-            'class_name' => 'required|string|max:50',
-            'seat_count' => 'required|numeric|min:1',
-        ]);
-
-        $class = TransportClass::create($validated);
-        return response()->json([
-            'message' => 'Kelas transportasi berhasil di tambahkan',
-            'data' => $class
-        ], 201);
-    }
-
-    public function getById($id) {
-        $class = TransportClass::with('transport')->find($id);
-        if ($class) {
-            return response()->json([
-                'message' => 'Data kelas transportasi berhasil di temukan',
-                'data' => $class
-            ], 201);
-        }
-        return response()->json(['message' => 'Not Found'], 404);
-    }
-
-    public function update(Request $request, $id) {
-        $validated = $request->validate([
-            'class_name' => 'required|string|max:50',
-            'seat_count' => 'required|numeric|min:1',
-        ]);
-
-        $class = TransportClass::find($id);
-        $class->update($validated);
-
-        return response()->json([
-            'message' => 'Kelas transportasi berhasil di update',
-            'data' => $class
-        ], 201);
-    }
-
-    public function destroy($id) {
-        $class = TransportClass::find($id);
-        $class->delete();
-
-        return response()->json(['message' => 'Kelas transportasi berhasil di hapus'], 200);
-    }
+    
 }

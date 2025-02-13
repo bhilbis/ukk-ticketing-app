@@ -47,7 +47,7 @@ class ResetPasswordMail extends Mailable
                      ->html('
                          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px;">
                              <div style="text-align: center; margin-bottom: 30px;">
-                                 <h1 style="color: #2b6cb0;">Travel Link</h1>
+                                 <h1 style="color: #2b6cb0;">TravelLink</h1>
                                  <h2 style="color: #2d3748;">Permintaan Reset Password</h2>
                              </div>
      

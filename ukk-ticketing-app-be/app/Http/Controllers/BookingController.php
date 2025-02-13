@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Passenger;
+use App\Models\Routes;
+use App\Models\Transports;
+use Carbon\Carbon;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BookingController extends Controller
 {
@@ -18,7 +23,7 @@ class BookingController extends Controller
         try {
             $bookings = Booking::with(['passenger', 'route.transport', 'payment'])->get();
             return response()->json([
-                'message' => 'Data booking berhasil ditemukan',
+                'message' => 'Data seluruh booking berhasil ditemukan',
                 'data' => $bookings
             ], 200);
         } catch (\Exception $e) {
@@ -32,57 +37,75 @@ class BookingController extends Controller
     //for user to check his bookings
     public function getMyBookings(): JsonResponse
     {
-        $user = Auth::user();
-        $bookings = Booking::where('passenger_id', $user->id)->get();
+        $user = JWTAuth::user();
+        $passenger = Passenger::with('booking')->where('user_id', $user->id)->first();
 
         return response()->json([
-            'message' => 'Data booking berhasil ditemukan',
-            'data' => $bookings
-        ], 201);
+            'message' => 'Data booking Anda berhasil ditemukan',
+            'data' => $passenger->booking,
+        ], 200);
+    }
+
+    public function getBookingByStaff(): JsonResponse
+    {
+        $staffId = JWTAuth::id();
+        $booking = Booking::where('staff_id', $staffId)->with('passenger')->get();
+
+        return response()->json([
+            'message' => 'Data booking yang ditangani staff ditemukan',
+            'data' => $booking
+        ], 200);
     }
 
     //for user to create booking 
     public function store(Request $request): JsonResponse
     {
-        // $validated = $request->validate([
-        //     'booking_code' => 'required|string|max:50|unique:bookings,booking_code', //make this to automatically generate according to the ordered train or plane
-        //     'passenger_id' => 'required|exists:users,id', //make this to automatically get the user id
-        //     'booking_date' => 'required|date', //make this to automatically get the current date
-        //     'booking_place' => 'required|string|max:100', //make this to automatically get the location booking
-        //     'seat_code' => 'required|string', 
-        //     'route_id' => 'required|exists:routes,id', //make this to automatically get the route from route table
-        //     'destination' => 'required|string|max:100', //make this to automatically get the destination from route table
-        //     'departure_date' => 'required|date', 
-        //     'check_in_time' => 'required|date_format:H:i',
-        //     'departure_time' => 'required|date_format:H:i',
-        //     'booking_status' => 'required|in:pending,confirmed,cancelled,completed',
-        //     'payment_status' => 'required|in:paid,unpaid,refunded',
-        //     'total_payment' => 'required|numeric',
-        //     'staff_id' => 'required|exists:staff,id'
-        // ]);
-
-        $validated = Validator::make($request->all(), [
-            'passenger_id' => 'required|exists:passengers,id',
+        $validated = $request->validate([
             'route_id' => 'required|exists:routes,id',
-            'seat_code' => 'required|string|max:10',
+            'seat_code' => 'required|string', 
             'departure_date' => 'required|date',
-            'booking_status' => 'required|in:pending,confirmed,cancelled,completed',
-            'payment_status' => 'required|in:paid,unpaid,refunded',
-            'total_payment' => 'required|numeric',
-            'staff_id' => 'required|exists:staff,id'
+            'departure_time' => 'required|date_format:H:i',
+            'total_payment' => 'required|string',
+            'staff_id' => 'nullable|exists:staff,id'
         ]);
 
-        if ($validated->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validated->errors()
-            ], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         try {
+            $route = Routes::findOrFail($validated['route_id']);
+            $transport = Transports::findOrFail($route->transport_id);
+            $transportType = $transport->type;
+
+            // Format kode booking: TRANS-SR-END-XXXXXX
+            $transportCode = '';
+            if ($transportType->type_name === 'Kereta Api') {
+                $transportCode = 'KA';
+            } elseif ($transportType->type_name === 'Pesawat') {
+                $transportCode = 'PS';
+            } else {
+                $transportCode = strtoupper(substr($transportType->type_name, 0, 2)); // Default to first 2 characters
+            } // Contoh: KER, PES 
+            $startCode = strtoupper(substr($route->start_route, 0, 3)); // Contoh: JAK
+            $endCode = strtoupper(substr($route->end_route, 0, 3)); // Contoh: SUB
+            $uniqueCode = strtoupper(substr(md5(uniqid()), 0, 3)); // Kode unik 6 karakter
+
+            $bookingCode = "{$transportCode}-{$startCode}{$endCode}-{$uniqueCode}";
+
+            $departureTime = Carbon::createFromFormat('H:i', $validated['departure_time'] ?? '00:00');
+            $checkInTime = $departureTime->subHours(2)->format('H:i'); // Check-in 2 jam sebelum keberangkatan
+
+            // mengecek user id yang sesuai
+            $userId = Auth::id();
+            $passenger = Passenger::where('user_id', $userId)->first();
+            
             $bookingData = $request->all();
-            $bookingData['booking_code'] = 'BK-' . strtoupper(uniqid());
+            $bookingData['passenger_id'] = $passenger->id;
+            $bookingData['booking_code'] = $bookingCode;
             $bookingData['booking_date'] = now()->toDateString();
+            $bookingData['booking_place'] = "Online/Web"; // Lokasi booking default
+            $bookingData['destination'] = $route->destination;
+            $bookingData['check_in_time'] = $checkInTime; // Check-in 2 jam sebelum keberangkatan
+            $bookingData['booking_status'] = 'pending';
+            $bookingData['payment_status'] = 'unpaid';
+            $bookingData['staff_id'] = $request->staff_id ?? null;
             
             $booking = Booking::create($bookingData);
 

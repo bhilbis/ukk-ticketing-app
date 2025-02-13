@@ -15,18 +15,18 @@ class LevelController extends Controller
         ], 201);
     }
 
-    // public function updateById($id, Request $request) {
+    public function updateById($id, Request $request) {
 
-    //     $validated = $request->validate([
-    //         'level_name' => 'required|string|max:255',
-    //     ]);
+        $validated = $request->validate([
+            'level_name' => 'required|string|max:255',
+        ]);
 
-    //     $level = Levels::findOrFail($id);
-    //     $level->update($validated);
+        $level = Levels::findOrFail($id);
+        $level->update($validated);
 
-    //     return response()->json([
-    //         'message' => 'Data level berhasil diupdate',
-    //         'data' => $level
-    //     ], 201);
-    // }
+        return response()->json([
+            'message' => 'Data level berhasil diupdate',
+            'data' => $level
+        ], 201);
+    }
 }

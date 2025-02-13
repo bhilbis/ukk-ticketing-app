@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id('id');
-            $table->string('booking_code', 50)->unique();
+            $table->string('booking_code', 50)->unique(); //generate otomatis 
             $table->foreignId('passenger_id')->constrained('passengers');
             $table->date('booking_date');
-            $table->string('booking_place', 100);
+            $table->string('booking_place', 100); // online atau agent perjalanan
             $table->string('seat_code', 10);
             $table->foreignId('route_id')->constrained('routes');
             $table->string('destination', 100);
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->enum('booking_status', ["pending", "confirmed", "cancelled", "completed"]);
             $table->enum('payment_status', ["paid", "unpaid", "refunded"]);
             $table->decimal('total_payment', 15, 2);
-            $table->foreignId('staff_id')->constrained('staff');
+            $table->foreignId('staff_id')->nullable()->constrained('staff')->nullOnDelete()->change();
             $table->timestamps();
         });
     }

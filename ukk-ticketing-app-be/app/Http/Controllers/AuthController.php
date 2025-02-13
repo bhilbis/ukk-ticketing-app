@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Levels;
 use App\Models\Passenger;
 use App\Models\Staff;
 use App\Models\User;
@@ -34,12 +35,12 @@ class AuthController extends Controller
             ], 500);
         }
 
-        $user = Auth::user();
+        $user = JWTAuth::user();
 
         return response()->json([
             'message' => 'Login berhasil',
             'token' => $token,
-            'data' => $user,
+            'user' => $user,
         ], 201);
     }
 
@@ -85,9 +86,8 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Registrasi berhasil',
                 'user' => [
-                    'username' => $user->username,
+                    'username' => $user->name,
                     'level_id' => $user->level_id,
-                    'level_name' => $user->level->level_name,
                     'email' => $user->email,
                 ],
             ], 201);
@@ -101,12 +101,10 @@ class AuthController extends Controller
 
     public function logout() {
         Auth::logout();
-
         return response()->json([
             'message' => 'Successfully logged out'
         ]);
     }
-
 
     public function refresh() {
         return $this->respondWithToken(auth()->$this->refresh());
