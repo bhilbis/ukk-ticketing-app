@@ -9,7 +9,6 @@ import Link from "next/link";
 import { ArrowLeftToLine, Eye, EyeClosed } from "lucide-react";
 import { postSendOtp, postVerifyOtp, postResetPassword } from "@/services/reset-password";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 
 export default function ResetPassword() {
@@ -22,7 +21,6 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
 
   const [errors, setErrors] = useState({
     email: "",
@@ -105,7 +103,7 @@ export default function ResetPassword() {
     try {
       await postResetPassword(email, otp, newPassword, confirmPassword);
       toast({ title: "Password berhasil diubah." });
-      router.push("/login");
+      window.location.href = "/login";
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrors((prev) => ({ ...prev, newPassword: error.message }));

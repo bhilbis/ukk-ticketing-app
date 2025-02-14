@@ -14,7 +14,6 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useState } from "react"
 import { Eye, EyeClosed } from "lucide-react"
 import { postRegister } from "@/services/auth"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 export function SignupForm({
@@ -30,7 +29,6 @@ export function SignupForm({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -49,7 +47,7 @@ export function SignupForm({
     try {
       await postRegister(formData);
       alert("Registrasi berhasil!");
-      router.push("/login");
+      window.location.href = "/login";
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

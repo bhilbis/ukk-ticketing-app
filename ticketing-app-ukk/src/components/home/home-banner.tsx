@@ -95,9 +95,9 @@ const TravelInput: React.FC<TravelInputProps> = ({ activeTab }) => {
                         <ChevronDown className="ml-2 w-5 h-5" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className='max-w-[9rem]'>
                     {getDropdownOptions().map((kelas) => (
-                        <div key={kelas} className="flex items-center gap-3 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedClass(kelas)}>
+                        <div key={kelas} className="flex items-center gap-3 py-2  hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedClass(kelas)}>
                             <input type="radio" name="kelas" checked={selectedClass === kelas} readOnly />
                             <span>{kelas}</span>
                         </div>

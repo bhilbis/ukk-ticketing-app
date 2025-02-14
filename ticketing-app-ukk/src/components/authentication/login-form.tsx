@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { postLogin } from "@/services/auth";
 
 import { cn } from "@/lib/utils"
@@ -26,7 +25,6 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,9 +43,9 @@ export function LoginForm({
       console.log(level);
 
       if (level === 1 || level === 2) {
-        router.push("/admin/dashboard"); 
+        window.location.href = "/admin/dashboard";
       } else {
-        router.push("/");
+        window.location.href = "/";
       }
 
     } catch (error: unknown) {

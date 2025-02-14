@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import AirplaneCard, { Airplane } from '../ui/airplane-card'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const airplaneList: Airplane[] = [
   {
@@ -139,6 +141,7 @@ const airplaneList: Airplane[] = [
 const HomeCarousel = () => {
   const [filter, setFilter] = useState<string>('');
   const [randomAirplanes, setRandomAirplanes] = useState<Airplane[]>([]);
+  const pathname = usePathname();
 
   useEffect(() => {
     const filteredAirplanes = airplaneList.filter((airplane) => {
@@ -157,52 +160,63 @@ const HomeCarousel = () => {
   }, [filter]);
 
   return (
-    <div className="px-[8rem] py-10 items-start">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h2>
-        <p className="text-gray-600">Temukan penerbangan yang sesuai dengan kebutuhan Anda</p>
+    <div className="px-[8rem] py-10 items-start relative overflow-hidden">
+      <div className={`absolute z-10 sm:mt-32 md:mt-20 lg:-mt-20 -right-20 ${pathname === '/' ? '' : 'hidden'}`}>
+        <Image 
+          src="/home/flyingillus.png"
+          alt='flying'
+          width={900}
+          height={900}
+          className='-scale-x-100 max-w-[clamp(300px,100%,900px)] h-auto object-contain'
+        />
       </div>
-      <div className="flex mb-6 gap-5 overflow-hidden">
-      <button
-          onClick={() => setFilter("Ekonomi")}
-          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
-            filter === "Ekonomi" ? "bg-blue-200 text-blue-700 border border-blue-600" : "border-zinc-600"
-          }`}
-        >
-          Ekonomi
-        </button>
+      <div className='z-20 relative'>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold mb-3">Tiket Pesawat Terbaik</h2>
+          <p className="text-gray-600">Temukan penerbangan yang sesuai dengan kebutuhan Anda</p>
+        </div>
+        <div className="flex mb-6 gap-5 overflow-hidden">
         <button
-          onClick={() => setFilter("Bisnis")}
-          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
-            filter === "Bisnis" ? "bg-blue-100 text-blue-700 border border-blue-600" : "border-zinc-600"
-          }`}
-        >
-          Bisnis
-        </button>
-        <button
-          onClick={() => setFilter("First Class")}
-          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
-            filter === "First Class" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
-          }`}
-        >
-          First Class
-        </button>
-        <button
-          onClick={() => setFilter("Promo")}
-          className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
-            filter === "Promo" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
-          }`}
-        >
-          Promo
-        </button>
-        <button
-          onClick={() => setFilter("")}
-          className="px-3 py-2 border border-zinc-600 text-black text-sm rounded-2xl mb-2"
-        >
-          Reset
-        </button>
+            onClick={() => setFilter("Ekonomi")}
+            className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+              filter === "Ekonomi" ? "bg-blue-200 text-blue-700 border border-blue-600" : "border-zinc-600"
+            }`}
+          >
+            Ekonomi
+          </button>
+          <button
+            onClick={() => setFilter("Bisnis")}
+            className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+              filter === "Bisnis" ? "bg-blue-100 text-blue-700 border border-blue-600" : "border-zinc-600"
+            }`}
+          >
+            Bisnis
+          </button>
+          <button
+            onClick={() => setFilter("First Class")}
+            className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+              filter === "First Class" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
+            }`}
+          >
+            First Class
+          </button>
+          <button
+            onClick={() => setFilter("Promo")}
+            className={`px-3 py-2 border text-black text-sm rounded-2xl mb-2 ${
+              filter === "Promo" ? "bg-blue-100 text-blue-700 border-blue-600" : "border-zinc-600"
+            }`}
+          >
+            Promo
+          </button>
+          <button
+            onClick={() => setFilter("")}
+            className="px-3 py-2 border border-zinc-600 text-black text-sm rounded-2xl mb-2"
+          >
+            Reset
+          </button>
+        </div>
+        <AirplaneCard airplanes={randomAirplanes} filterKey={filter}/>
       </div>
-      <AirplaneCard airplanes={randomAirplanes} filterKey={filter}/>
     </div>
   )
 }

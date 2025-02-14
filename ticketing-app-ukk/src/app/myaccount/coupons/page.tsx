@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // import { Copy } from "lucide-react";
 
@@ -42,11 +41,10 @@ const getCategoryColor = (category: string) => {
 };
 
 const MyCoupons = () => {
-  const router = useRouter();
 
   const handleUseCoupon = (coupon: Coupon) => {
     navigator.clipboard.writeText(coupon.code);
-    router.push(coupon.type === "pesawat" ? "/pesawat" : "/kereta-api");
+    window.location.href = (coupon.type === "pesawat" ? "/pesawat" : "/kereta-api");
   };
 
   return (

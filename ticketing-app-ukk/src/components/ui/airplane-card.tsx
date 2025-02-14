@@ -51,13 +51,13 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
             freeMode={true}
             mousewheel={true}
             modules={[Autoplay, FreeMode, Mousewheel]}
-            className="flex justify-center items-center xl:min-h-[20rem]"
+            className="flex justify-center items-center xl:min-h-[20rem] !pr-1"
           >
             {isRendering || !airplanes ? (
               [...Array(airplanes?.length || 3)].map((_, index) => (
                 <SwiperSlide
                   key={index}
-                  className="!w-[16rem] !h-[24rem] bg-white rounded-lg shadow-md !flex !gap-16"
+                  className="!w-[16rem] !h-[24rem] bg-transparent rounded-lg shadow-md !flex !gap-16"
                 >
                   <div>
                     <div className="relative !w-[16rem] h-[12rem] flex items-center justify-center bg-gray-200 rounded-t-lg">
@@ -78,7 +78,7 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
               airplanes.map((airplane) => (
                 <SwiperSlide
                   key={airplane.id}
-                  className="!w-[14rem] !h-[18rem] bg-white shadow-md !flex !gap-16"
+                  className="!w-[14rem] !h-[18rem] bg-transparent shadow-md !flex !gap-16"
                 >
                   <Link href={"/"}>
                     <div className="relative !w-full h-[10rem]">

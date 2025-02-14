@@ -2,7 +2,7 @@ import axios from 'axios';
 import { backendUrl } from './backendUrl';
 
 const axiosInstance = axios.create({
-  baseURL: backendUrl,
+  baseURL: process.env.PUBLIC_API,
   headers: {
     'Content-Type': 'application/json'
   }
