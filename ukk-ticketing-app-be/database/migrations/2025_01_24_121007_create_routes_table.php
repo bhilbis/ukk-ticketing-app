@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('end_route', 100);
             $table->decimal('price', 15, 2);
             $table->time('travel_duration');
-            $table->foreignId('schedule_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('transport_id')->constrained('transports');
             $table->timestamps();
         });

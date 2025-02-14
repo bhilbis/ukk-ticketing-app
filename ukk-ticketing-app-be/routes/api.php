@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\transport\TransportClassController;
@@ -95,7 +97,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         Route::prefix('schedules')->group(function () {
-            Route::post('/transport-schedules', [TransportScheduleController::class, 'store']);
+            Route::post('/', [TransportScheduleController::class, 'store']);
         });
 
     });
@@ -125,10 +127,24 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['role:Passenger'])->group(function () {
         Route::prefix('bookings')->group(function () {
             Route::post('/', [BookingController::class, 'store']);
+            Route::get('/unpaid', [BookingController::class, 'getUnpaidBookings']);
+            Route::get('/paid', [BookingController::class, 'getPaidBookings']);
             Route::put('/{id}', [BookingController::class, 'CancelBooking']);
             Route::get('/my', [BookingController::class, 'getMyBookings']);
         });
     
+        Route::prefix('payments')->group(function () {
+            Route::get('/', [PaymentController::class, 'index']);
+            Route::get('/{id}', [PaymentController::class, 'show']);
+            Route::post('/', [PaymentController::class, 'store']);
+        });
+
+        Route::prefix('payment-methods')->group(function () {
+            Route::get('/', [PaymentMethodController::class, 'index']);
+            Route::post('/', [PaymentMethodController::class, 'store']);
+            Route::put('/{id}', [PaymentMethodController::class, 'update']);
+            Route::delete('/{id}', [PaymentMethodController::class, 'destroy']);
+        });
     });
     //
 

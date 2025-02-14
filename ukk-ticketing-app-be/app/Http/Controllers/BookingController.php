@@ -6,12 +6,11 @@ use App\Models\Booking;
 use App\Models\Passenger;
 use App\Models\Routes;
 use App\Models\Transports;
+use App\Models\TransportSchedule;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -46,14 +45,83 @@ class BookingController extends Controller
         ], 200);
     }
 
+    //belum bisa digunakan karena seluruh data staff akan null
     public function getBookingByStaff(): JsonResponse
     {
-        $staffId = JWTAuth::id();
-        $booking = Booking::where('staff_id', $staffId)->with('passenger')->get();
+        $user = JWTAuth::user();
+
+        if ($user->level_id !== 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $booking = Booking::where('staff_id', $user->id)->with('passenger')->get();
 
         return response()->json([
             'message' => 'Data booking yang ditangani staff ditemukan',
             'data' => $booking
+        ], 200);
+    }
+
+    public function getUnpaidBookings(): JsonResponse
+    {
+        $user = JWTAuth::user(); // Get logged-in user
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $unpaidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->where('payment_status', 'unpaid')->get();
+
+        if ($unpaidBookings->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No unpaid bookings found.',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unpaid bookings retrieved successfully.',
+            'data' => $unpaidBookings
+        ], 200);
+    }
+
+    public function getPaidBookings(): JsonResponse
+    {
+        $user = JWTAuth::user(); // Get logged-in user
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $paidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->where('payment_status', 'paid')->get();
+
+        if ($paidBookings->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No paid bookings found.',
+                'data' => []
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Paid bookings retrieved successfully.',
+            'data' => $paidBookings
         ], 200);
     }
 
@@ -63,8 +131,6 @@ class BookingController extends Controller
         $validated = $request->validate([
             'route_id' => 'required|exists:routes,id',
             'seat_code' => 'required|string', 
-            'departure_date' => 'required|date',
-            'departure_time' => 'required|date_format:H:i',
             'total_payment' => 'required|string',
             'staff_id' => 'nullable|exists:staff,id'
         ]);
@@ -74,32 +140,47 @@ class BookingController extends Controller
             $transport = Transports::findOrFail($route->transport_id);
             $transportType = $transport->type;
 
+            // Mendapatkan jadwal terbaru
+            $schedule = TransportSchedule::whereHas('routes', function ($query) use ($route) {
+                $query->where('routes.id', $route->id);
+            })->latest()->first();
+
+            if (!$schedule) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jadwal tidak ditemukan untuk rute ini'
+                ], 404);
+            }
+
+            $departureDate = $schedule->departure_date;
+            $departureTime = $schedule->departure_time;
+
             // Format kode booking: TRANS-SR-END-XXXXXX
-            $transportCode = '';
-            if ($transportType->type_name === 'Kereta Api') {
-                $transportCode = 'KA';
-            } elseif ($transportType->type_name === 'Pesawat') {
-                $transportCode = 'PS';
-            } else {
-                $transportCode = strtoupper(substr($transportType->type_name, 0, 2)); // Default to first 2 characters
-            } // Contoh: KER, PES 
+            $transportCode = match ($transportType->type_name) {
+                'Kereta Api' => 'KA',
+                'Pesawat' => 'PS',
+                default => strtoupper(substr($transportType->type_name, 0, 2))
+            }; // Contoh: KER, PES 
             $startCode = strtoupper(substr($route->start_route, 0, 3)); // Contoh: JAK
             $endCode = strtoupper(substr($route->end_route, 0, 3)); // Contoh: SUB
             $uniqueCode = strtoupper(substr(md5(uniqid()), 0, 3)); // Kode unik 6 karakter
-
             $bookingCode = "{$transportCode}-{$startCode}{$endCode}-{$uniqueCode}";
 
-            $departureTime = Carbon::createFromFormat('H:i', $validated['departure_time'] ?? '00:00');
-            $checkInTime = $departureTime->subHours(2)->format('H:i'); // Check-in 2 jam sebelum keberangkatan
+            $checkInTime = Carbon::parse($departureTime)->subHours(2)->format('H:i'); // Check-in 2 jam sebelum keberangkatan
 
             // mengecek user id yang sesuai
-            $userId = Auth::id();
+            $userId = auth('api')->id();
+
             $passenger = Passenger::where('user_id', $userId)->first();
-            
+            if (!$passenger) {
+                return response()->json(['success' => false, 'message' => 'Penumpang tidak ditemukan'], 404);
+            }
             $bookingData = $request->all();
             $bookingData['passenger_id'] = $passenger->id;
             $bookingData['booking_code'] = $bookingCode;
             $bookingData['booking_date'] = now()->toDateString();
+            $bookingData['departure_date'] = $departureDate;
+            $bookingData['departure_time'] = $departureTime;
             $bookingData['booking_place'] = "Online/Web"; // Lokasi booking default
             $bookingData['destination'] = $route->destination;
             $bookingData['check_in_time'] = $checkInTime; // Check-in 2 jam sebelum keberangkatan
@@ -125,7 +206,24 @@ class BookingController extends Controller
 
     public function CancelBooking($id): JsonResponse
     {
-        $booking = Booking::findOrfail($id);
+        $user = JWTAuth::user();
+
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->passenger->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only cancel your own booking.'
+            ], 403);
+        }
+
+        if ($booking->booking_status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking already cancelled.'
+            ], 400);
+        }
+
         $booking->update([
             'booking_status' => 'cancelled'
         ]);

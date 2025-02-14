@@ -16,7 +16,6 @@ class Routes extends Model
         'price',
         'travel_duration',
         'transport_id',
-        'schedule_id'
     ];
 
     public function transport()
@@ -29,8 +28,8 @@ class Routes extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function schedule()
+    public function schedules()
     {
-        return $this->belongsTo(TransportSchedule::class);
+        return $this->belongsToMany(TransportSchedule::class, 'route_schedule')->withTimestamps();;
     }
 }

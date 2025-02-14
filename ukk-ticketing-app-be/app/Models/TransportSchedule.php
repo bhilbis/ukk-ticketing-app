@@ -13,6 +13,6 @@ class TransportSchedule extends Model
 
     public function routes()
     {
-        return $this->hasMany(Routes::class);
+        return $this->belongsToMany(Routes::class, 'route_schedule')->withTimestamps();
     }
 }
