@@ -99,6 +99,34 @@ class AuthController extends Controller
         }
     }
 
+    public function updatePassword(Request $request) {
+        try {
+            $user = Auth::user();
+            $request->validate([
+                'old_password' => 'required',
+                'password' => 'required|confirmed|min:6',
+            ]);
+
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json([
+                    'message' => 'Password lama tidak sesuai',
+                ], 400);
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response()->json([
+                'message' => 'Password berhasil diupdate',
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function logout() {
         Auth::logout();
         return response()->json([

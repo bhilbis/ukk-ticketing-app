@@ -15,7 +15,8 @@ class Routes extends Model
         'end_route',
         'price',
         'travel_duration',
-        'transport_id'
+        'transport_id',
+        'schedule_id'
     ];
 
     public function transport()
@@ -26,5 +27,10 @@ class Routes extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(TransportSchedule::class);
     }
 }

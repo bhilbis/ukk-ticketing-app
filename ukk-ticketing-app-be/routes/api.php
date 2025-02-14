@@ -8,6 +8,7 @@ use App\Http\Controllers\RouteController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\transport\TransportClassController;
 use App\Http\Controllers\transport\TransportController;
+use App\Http\Controllers\transport\TransportScheduleController;
 use App\Http\Controllers\transport\TransportTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
@@ -44,6 +45,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('routes')->group(function () {
         Route::get('/', [RouteController::class, 'index']);
         Route::get('/{id}', [RouteController::class, 'show']);
+    });
+
+    Route::prefix('schedules')->group(function () {
+        Route::get('/transport-schedules', [TransportScheduleController::class, 'index']);
     });
 
     // 🟡 Group untuk (Super Admin Only)
@@ -87,6 +92,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('bookings')->group(function () {
             Route::get('/', [BookingController::class, 'index']);
             Route::delete('/{id}', [BookingController::class, 'deleteBooking']);
+        });
+
+        Route::prefix('schedules')->group(function () {
+            Route::post('/transport-schedules', [TransportScheduleController::class, 'store']);
         });
 
     });
