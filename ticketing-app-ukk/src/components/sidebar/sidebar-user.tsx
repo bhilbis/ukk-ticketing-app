@@ -1,12 +1,11 @@
 "use client"
 
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut, } from "lucide-react"
+import { BadgeCheck, ChevronsUpDown, LogOut, } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage,} from "@/components/ui/avatar"
 import { 
   DropdownMenu, DropdownMenuContent, 
-  DropdownMenuGroup, DropdownMenuItem, 
-  DropdownMenuLabel, DropdownMenuSeparator, 
+  DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, 
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -15,8 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Logout } from "@/services/auth"
-import { useRouter } from "next/navigation"
+import { Logout } from "@/services/auth";
 
 export function SidebarUser({
   user,
@@ -27,13 +25,12 @@ export function SidebarUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
-  const router = useRouter();
+  const { isMobile } = useSidebar();
 
   const handleLogout = async() => {
     try {
       await Logout();
-      router.push('/login'); 
+      window.location.href = '/login'; 
     } catch (error) {
       console.error("Logout error:", error);
     }
