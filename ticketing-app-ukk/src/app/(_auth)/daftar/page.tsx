@@ -8,10 +8,10 @@ export default function Page() {
           <Image 
             src="/authentication/hold-bag.jpg"
             alt="bg"
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
-            className="opacity-40"
+            draggable={false}
+            width={1920}
+            height={1080}
+            className="opacity-40 object-center object-cover h-full w-full"
           />
         </div>
         <div className="w-full max-w-lg">

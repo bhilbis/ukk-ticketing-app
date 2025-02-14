@@ -165,6 +165,7 @@ const HomeCarousel = () => {
         <Image 
           src="/home/flyingillus.png"
           alt='flying'
+          draggable={false}
           width={900}
           height={900}
           className='-scale-x-100 max-w-[clamp(300px,100%,900px)] h-auto object-contain'

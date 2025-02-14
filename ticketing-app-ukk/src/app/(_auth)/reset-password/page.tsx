@@ -13,7 +13,8 @@ const Page = () => {
                 <div>
                     <Image
                         src="/authentication/key-password.jpg"
-                        alt=''
+                        alt='key-password'
+                        draggable={false}
                         width={1920}
                         height={1282}
                         className='w-full h-full rounded-lg'
