@@ -6,7 +6,6 @@ import {
   Map,
   Ticket,
   LayoutDashboard,
-  Pocket,
   User,
 } from "lucide-react"
 
@@ -48,36 +47,19 @@ const data = {
       icon: Ticket,
       subItems: [
         {
-          title: "Airplane",
+          title: "Transport",
           items: [
             {
               title: "List of Airlines",
-              url: "/admin/ticket/airplane/list-airlines",
+              url: "/admin/ticket/transport/list-airlines",
             },
             {
-              title: "Class & Ticket Price",
-              url: "/admin/ticket/airplane/class-price",
+              title: "Route List",
+              url: "/admin/ticket/transport/route-list",
             },
             {
-              title: "Flight Schedule",
-              url: "/admin/ticket/airplane/schedule",
-            },
-          ]
-        },
-        {
-          title: "Train",
-          items: [
-            {
-              title: "Train List",
-              url: "#",
-            },
-            {
-              title: "Class & Ticket Price",
-              url: "#"
-            },
-            {
-              title: "Train Schedule",
-              url: "#",
+              title: "Schedule",
+              url: "/admin/ticket/transport/schedule",
             },
           ]
         },
@@ -98,31 +80,16 @@ const data = {
         },
       ],
     },
-    {
-      title: "Payment",
-      url: "#",
-      icon: Pocket,
-      items: [
-        {
-          title: "Payment Confirmation",
-          url: "#",
-        },
-        {
-          title: "Refund",
-          url: "#",
-        },
-      ],
-    },
   ],
   Data: [
     {
       name: "User Management",
-      url: "#",
+      url: "/admin/setting/user",
       icon: User,
     },
     {
-      name: "Role management",
-      url: "#",
+      name: "Create Staff",
+      url: "/admin/setting/create-staff",
       icon: Map,
     },
   ],

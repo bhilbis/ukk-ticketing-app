@@ -1,12 +1,178 @@
-import React from 'react'
+"use client"
 
-const Page = () => {
-  return (
-    <div>
-        <h1>Order List</h1>
-        <p>This is the order list page</p>
-    </div>
-  )
-}
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAllBookings, useValidateBooking } from '@/services/methods/booking';
+import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
-export default Page
+const statusColors = {
+    pending: 'bg-yellow-100 text-yellow-800',
+    confirmed: 'bg-blue-100 text-blue-800',
+    completed: 'bg-green-100 text-green-800',
+    unpaid: 'bg-red-100 text-red-800',
+    paid: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+    partial: 'bg-orange-100 text-orange-800'
+};
+
+const BookingList = ({ isAdmin = true }) => {
+    const { data: allBookings, error } = useAllBookings();
+    const { mutate: completeBooking } = useValidateBooking();
+    const [selectedTab, setSelectedTab] = useState('unpaid');
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    // Handle error dari BE
+    useEffect(() => {
+        if (error) {
+            setApiError(error.message || 'Terjadi kesalahan saat memuat data booking');
+        }
+    }, [error]);
+
+    // Filter data
+    const unpaid = allBookings?.filter(b => 
+        b.payment_status === 'unpaid' && b.booking_status !== 'completed'
+    ) || [];
+    
+    const confirmed = allBookings?.filter(b => 
+        b.booking_status === 'confirmed' && b.payment_status === 'paid'
+    ) || [];
+
+    const handleCompleteBooking = (bookingId: number) => {
+        completeBooking(bookingId, {
+            onError: (err) => {
+                setApiError(err.message || 'Gagal validasi penyelesaian');
+            }
+        });
+    };
+
+    return (
+        <div className='p-8 w-full min-h-screen flex flex-col space-y-6'>
+            <div className='max-w-7xl space-y-8 mx-auto w-full'>
+                <h1 className='text-3xl font-bold text-center text-gray-800 bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600'>
+                    Booking Management
+                </h1>
+                <Separator />
+
+                {apiError && (
+                    <Alert variant="destructive" className="mb-4">
+                        <AlertDescription>{apiError}</AlertDescription>
+                    </Alert>
+                )}
+                
+                <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                    <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto gap-2">
+                        <TabsTrigger value="unpaid">Unpaid ({unpaid.length})</TabsTrigger>
+                        <TabsTrigger value="completed">Confirmed ({confirmed.length})</TabsTrigger>
+                    </TabsList>
+
+                    {/* Unpaid Tab */}
+                    <TabsContent value="unpaid" className="w-full">
+                        <div className="space-y-4 w-full">
+                            {unpaid.length === 0 ? (
+                                <div className="text-center py-12 text-gray-500">
+                                    Tidak ada booking yang belum dibayar
+                                </div>
+                            ) : (
+                                unpaid.map(booking => (
+                                    <Card key={booking.id} className="p-4 flex flex-col gap-4 w-full">
+                                        <div className="flex justify-between items-center">
+                                            <Badge className={statusColors[booking.booking_status]}>
+                                                {booking.booking_status}
+                                            </Badge>
+                                            <Badge className={statusColors[booking.payment_status]}>
+                                                {booking.payment_status}
+                                            </Badge>
+                                        </div>
+                                        
+                                        <div className="flex justify-between items-center">
+                                            <div className="space-y-1">
+                                                <span className="font-semibold">#{booking.booking_code}</span>
+                                                <p className="text-sm">{booking.destination}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p className="text-gray-500">Tanggal Berangkat</p>
+                                                <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Waktu Berangkat</p>
+                                                <p>{booking.departure_time.slice(0, 5)}</p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))
+                            )}
+                        </div>
+                    </TabsContent>
+
+                    {/* Completed Tab */}
+                    <TabsContent value="completed" className="w-full">
+                        <div className="space-y-4 w-full">
+                            {confirmed.length === 0 ? (
+                                <div className="text-center py-12 text-gray-500">
+                                    Tidak ada booking yang telah Dibayar
+                                </div>
+                            ) : (
+                                confirmed.map(booking => (
+                                    <Card key={booking.id} className="p-4 flex flex-col gap-4 w-full">
+                                        <div className="flex justify-between items-center">
+                                            <Badge className={statusColors[booking.booking_status]}>
+                                                {booking.booking_status}
+                                            </Badge>
+                                            <Badge className={statusColors[booking.payment_status]}>
+                                                {booking.payment_status}
+                                            </Badge>
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-semibold">#{booking.booking_code}</span>
+                                                <span className="text-sm font-medium">
+                                                    {/* Total: Rp{booking.total_price.toLocaleString()} */}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm">{booking.destination}</p>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-4 gap-4 text-sm">
+                                            <div>
+                                                <p className="text-gray-500">Kursi</p>
+                                                <p>{booking.seat_code}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Tanggal</p>
+                                                <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Waktu</p>
+                                                <p>{booking.departure_time.slice(0, 5)}</p>
+                                            </div>
+
+                                            {isAdmin && (
+                                                <Button 
+                                                size="sm" 
+                                                onClick={() => handleCompleteBooking(booking.id)}
+                                                variant="default"
+                                                >
+                                                    Validasi Penyelesaian
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </Card>
+                                ))
+                            )}
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </div>
+    );
+};
+
+export default BookingList;

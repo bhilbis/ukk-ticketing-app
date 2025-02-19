@@ -1,20 +1,37 @@
 "use client"
 
-import { BadgeCheck, ChevronsUpDown, LogOut, } from "lucide-react"
-
-import { Avatar, AvatarFallback, AvatarImage,} from "@/components/ui/avatar"
+import { BadgeCheck, ChevronsUpDown } from "lucide-react"
+import { useState } from "react"
+import { useLogout } from "@/services/methods/auth"
 import { 
-  DropdownMenu, DropdownMenuContent, 
-  DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+} from "@/components/ui/alert-dialog"
+import { 
+  Avatar, 
+  AvatarFallback, 
+  AvatarImage 
+} from "@/components/ui/avatar"
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuGroup, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
+import { 
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Logout } from "@/services/auth";
 
 export function SidebarUser({
   user,
@@ -25,18 +42,21 @@ export function SidebarUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar();
+  const { isMobile } = useSidebar()
+  const logoutMutation = useLogout()
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     try {
-      await Logout();
-      window.location.href = '/login'; 
+      await logoutMutation.mutateAsync()
+      setIsLogoutOpen(false)
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Logout failed:", error)
     }
-  };
+  }
 
   return (
+    <>
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
@@ -64,19 +84,41 @@ export function SidebarUser({
             >
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
+                  <BadgeCheck className="mr-2 h-4 w-4" />
+                  <span>Account</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-                <LogOut />
-                Log out
+              <DropdownMenuItem 
+                className="cursor-pointer"
+                onClick={() => setIsLogoutOpen(true)}
+              >
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
-    
+
+      <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Apakah Anda yakin ingin keluar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Anda perlu login kembali untuk mengakses akun Anda.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+            >
+              {logoutMutation.isPending ? "Logging out..." : "Ya, Keluar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

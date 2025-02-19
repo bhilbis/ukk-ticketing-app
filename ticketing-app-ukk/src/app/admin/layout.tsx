@@ -3,6 +3,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar";
 import '../globals.css';
 import { ClientOnly } from "@/lib/ClientOnly";
+import AuthGuard from "@/hooks/use-auth";
+// import AuthGuard from "@/hooks/use-auth";
 
 export const metadata: Metadata = {
   title: "Ticketing App",
@@ -16,15 +18,17 @@ export default function RootLayout({
 }>) {
   return (
     <ClientOnly>
-      <SidebarProvider>
-        <nav>
-          <AppSidebar />
-        </nav>
-        <main className="w-full">
-          <SidebarTrigger className="fixed top-2 z-20"/>
-          {children}
-        </main>
-      </SidebarProvider>
+      <AuthGuard allowedLevels={[1, 2]}>
+        <SidebarProvider>
+          <nav>
+            <AppSidebar />
+          </nav>
+          <main className="w-full">
+            <SidebarTrigger className="fixed top-2 z-20"/>
+            {children}
+          </main>
+        </SidebarProvider>
+      </AuthGuard>
     </ClientOnly>
   );
 }

@@ -1,6 +1,5 @@
 // app/myaccount/dashboard/page.tsx
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 
 export default function Dashboard() {
   return (
@@ -13,13 +12,13 @@ export default function Dashboard() {
             <CardTitle>Total Bookings</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">25</p>
+            <p className="text-3xl font-bold">3</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Upcoming Trips</CardTitle>
+            <CardTitle>Completed Bookings</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">2</p>
@@ -35,16 +34,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Booking Completion</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Progress value={80} className="h-3" />
-          <p className="mt-2 text-sm text-gray-600">80% of bookings completed</p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -9,7 +9,8 @@ import { LenisProvider } from "@/context/LenisScroll";
 import 'swiper/css'
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
-import { LoadingProvider } from "@/context/LoadingContext";
+// import { AuthProvider } from "@/context/AuthContext";
+import { ReactQueryProvider } from "@/lib/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "TravelLink",
@@ -37,24 +38,28 @@ export default function RootLayout({
         />
       </head>
       <body
-         className={`${MontserratFont.className} antialiased`}
+        className={`${MontserratFont.className} antialiased`}
       >
-        <LoadingProvider>
-          <nav>
-            <Navbar/>
-          </nav>
+        <ReactQueryProvider>
+          {/* <AuthProvider> */}
+            {/* <LoadingProvider> */}
+              <nav>
+                <Navbar/>
+              </nav>
 
-          <main>
-            <LenisProvider>
-            {children}
-            <Toaster />
-            </LenisProvider>
-          </main>
+              <main>
+                <LenisProvider>
+                {children}
+                <Toaster />
+                </LenisProvider>
+              </main>
 
-          <footer>
-            <Footer/>
-          </footer>
-        </LoadingProvider>
+              <footer>
+                <Footer/>
+              </footer>
+            {/* </LoadingProvider> */}
+          {/* </AuthProvider> */}
+        </ReactQueryProvider>
       </body>
     </html>
   );

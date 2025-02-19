@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeftToLine, Eye, EyeClosed } from "lucide-react";
-import { postSendOtp, postVerifyOtp, postResetPassword } from "@/services/reset-password";
+import { postSendOtp, postVerifyOtp, postResetPassword } from "@/services/methods/reset-password";
 import { useToast } from "@/hooks/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 

@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { postLogin } from "@/services/auth";
-
+import { usePostLogin } from "@/services/methods/auth";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,45 +15,36 @@ import { Label } from "@/components/ui/label"
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
 import { Checkbox } from "../ui/checkbox";
+import { useRouter } from 'next/navigation';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const router = useRouter();
+  
+  const loginMutation = usePostLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     try {
-      const response = await postLogin(name, password);
-
-      if (!response || !response.user) {
-        throw new Error("User data is missing");
-      }
-
-      const userData = response.user;
-      const level = userData.level_id;
+      const result = await loginMutation.mutateAsync({ email, password });
       
-      console.log(level);
-
+      const level = result.user.level_id;
+      
       if (level === 1 || level === 2) {
-        window.location.href = "/admin/dashboard";
+        window.location.href = ("/admin/dashboard");
       } else {
-        window.location.href = "/";
+        router.push("/");
       }
 
-    } catch (error: unknown) {
-      console.error("Login error:", error);
-      if (error instanceof Error) {
-        setError(error.message || "Login gagal, coba lagi nanti");
-      } else {
-        setError("Login gagal, coba lagi nanti");
-      }
+    } catch (error) {
+      // Error handling is managed by the mutation's onError callback
+      console.error("Login submission error:", error);
     }
   };
 
@@ -67,15 +57,15 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-
               <div className="grid gap-2">
-                <Label htmlFor="email">Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="name"
-                  type="name"
+                  id="email"
+                  type="email"
                   required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loginMutation.isPending}
                 />
               </div>
 
@@ -88,6 +78,7 @@ export function LoginForm({
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={loginMutation.isPending}
                   />
                   <button
                     type="button"
@@ -100,31 +91,38 @@ export function LoginForm({
                       <Eye className="w-5 h-5" />
                     )}
                   </button>
-                  
                 </div>
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center gap-1">
                     <Checkbox />
                     <span className="text-sm">Ingat saya</span>
                   </div>
-                    <Link
-                      href="/reset-password"
-                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                    >
-                      Lupa password?
-                    </Link>
+                  <Link
+                    href="/reset-password"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  >
+                    Lupa password?
+                  </Link>
                 </div>
-              {error && <p className="text-red-500 text-center">{error}</p>}
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+                {loginMutation.error && (
+                  <p className="text-red-500 text-center">
+                    {loginMutation.error.message || "Login gagal, coba lagi nanti"}
+                  </p>
+                )}
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? "Loading..." : "Login"}
+                </Button>
               </div>
-            <div className="text-center text-sm">
-              Tidak punya akun?{" "}
-              <Link href="/daftar" className="underline underline-offset-4">
-                Daftar
-              </Link>
-            </div>
+              <div className="text-center text-sm">
+                Tidak punya akun?{" "}
+                <Link href="/daftar" className="underline underline-offset-4">
+                  Daftar
+                </Link>
+              </div>
             </div>
           </form>
         </CardContent>

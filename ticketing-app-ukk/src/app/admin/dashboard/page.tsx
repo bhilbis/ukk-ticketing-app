@@ -3,6 +3,9 @@
 import ChartCard from '@/components/admin/dashboard/chartCard';
 import StatsCard from '@/components/admin/dashboard/statsCard';
 import TicketList from '@/components/admin/dashboard/ticketList';
+// import { Tooltip } from '@radix-ui/react-tooltip';
+// import { BarChart } from 'lucide-react';
+// import { Bar, CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 const AdminDashboard = () => {
   // Sample data for charts
@@ -25,7 +28,7 @@ const AdminDashboard = () => {
   return (
     <div className="p-8 w-full min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Admin Dashboard</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatsCard
@@ -41,7 +44,10 @@ const AdminDashboard = () => {
         </div>
 
           <ChartCard />
-          {/* <ChartCard title="Ticket Sales" description="Last 6 months">
+
+          {/* <div>
+
+          <ChartCard title="Ticket Sales" description="Last 6 months">
             <BarChart data={ticketSalesData}>
               <XAxis dataKey="month" />
               <YAxis />
@@ -49,9 +55,9 @@ const AdminDashboard = () => {
               <Legend />
               <Bar dataKey="tickets" fill="#8884d8" />
             </BarChart>
-          </ChartCard> */}
+          </ChartCard>
 
-          {/* <ChartCard title="Flight Occupancy" description="Current flights">
+          <ChartCard title="Flight Occupancy" description="Current flights">
             <LineChart data={flightOccupancyData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="flight" />
@@ -60,7 +66,8 @@ const AdminDashboard = () => {
               <Legend />
               <Line type="monotone" dataKey="occupancy" stroke="#82ca9d" />
             </LineChart>
-          </ChartCard> */}
+          </ChartCard>
+          </div> */}
 
           <TicketList tickets={recentTickets} />
         

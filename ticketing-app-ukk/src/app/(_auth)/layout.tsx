@@ -1,7 +1,5 @@
+import GuestGuard from "@/hooks/guest-guard";
 import type { Metadata } from "next";
-import '../globals.css';
-import ProfileLayout from "@/layouts/ProfileLayouts";
-import AuthGuard from "@/hooks/use-auth";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -13,5 +11,5 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return <AuthGuard><ProfileLayout><div>{children}</div></ProfileLayout></AuthGuard>;
+    return <GuestGuard>{children}</GuestGuard>;
 }   
