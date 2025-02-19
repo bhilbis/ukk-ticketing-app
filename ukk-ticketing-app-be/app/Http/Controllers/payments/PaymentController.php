@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\payments;
 
+use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Passenger;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PaymentController extends Controller
 {
-
     public function getAll(): JsonResponse
     {
         $payments = Payment::with(['booking', 'passenger'])->get();
@@ -64,7 +65,7 @@ class PaymentController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $user = JWTAuth::user(); // Get logged-in user
+        $user = Auth::user(); // Get logged-in user
 
         // ✅ Restrict to level_id == 3
         if ($user->level_id != 3) {
@@ -148,7 +149,7 @@ class PaymentController extends Controller
             // ✅ Update booking status
             $booking->update([
                 'payment_status' => 'paid',
-                'booking_status' => 'completed',
+                'booking_status' => 'confirmed',
             ]);
 
             return response()->json([

@@ -109,7 +109,7 @@ class TransportController extends Controller
             'code' => 'string|max:50|unique:transports,code,' . $id,
             'name_transport' => 'required|string|max:100',
             'type_id' => 'required|exists:transport_types,id',
-            'image' => 'nullable|string',
+            'image' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
             'has_discount' => 'boolean',
             'description' => 'nullable|string',
             'classes' => 'required|array',
@@ -166,7 +166,7 @@ class TransportController extends Controller
         return response()->json([
             'message' => 'Data transportasi berhasil ditemukan',
             'data' => $transport
-        ], 201);
+        ], 200);
     }
 
      // Hapus transportasi

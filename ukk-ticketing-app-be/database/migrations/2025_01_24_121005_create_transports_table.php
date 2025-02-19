@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name_transport', 100);
             $table->boolean('has_discount')->default(false);
             $table->text('description');
-            $table->foreignId('type_id')->constrained('transport_types');
+            $table->foreignId('type_id')->constrained('transport_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

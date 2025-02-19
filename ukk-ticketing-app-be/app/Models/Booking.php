@@ -21,6 +21,7 @@ class Booking extends Model
         'check_in_time',
         'departure_time',
         'booking_status',
+        'completed_at',
         'payment_status',
         'total_payment',
         'staff_id',

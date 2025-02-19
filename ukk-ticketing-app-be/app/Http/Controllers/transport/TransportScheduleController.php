@@ -67,8 +67,8 @@ class TransportScheduleController extends Controller
             'route_ids.*' => 'exists:routes,id'
         ]);
 
-        $schedule = TransportSchedule::findOrFail($id);
-        
+        $schedule = TransportSchedule::with('routes')->findOrFail($id);
+
         $schedule->update([
             'departure_date' => $validated['departure_date'],
             'departure_time' => $validated['departure_time']
@@ -82,7 +82,7 @@ class TransportScheduleController extends Controller
         ], 201);
     }
 
-    public function delete($id): JsonResponse
+    public function destroy($id): JsonResponse
     {
         $schedule = TransportSchedule::findOrFail($id);
         $schedule->delete();

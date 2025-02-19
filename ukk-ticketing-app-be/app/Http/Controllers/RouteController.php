@@ -11,11 +11,11 @@ class RouteController extends Controller
 
     public function index(): JsonResponse
     {
-        $routes = Routes::with('transport')->get();
+        $routes = Routes::with(['transport', 'transport.classes', 'schedules'])->get();
 
         return response()->json([
             'message' => 'Data route berhasil ditemukan',
-            'data' => $routes->load('transport')->load('transport.classes')
+            'data' => $routes
         ], 200);
     }
 
@@ -40,11 +40,11 @@ class RouteController extends Controller
 
     public function show($id): JsonResponse
     {
-        $route = Routes::with('transport')->findOrFail($id);
+        $route = Routes::with(['transport', 'transport.classes', 'schedules'])->findOrFail($id);
 
         return response()->json([
             'message' => 'Data route berhasil ditemukan',
-            'data' => $route->load('transport')->load('transport.classes')
+            'data' => $route
         ], 200);
     }
 

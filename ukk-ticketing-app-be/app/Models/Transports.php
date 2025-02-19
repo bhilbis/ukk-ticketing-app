@@ -33,4 +33,9 @@ class Transports extends Model
     public function classes() {
         return $this->hasMany(TransportClass::class, 'transport_id');
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(TransportSchedule::class, 'transport_id');
+    }
 }

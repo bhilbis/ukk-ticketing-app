@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -125,12 +126,59 @@ class BookingController extends Controller
         ], 200);
     }
 
-    //for user to create booking 
+    public function validatePayment($id): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $booking = Booking::findOrFail($id);
+
+            // Validasi status saat ini
+            if ($booking->payment_status !== 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Booking belum dibayar'
+                ], 400);
+            }
+
+            if ($booking->booking_status === 'completed') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Booking sudah selesai'
+                ], 400);
+            }
+
+            // Update status
+            $booking->update([
+                'booking_status' => 'completed',
+                'completed_at' => now()
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Validasi pembayaran berhasil',
+                'data' => $booking
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal validasi pembayaran',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    //for user to create booking
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'route_id' => 'required|exists:routes,id',
-            'seat_code' => 'required|string', 
+            'seat_code' => 'required|string',
             'total_payment' => 'required|string',
             'staff_id' => 'nullable|exists:staff,id'
         ]);
@@ -160,7 +208,7 @@ class BookingController extends Controller
                 'Kereta Api' => 'KA',
                 'Pesawat' => 'PS',
                 default => strtoupper(substr($transportType->type_name, 0, 2))
-            }; // Contoh: KER, PES 
+            }; // Contoh: KER, PES
             $startCode = strtoupper(substr($route->start_route, 0, 3)); // Contoh: JAK
             $endCode = strtoupper(substr($route->end_route, 0, 3)); // Contoh: SUB
             $uniqueCode = strtoupper(substr(md5(uniqid()), 0, 3)); // Kode unik 6 karakter
@@ -187,7 +235,7 @@ class BookingController extends Controller
             $bookingData['booking_status'] = 'pending';
             $bookingData['payment_status'] = 'unpaid';
             $bookingData['staff_id'] = $request->staff_id ?? null;
-            
+
             $booking = Booking::create($bookingData);
 
             return response()->json([
@@ -238,7 +286,7 @@ class BookingController extends Controller
     {
         try {
             Booking::findOrfail($id)->delete();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Booking berhasil dihapus',

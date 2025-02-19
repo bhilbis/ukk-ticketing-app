@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'name' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
@@ -36,6 +36,12 @@ class AuthController extends Controller
         }
 
         $user = JWTAuth::user();
+
+        if (!$token = JWTAuth::claims([
+            'level_id' => Auth::user()->level_id
+        ])->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         return response()->json([
             'message' => 'Login berhasil',
@@ -61,7 +67,7 @@ class AuthController extends Controller
             $validatedData['password'] = Hash::make($validatedData['password']);
             
             $user = User::create([
-                'name' => $validatedData['username'],
+                'name' => $validatedData['name_passenger'],
                 'password' => $validatedData['password'],
                 'email' => $validatedData['email'],
                 'level_id' => 3,
