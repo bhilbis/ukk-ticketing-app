@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             LevelSeeder::class,
             TransportTypesSeeder::class,
             UserSeeder::class,
+            TransportSeeder::class,
         ]);
     }
 }

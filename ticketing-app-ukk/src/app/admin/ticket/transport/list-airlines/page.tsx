@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Trash, Pencil, Eye, PlusIcon } from "lucide-react";
 import TransportForm from "@/components/admin/ticket/transport-form";
 import Image from "next/image";
+import TransportDetailModal from "@/components/admin/ticket/transport-detail";
 
 export default function TransportList() {
   const { data  } = useTransports();
@@ -13,11 +14,11 @@ export default function TransportList() {
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const handleShow = (transport: any) => {
     setSelectedTransport(transport);
-    setIsModalOpen(true);
-    setIsReadOnly(true);
+    setIsDetailModalOpen(true);
   };
 
   const handleEdit = (transport: any) => {
@@ -55,7 +56,7 @@ export default function TransportList() {
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
                   <Image
-                    src={transport.image || "/airplane/clouds.jpg"}
+                    src={"/airplane/clouds.jpg"}
                     alt={transport.name_transport}
                     width={400}
                     height={200}
@@ -121,7 +122,7 @@ export default function TransportList() {
                     alt={transport.name_transport}
                     width={400}
                     height={200}
-                    className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover object-center w-full h-full transform group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="p-5">
@@ -180,6 +181,13 @@ export default function TransportList() {
           onClose={() => setIsModalOpen(false)}
           transport={selectedTransport}
           isReadOnly={isReadOnly}
+        />
+      )}
+      {isDetailModalOpen && (
+        <TransportDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          transport={selectedTransport}
         />
       )}
     </div>

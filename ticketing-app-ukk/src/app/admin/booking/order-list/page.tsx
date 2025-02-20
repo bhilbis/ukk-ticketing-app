@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import BookingDetailModal from '@/components/admin/booking/booking-detail';
+import { Eye } from 'lucide-react';
 
 const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -24,20 +27,31 @@ const BookingList = ({ isAdmin = true }) => {
     const { mutate: completeBooking } = useValidateBooking();
     const [selectedTab, setSelectedTab] = useState('unpaid');
     const [apiError, setApiError] = useState<string | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
 
-    // Handle error dari BE
     useEffect(() => {
         if (error) {
             setApiError(error.message || 'Terjadi kesalahan saat memuat data booking');
         }
     }, [error]);
 
-    // Filter data
-    const unpaid = allBookings?.filter(b => 
+    const formatIDR = (amount: number) => {
+        return amount.toLocaleString("id-ID"); // Format angka ke "ID" (Indonesia)
+    };
+    
+    const bookingsFilter = allBookings?.map(b => ({
+        ...b,
+        formatted_total_payment: formatIDR(Number(b.total_payment))
+    }));
+
+
+    const unpaid = bookingsFilter?.filter(b => 
         b.payment_status === 'unpaid' && b.booking_status !== 'completed'
     ) || [];
+    console.log('Unpaid :',unpaid);
     
-    const confirmed = allBookings?.filter(b => 
+    const confirmed = bookingsFilter?.filter(b => 
         b.booking_status === 'confirmed' && b.payment_status === 'paid'
     ) || [];
 
@@ -47,6 +61,11 @@ const BookingList = ({ isAdmin = true }) => {
                 setApiError(err.message || 'Gagal validasi penyelesaian');
             }
         });
+    };
+
+    const handleShowDetail = (booking: any) => {
+        setSelectedBooking(booking);
+        setIsDetailModalOpen(true);
     };
 
     return (
@@ -87,6 +106,11 @@ const BookingList = ({ isAdmin = true }) => {
                                                 {booking.payment_status}
                                             </Badge>
                                         </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm">Total: Rp{booking.formatted_total_payment}</p>
+                                            <p className="text-sm">Kursi: {booking.seat_code}</p>
+                                        </div>
                                         
                                         <div className="flex justify-between items-center">
                                             <div className="space-y-1">
@@ -95,7 +119,7 @@ const BookingList = ({ isAdmin = true }) => {
                                             </div>
                                         </div>
                                         
-                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div className="grid grid-cols-3 gap-4 text-sm">
                                             <div>
                                                 <p className="text-gray-500">Tanggal Berangkat</p>
                                                 <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
@@ -104,6 +128,15 @@ const BookingList = ({ isAdmin = true }) => {
                                                 <p className="text-gray-500">Waktu Berangkat</p>
                                                 <p>{booking.departure_time.slice(0, 5)}</p>
                                             </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleShowDetail(booking)}
+                                                className="text-gray-600 hover:bg-blue-50 rounded-full"
+                                            >
+                                                <Eye className="w-4 h-4 mr-2" />
+                                                Detail
+                                            </Button>
                                         </div>
                                     </Card>
                                 ))
@@ -134,10 +167,26 @@ const BookingList = ({ isAdmin = true }) => {
                                             <div className="flex justify-between items-center">
                                                 <span className="font-semibold">#{booking.booking_code}</span>
                                                 <span className="text-sm font-medium">
-                                                    {/* Total: Rp{booking.total_price.toLocaleString()} */}
+                                                    Total: Rp{booking.formatted_total_payment}
                                                 </span>
                                             </div>
                                             <p className="text-sm">{booking.destination}</p>
+                                        </div>
+
+                                        <div className="flex sm:justify-between sm:items-center">
+                                            <span className="text-sm">
+                                                <p className="text-gray-500">Transportasi</p>
+                                                <p>{booking.route?.transport?.name_transport}</p>
+                                            </span>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleShowDetail(booking)}
+                                                className="text-gray-600 hover:bg-blue-50 rounded-full"
+                                            >
+                                                <Eye className="w-4 h-4 mr-2" />
+                                                Detail
+                                            </Button>
                                         </div>
                                         
                                         <div className="grid grid-cols-4 gap-4 text-sm">
@@ -171,6 +220,14 @@ const BookingList = ({ isAdmin = true }) => {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            {isDetailModalOpen && (
+                <BookingDetailModal
+                    isOpen={isDetailModalOpen}
+                    onClose={() => setIsDetailModalOpen(false)}
+                    booking={selectedBooking}
+                />
+            )}                
         </div>
     );
 };

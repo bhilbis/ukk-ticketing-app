@@ -29,10 +29,10 @@ Route::prefix('auth')->group(function () {
     Route::post('validate-code', [PasswordResetController::class, 'codeValidationForgotPassword']); //validation code
     Route::post('reset-password', [PasswordResetController::class, 'resetPasswordForgotPassword']); //confirmation reset password
 
+    Route::post('refresh', [AuthController::class, 'refresh'])->middleware('jwt.refresh');
     // 🔒 Hanya bisa diakses jika sudah login
     Route::middleware(['auth:api'])->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
     });
 
     Route::middleware(['jwt.auth'])->get('/user', function () {
@@ -79,7 +79,6 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         Route::prefix('bookings')->group(function () {
-            Route::get('/', [BookingController::class, 'index']);
             Route::delete('/{id}', [BookingController::class, 'deleteBooking']);
         });
 
@@ -105,6 +104,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         Route::prefix('bookings')->group(function () {
+            Route::get('/', [BookingController::class, 'index']);
             Route::put('/validate/{id}', [BookingController::class, 'validatePayment']);
         });
 

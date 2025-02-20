@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Card } from '@/components/ui/card';
 import { useAllBookings } from '@/services/methods/booking';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import BookingDetailModal from '@/components/admin/booking/booking-detail';
 
 const statusColors = {
     completed: 'bg-green-100 text-green-800',
@@ -12,7 +17,13 @@ const statusColors = {
 
 const HistoryPage = () => {
     const { data: allBookings } = useAllBookings();
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
 
+    const handleShowDetail = (booking: any) => {
+        setSelectedBooking(booking);
+        setIsDetailModalOpen(true);
+    };
     const completed = allBookings?.filter(b => b.booking_status === 'completed') || [];
 
     return (
@@ -42,7 +53,7 @@ const HistoryPage = () => {
                                 </div>
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex justify-between items-center gap-4 text-sm">
                                 <div>
                                     <p className="text-gray-500">Tanggal Berangkat</p>
                                     <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
@@ -51,11 +62,28 @@ const HistoryPage = () => {
                                     <p className="text-gray-500">Waktu Berangkat</p>
                                     <p>{booking.departure_time.slice(0, 5)}</p>
                                 </div>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleShowDetail(booking)}
+                                    className="text-gray-600 hover:bg-blue-50 rounded-full"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" />
+                                    Detail
+                                </Button>
                             </div>
                         </Card>
                     ))}
                 </div>
             </div>
+
+            {isDetailModalOpen && (
+                <BookingDetailModal
+                    isOpen={isDetailModalOpen}
+                    onClose={() => setIsDetailModalOpen(false)}
+                    booking={selectedBooking}
+                />
+            )}
         </div>
     );
 };

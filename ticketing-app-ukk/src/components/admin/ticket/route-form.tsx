@@ -17,9 +17,13 @@ interface RouteModalProps {
 }
 
 const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
-    const { data  } = useTransports();
+    const { data: transport  } = useTransports();
     const saveMutation = useSaveRoute();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const formatTime = (time: string) => {
+        return time ? time.slice(0, 5) : "";
+    };
 
     const formik = useFormik<Routes>({
         enableReinitialize: false,
@@ -29,7 +33,7 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
             start_route: route?.start_route || "",
             end_route: route?.end_route || "",
             price: route?.price || 0,
-            travel_duration: route?.travel_duration || "",
+            travel_duration: route?.travel_duration ? formatTime(route?.travel_duration) : "",
             transport_id: route?.transport_id || 2,
         },
         onSubmit: (values) => {
@@ -67,6 +71,7 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
 
     useEffect(() => {
         if (route && !formik.dirty) {
+            console.log("Reset Form with ID:", route.id);
             formik.resetForm({
                 values: {
                     id: route.id,
@@ -91,7 +96,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                 </DialogHeader>
 
                 {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-
 
                     <form onSubmit={formik.handleSubmit} className="space-y-4">
                         <div className="w-full">
@@ -165,12 +169,12 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" className="w-full justify-start">
                                         {formik.values.transport_id
-                                            ? data?.find((transport) => transport.id === formik.values.transport_id)?.name_transport || "Pilih Transportasi"
+                                            ? transport?.find((transport) => transport.id === formik.values.transport_id)?.name_transport || "Pilih Transportasi"
                                             : "Pilih Transportasi"}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align='start' className='w-72 lg:w-56 max-w-none'>
-                                        {data?.map((transport) => (
+                                        {transport?.map((transport) => (
                                             <DropdownMenuItem
                                                 key={transport.id}
                                                 textValue={transport.id.toString()}

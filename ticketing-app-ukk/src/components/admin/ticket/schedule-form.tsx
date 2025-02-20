@@ -20,15 +20,19 @@ const ScheduleForm: React.FC<RouteModalProps> = ({ isOpen, onClose, schedule, is
     const saveMutation = useSaveSchedule();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const formatTime = (time: string) => {
+        return time ? time.slice(0, 5) : "";
+    };
+    
     const formik = useFormik<Schedule>({
         enableReinitialize: true,
         initialValues: {
             id: schedule?.id || 0,
             departure_date: schedule?.departure_date || "",
-            departure_time: schedule?.departure_time || "",
+            departure_time: schedule?.departure_time ? formatTime(schedule.departure_time) : "",
             route_ids: schedule?.routes 
             ? schedule.routes.map(route => route.id) 
-            : schedule?.route_ids || [], // Remove map function here
+            : schedule?.route_ids || [],
         },
         onSubmit: (values) => {
             if (!values.departure_date.trim()) {
@@ -116,7 +120,6 @@ const ScheduleForm: React.FC<RouteModalProps> = ({ isOpen, onClose, schedule, is
                             disabled={isReadOnly}
                         />
                     </div>
-
                     
                     <div>
                         <Label className="text-sm font-medium">Rute</Label>

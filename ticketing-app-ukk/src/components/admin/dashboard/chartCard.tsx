@@ -1,77 +1,100 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Legend, Tooltip } from "recharts";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
-
-const chartConfig = {
-  desktop: {
-    label: "Airplane",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Train",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
-
-export default function ChartCard() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dashed" />}
-            />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={3} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={3} />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
-    </Card>
-  )
+interface Booking {
+  route?: {
+    transport?: {
+      type_id: number;
+    };
+  };
+  booking_date: string;
 }
+
+const TransportTrendComparison = ({ bookings }: { bookings?: Booking[] }) => {
+  // Process bookings to get daily counts
+  const processBookings = () => {
+    if (!bookings?.length) return [];
+
+    // Create a map of dates and their counts
+    const countsByDate = bookings.reduce((acc, booking) => {
+      const date = new Date(booking.booking_date).toISOString().split('T')[0];
+      if (!acc[date]) {
+        acc[date] = { date, plane: 0, train: 0 };
+      }
+      
+      if (booking.route?.transport?.type_id === 1) {
+        acc[date].plane += 1;
+      } else if (booking.route?.transport?.type_id === 2) {
+        acc[date].train += 1;
+      }
+      
+      return acc;
+    }, {} as Record<string, { date: string; plane: number; train: number; }>);
+
+    // Convert to array and sort by date
+    return Object.values(countsByDate)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map(item => ({
+        ...item,
+        date: new Date(item.date).toLocaleDateString('id-ID', { 
+          day: 'numeric',
+          month: 'short'
+        })
+      }));
+  };
+
+  const data = processBookings();
+
+  return (
+    <Card className="col-span-4">
+      <CardHeader>
+        <CardTitle>Tren Pemesanan Transportasi</CardTitle>
+      </CardHeader>
+      <CardContent className="pl-2">
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <XAxis
+                dataKey="date"
+                stroke="#888888"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="#AAAAAA"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value: any) => `${value}`}
+              />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="plane"
+                name="Pesawat"
+                strokeWidth={2}
+                activeDot={{ r: 4 }}
+                className="stroke-blue-500"
+                style={{ opacity: 0.75 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="train"
+                name="Kereta Api"
+                strokeWidth={2}
+                activeDot={{ r: 4 }}
+                className="stroke-yellow-500"
+                style={{ opacity: 0.75 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default TransportTrendComparison;

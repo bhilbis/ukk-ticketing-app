@@ -32,6 +32,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
 
 export function SidebarUser({
   user,
@@ -45,11 +46,13 @@ export function SidebarUser({
   const { isMobile } = useSidebar()
   const logoutMutation = useLogout()
   const [isLogoutOpen, setIsLogoutOpen] = useState(false)
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync()
       setIsLogoutOpen(false)
+      router.push("/login")
     } catch (error) {
       console.error("Logout failed:", error)
     }

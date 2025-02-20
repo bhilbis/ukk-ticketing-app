@@ -10,7 +10,7 @@ export interface Routes {
     price: number;
     travel_duration: string;
     transport_id: number;
-    transport?: Transport[];
+    transport?: Transport;
 }
 
 export const useRoutes = () => {
@@ -38,7 +38,9 @@ export const useSaveRoute = () => {
 
     return useMutation({
         mutationFn: async (route: Routes) => {
+            console.log("Route ID:", route.id);
             if (route.id) {
+                // console.log("Route ID:", route.id);
                 return axiosInstance.put(`/routes/${route.id}`, route);
             } else {
                 return axiosInstance.post("/routes", route);

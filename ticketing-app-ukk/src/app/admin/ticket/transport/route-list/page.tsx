@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import RouteDetailModal from '@/components/admin/ticket/route-detail'
 import RouteForm from '@/components/admin/ticket/route-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDeleteRoute, useRoutes } from '@/services/methods/route'
-import { ArrowRight, Clock, MapPin, Pencil, PlusIcon, Trash, Wallet } from 'lucide-react'
+import { ArrowRight, Clock, Eye, MapPin, Pencil, Plane, PlusIcon, TrainFront, Trash, Wallet } from 'lucide-react'
 import { useState } from 'react'
 
 const Page = () => {
@@ -13,10 +14,17 @@ const Page = () => {
   const deleteMutation = useDeleteRoute();
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedRouteDetail, setSelectedRouteDetail] = useState(null);
 
   const handleEdit = (route: any) => {
     setSelectedRoute(route);
     setIsModalOpen(true);
+  };
+
+  const handleDetail = (route: any) => {
+    setSelectedRouteDetail(route);
+    setIsDetailModalOpen(true);
   };
 
   const handleAdd = () => {
@@ -46,14 +54,14 @@ const Page = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {data?.map((route) => (
                 <Card key={route.id} className="hover:shadow-xl transition-all duration-300 group border-0">
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-t-lg"></div>
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-1 rounded-t-lg"></div>
                   <CardContent className="p-6">
                     {/* Header */}
-                    <div className="mb-6">
+                    <div className="mb-4">
                       <h3 className="text-2xl font-bold text-gray-800 mb-2">{route.destination}</h3>
                       <div className="flex items-center text-blue-600">
                         <MapPin className="w-5 h-5 mr-2" />
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
                           <span className="font-medium bg-blue-50 px-3 py-1 rounded-full text-sm">
                             {route.start_route}
                           </span>
@@ -66,16 +74,32 @@ const Page = () => {
                     </div>
 
                     {/* Detail Rute */}
-                    <div className="space-y-4 mb-6">
-                      <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="space-y-2 mb-2">
+                      <div className="flex items-center px-2 py-1 bg-gray-50 rounded-lg">
                         <Clock className="w-6 h-6 mr-3 text-green-500" />
                         <div>
                           <p className="text-xs text-gray-500">Durasi Perjalanan</p>
-                          <p className="font-semibold text-gray-800">{route.travel_duration}</p>
+                          <p className="font-semibold text-gray-800">{route.travel_duration.slice(0, 5)} Jam</p>
                         </div>
                       </div>
 
-                      <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <data className='flex items-center px-2 py-1 bg-gray-50 rounded-lg'>
+                        {route.transport && (
+                          <>
+                            {route.transport.type_id === 1 ? (
+                              <Plane className='w-6 h-6 mr-3 text-blue-500'/>
+                            ) : route.transport.type_id === 2 ? (
+                              <TrainFront className='w-6 h-6 mr-3 text-blue-500'/>
+                            ) : null}
+                            <div>
+                              <p className="text-xs text-gray-500">Transportasi</p>
+                              <p className="font-semibold text-gray-800">{route.transport.name_transport}</p>
+                            </div>
+                          </>
+                        )}
+                      </data>
+
+                      <div className="flex items-center px-2 py-1 bg-gray-50 rounded-lg">
                         <Wallet className="w-6 h-6 mr-3 text-yellow-500" />
                         <div>
                           <p className="text-xs text-gray-500">Harga Tiket</p>
@@ -88,6 +112,15 @@ const Page = () => {
 
                     {/* Action Buttons */}
                     <div className="flex justify-end space-x-2 border-t border-gray-100 pt-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDetail(route)}
+                      className="text-gray-600 hover:bg-blue-100 rounded-full"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Detail
+                    </Button>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -130,6 +163,13 @@ const Page = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           route={selectedRoute}
+        />
+      )}
+      {isDetailModalOpen && (
+        <RouteDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          route={selectedRouteDetail}
         />
       )}
     </div>

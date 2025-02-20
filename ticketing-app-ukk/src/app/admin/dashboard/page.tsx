@@ -1,29 +1,31 @@
 // app/admin/dashboard/page.tsx
 "use client";
-import ChartCard from '@/components/admin/dashboard/chartCard';
+import TransportComparison from '@/components/admin/dashboard/chartCard';
 import StatsCard from '@/components/admin/dashboard/statsCard';
 import TicketList from '@/components/admin/dashboard/ticketList';
-// import { Tooltip } from '@radix-ui/react-tooltip';
-// import { BarChart } from 'lucide-react';
-// import { Bar, CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { useAllBookings } from '@/services/methods/booking';
 
 const AdminDashboard = () => {
-  // Sample data for charts
-  // const ticketSalesData = [
-  //   { month: 'Jan', tickets: 120 },
-  //   { month: 'Feb', tickets: 200 },
-  //   { month: 'Mar', tickets: 150 },
-  //   { month: 'Apr', tickets: 300 },
-  //   { month: 'May', tickets: 250 },
-  //   { month: 'Jun', tickets: 400 },
-  // ];
+  const { data: completed } = useAllBookings();
+  
+  console.log('Data :',completed);
 
-  const recentTickets = [
-    { id: "T001", passenger: "John Doe", flight: "FL001", status: "Confirmed" },
-    { id: "T002", passenger: "Jane Smith", flight: "FL002", status: "Pending" },
-    { id: "T003", passenger: "Alice Johnson", flight: "FL003", status: "Cancelled" },
-    { id: "T004", passenger: "Bob Brown", flight: "FL004", status: "Confirmed" },
-  ];
+  const filteredTickets = completed?.filter((ticket) => ticket.booking_status === "confirmed" || ticket.booking_status === "completed" );
+  const filteredTicketsLength = filteredTickets?.length;
+
+  const revenue = filteredTickets?.reduce((acc, ticket) => {
+    const totalPayment = parseFloat(ticket.total_payment);
+    return acc + (isNaN(totalPayment) ? 0 : totalPayment);
+  }, 0) || 0;
+
+  const formattedRevenue = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(revenue || 0);
+
+  const bookedTicket = completed?.filter((ticket) => ticket.booking_status !== "cancelled");
+  const TicketLength = bookedTicket?.length;
 
   return (
     <div className="p-8 w-full min-h-screen">
@@ -34,43 +36,25 @@ const AdminDashboard = () => {
           <StatsCard
             title="Total Tickets Sold"
             description="This month"
-            value="1,250"
-          />
+            value={filteredTicketsLength?.toString() || "0"}
+            />
           <StatsCard
             title="Revenue"
             description="This month"
-            value="$125,000"
+            value={formattedRevenue}
+          />
+          <StatsCard
+            title="Total Booked"
+            description="This month"
+            value={TicketLength?.toString() + " Transport" || "0"}
           />
         </div>
 
-          <ChartCard />
+        <div className="gap-6">
+          <TransportComparison bookings={completed} />
+          {completed && <TicketList tickets={completed} />}
+        </div>
 
-          {/* <div>
-
-          <ChartCard title="Ticket Sales" description="Last 6 months">
-            <BarChart data={ticketSalesData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="tickets" fill="#8884d8" />
-            </BarChart>
-          </ChartCard>
-
-          <ChartCard title="Flight Occupancy" description="Current flights">
-            <LineChart data={flightOccupancyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="flight" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="occupancy" stroke="#82ca9d" />
-            </LineChart>
-          </ChartCard>
-          </div> */}
-
-          <TicketList tickets={recentTickets} />
-        
       </div>
     </div>
   );

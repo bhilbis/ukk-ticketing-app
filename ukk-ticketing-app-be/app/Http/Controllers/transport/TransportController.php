@@ -47,22 +47,22 @@ class TransportController extends Controller
         $prefix = $prefixMap[$typeId] ?? 'XX-';
             $digitLength = 4;
         }
-        
+
         $prefix = $prefixMap[$typeId] ?? 'XX-';
-        
+
          // mengambil data terbaru
         $latestTransport = Transports::where('code', 'LIKE', $prefix . '%')
             ->orderBy('code', 'desc')
             ->first();
-        
+
         if (!$latestTransport) {
             return $prefix . str_pad(1, $digitLength, '0', STR_PAD_LEFT);
         }
-        
+
          // Ekstrak nomor dari kode terbaru
         $currentNumber = intval(substr($latestTransport->code, strlen($prefix)));
         $nextNumber = $currentNumber + 1;
-        
+
          // Format kode baru dengan angka nol di depan
         return $prefix . str_pad($nextNumber, $digitLength, '0', STR_PAD_LEFT);
     }
@@ -82,7 +82,7 @@ class TransportController extends Controller
         ]);
 
         $validated['code'] = $this->generateTransportCode(
-            $validated['type_id'], 
+            $validated['type_id'],
             $validated['name_transport']
         );
 
@@ -106,10 +106,9 @@ class TransportController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'code' => 'string|max:50|unique:transports,code,' . $id,
             'name_transport' => 'required|string|max:100',
             'type_id' => 'required|exists:transport_types,id',
-            'image' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'has_discount' => 'boolean',
             'description' => 'nullable|string',
             'classes' => 'required|array',
@@ -119,7 +118,7 @@ class TransportController extends Controller
 
         $transport = Transports::findOrFail($id);
 
-        if ($transport->type_id != $validated['type_id'] || 
+        if ($transport->type_id != $validated['type_id'] ||
             $transport->name_transport != $validated['name_transport']) {
             $validated['code'] = $this->generateTransportCode(
                 $validated['type_id'],
@@ -137,7 +136,7 @@ class TransportController extends Controller
             $transportClass = TransportClass::where('transport_id', $transport->id)
                 ->where('class_name', $class['class_name'])
                 ->first();
-                
+
             if ($transportClass) {
                 $transportClass->update([
                     'seat_count' => $class['seat_count'],

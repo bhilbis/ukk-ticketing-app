@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/axiosInstance";
 
 export interface Transport {
     id: number;
+    code?: string;
     name_transport: string;
     image: string;
     has_discount: boolean;
@@ -42,7 +43,10 @@ export const useSaveTransport = () => {
   return useMutation({
     mutationFn: async (transport: Transport) => {
       if (transport.id) {
-        return axiosInstance.put(`/transports/${transport.id}`, transport);
+        console.log("transport di edit", transport);
+        return axiosInstance.put(`/transports/${transport.id}`, transport)
+        .then(res => console.log(res))
+        .catch(err => console.error(err));;
       } else {
         return axiosInstance.post("/transports", transport);
       }
@@ -51,7 +55,7 @@ export const useSaveTransport = () => {
       queryClient.invalidateQueries({ queryKey: ["transports"] });
     },
     onError: () => {
-
+      console.log("error");
     },
   });
 };

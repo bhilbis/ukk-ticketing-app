@@ -26,7 +26,7 @@ class PaymentController extends Controller
 
     public function index(): JsonResponse
     {
-        $userId = JWTAuth::user();
+        $userId = Auth::id();
 
         $payments = Payment::whereHas('passenger', function ($query) use ($userId) {
             $query->where('user_id', $userId);

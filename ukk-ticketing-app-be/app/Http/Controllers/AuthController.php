@@ -63,9 +63,9 @@ class AuthController extends Controller
                 'gender' => 'required|in:Laki-laki,Perempuan',
                 'birth' => 'required|date',
             ]);
-            
+
             $validatedData['password'] = Hash::make($validatedData['password']);
-            
+
             $user = User::create([
                 'name' => $validatedData['name_passenger'],
                 'password' => $validatedData['password'],
@@ -74,7 +74,7 @@ class AuthController extends Controller
             ]);
 
             $validatedData['user_id'] = $user->id;
-    
+
             Passenger::create([
                 'user_id' => $user->id,
                 'username' => $validatedData['username'],
@@ -88,7 +88,7 @@ class AuthController extends Controller
             ]);
 
             $user = User::with('level')->find($user->id);
-    
+
             return response()->json([
                 'message' => 'Registrasi berhasil',
                 'user' => [
@@ -141,15 +141,24 @@ class AuthController extends Controller
     }
 
     public function refresh() {
-        return $this->respondWithToken(auth()->$this->refresh());
+        try {
+            $newToken = JWTAuth::parseToken()->refresh();
+            return $this->respondWithToken($newToken);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' =>  'Gagal Memperbarui token' . $e->getMessage(),
+            ], 401);
+        }
     }
 
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
+            'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60
+            // 'expires_in' => config('jwt.ttl') * 60
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
         ]);
     }
 }

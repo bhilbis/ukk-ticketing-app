@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id('id');
-            $table->string('booking_code', 50)->unique(); //generate otomatis 
+            $table->string('booking_code', 50)->unique();
             $table->foreignId('passenger_id')->constrained('passengers')->onDelete('cascade');
             $table->date('booking_date');
-            $table->string('booking_place', 100); // online atau agent perjalanan
+            $table->string('booking_place', 100);
             $table->string('seat_code', 10);
             $table->foreignId('route_id')->constrained('routes')->onDelete('cascade');
             $table->string('destination', 100);

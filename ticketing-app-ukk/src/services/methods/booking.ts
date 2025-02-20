@@ -16,9 +16,12 @@ interface Bookings {
     departure_time: string;
     booking_status: "pending" | "confirmed" | "completed" | "cancelled";
     payment_status: "unpaid" | "paid" | "partial";
-    total_price: number;
+    total_payment: string;
     staff_id: number;
-    route?: Routes[];
+    passenger? :{
+        name_passenger: string;
+    }
+    route?: Routes;
 }
 
 const createBookingQuery = (endpoint: string, queryKey: string[]) => ({
@@ -29,9 +32,24 @@ const createBookingQuery = (endpoint: string, queryKey: string[]) => ({
     },
 });
 // Admin
-export const useAllBookings = () => useQuery<Bookings[]>(createBookingQuery('', ['bookings', 'all']));
+export const useAllBookings = () => 
+    useQuery<Bookings[]>(
+        createBookingQuery('', 
+            [
+                'bookings', 
+                'all'
+            ]
+        )
+    );
 // User
-export const useUserBookings = () => useQuery<Bookings[]>(createBookingQuery('my', ['bookings', 'user']));
+export const useUserBookings = () => 
+    useQuery<Bookings[]>(
+        createBookingQuery('my',
+            ['bookings', 
+                'user'
+            ]
+        )
+    );
 
 // Mutations
 
