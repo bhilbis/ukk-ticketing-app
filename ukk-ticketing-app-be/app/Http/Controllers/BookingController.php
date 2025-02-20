@@ -200,6 +200,19 @@ class BookingController extends Controller
                 ], 404);
             }
 
+            $isSeatTaken = Booking::where('route_id', $route->id)
+                ->where('transport_id', $transport->id)
+                ->where('departure_time', $schedule->departure_time)
+                ->where('seat_code', $validated['seat_code'])
+                ->exists();
+
+            if ($isSeatTaken) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kursi sudah dipesan'
+                ], 400);
+            };
+
             $departureDate = $schedule->departure_date;
             $departureTime = $schedule->departure_time;
 
