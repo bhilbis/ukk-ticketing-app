@@ -28,7 +28,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ isOpen, onClose}) => {
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync();
-      window.location.href = ('/login');
+      // window.location.href = ('/login');
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.message === "Unauthenticated.") {

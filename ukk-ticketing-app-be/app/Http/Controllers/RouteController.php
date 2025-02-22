@@ -56,7 +56,7 @@ class RouteController extends Controller
             'end_route' => 'sometimes|string|max:100',
             'price' => 'sometimes|numeric|min:0',
             'travel_duration' => 'sometimes|date_format:H:i',
-            'transport_id' => 'sometimes|exists:transports,id',
+            'transport_id' => 'required|exists:transports,id',
         ]);
 
         $route = Routes::findOrFail($id);

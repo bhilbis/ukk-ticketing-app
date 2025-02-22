@@ -20,7 +20,7 @@ class Routes extends Model
 
     public function transport()
     {
-        return $this->belongsTo(Transports::class);
+        return $this->belongsTo(Transports::class, 'transport_id');
     }
 
     public function bookings()

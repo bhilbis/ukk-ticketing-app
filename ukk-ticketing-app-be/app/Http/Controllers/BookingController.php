@@ -37,13 +37,30 @@ class BookingController extends Controller
     //for user to check his bookings
     public function getMyBookings(): JsonResponse
     {
-        $user = JWTAuth::user();
-        $passenger = Passenger::with('booking')->where('user_id', $user->id)->first();
+        try {
+            $user = JWTAuth::user();
+            $passenger = Passenger::with(['booking.route.transport', 'booking.payment'])
+                ->where('user_id', $user->id)
+                ->first();
 
-        return response()->json([
-            'message' => 'Data booking Anda berhasil ditemukan',
-            'data' => $passenger->booking,
-        ], 200);
+            if (!$passenger) {
+                return response()->json([
+                    'message' => 'Data penumpang tidak ditemukan',
+                    'data' => null
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Data booking dan passenger berhasil ditemukan',
+                'passenger' => $passenger,
+                // 'bookings' => $passenger->booking ?? [],
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat mengambil data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     //belum bisa digunakan karena seluruh data staff akan null
@@ -178,6 +195,8 @@ class BookingController extends Controller
     {
         $validated = $request->validate([
             'route_id' => 'required|exists:routes,id',
+            'departure_date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i',
             'seat_code' => 'required|string',
             'total_payment' => 'required|string',
             'staff_id' => 'nullable|exists:staff,id'
@@ -201,7 +220,7 @@ class BookingController extends Controller
             }
 
             $isSeatTaken = Booking::where('route_id', $route->id)
-                ->where('transport_id', $transport->id)
+                ->where('departure_date', $schedule->departure_date)
                 ->where('departure_time', $schedule->departure_time)
                 ->where('seat_code', $validated['seat_code'])
                 ->exists();
@@ -212,9 +231,6 @@ class BookingController extends Controller
                     'message' => 'Kursi sudah dipesan'
                 ], 400);
             };
-
-            $departureDate = $schedule->departure_date;
-            $departureTime = $schedule->departure_time;
 
             // Format kode booking: TRANS-SR-END-XXXXXX
             $transportCode = match ($transportType->type_name) {
@@ -227,7 +243,7 @@ class BookingController extends Controller
             $uniqueCode = strtoupper(substr(md5(uniqid()), 0, 3)); // Kode unik 6 karakter
             $bookingCode = "{$transportCode}-{$startCode}{$endCode}-{$uniqueCode}";
 
-            $checkInTime = Carbon::parse($departureTime)->subHours(2)->format('H:i'); // Check-in 2 jam sebelum keberangkatan
+            $checkInTime = Carbon::parse($validated['departure_time'])->subHours(2)->format('H:i'); // Check-in 2 jam sebelum keberangkatan
 
             // mengecek user id yang sesuai
             $userId = auth('api')->id();
@@ -240,11 +256,9 @@ class BookingController extends Controller
             $bookingData['passenger_id'] = $passenger->id;
             $bookingData['booking_code'] = $bookingCode;
             $bookingData['booking_date'] = now()->toDateString();
-            $bookingData['departure_date'] = $departureDate;
-            $bookingData['departure_time'] = $departureTime;
-            $bookingData['booking_place'] = "Online/Web"; // Lokasi booking default
+            $bookingData['booking_place'] = "Online/Web";
             $bookingData['destination'] = $route->destination;
-            $bookingData['check_in_time'] = $checkInTime; // Check-in 2 jam sebelum keberangkatan
+            $bookingData['check_in_time'] = $checkInTime;
             $bookingData['booking_status'] = 'pending';
             $bookingData['payment_status'] = 'unpaid';
             $bookingData['staff_id'] = $request->staff_id ?? null;

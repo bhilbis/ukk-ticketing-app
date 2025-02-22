@@ -23,7 +23,7 @@ class Transports extends Model
     }
 
     public function routes() {
-        return $this->hasMany(Routes::class, 'transport');
+        return $this->hasMany(Routes::class, 'transport_id');
     }
 
     public function discount() {

@@ -15,7 +15,6 @@ export interface Transport {
     }[];
 }
 
-// Fetch daftar transportasi berdasarkan type_id
 export const useTransports = () => {
   return useQuery<Transport[]>({
     queryKey: ["transports"],
@@ -36,7 +35,6 @@ export const useGetTransport = (id: number) => {
   });
 }
 
-// Tambah atau update transportasi
 export const useSaveTransport = () => {
   const queryClient = useQueryClient();
 
@@ -60,7 +58,6 @@ export const useSaveTransport = () => {
   });
 };
 
-// Hapus transportasi
 export const useDeleteTransport = () => {
   const queryClient = useQueryClient();
 

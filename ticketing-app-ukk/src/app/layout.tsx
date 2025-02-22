@@ -11,6 +11,7 @@ import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 // import { AuthProvider } from "@/context/AuthContext";
 import { ReactQueryProvider } from "@/lib/ReactQueryProvider";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "TravelLink",
@@ -41,7 +42,7 @@ export default function RootLayout({
         className={`${MontserratFont.className} antialiased`}
       >
         <ReactQueryProvider>
-          {/* <AuthProvider> */}
+          <AuthProvider>
             {/* <LoadingProvider> */}
               <nav>
                 <Navbar/>
@@ -58,7 +59,7 @@ export default function RootLayout({
                 <Footer/>
               </footer>
             {/* </LoadingProvider> */}
-          {/* </AuthProvider> */}
+          </AuthProvider>
         </ReactQueryProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useRoutes } from '@/services/methods/route';
 import { Schedule, useSaveSchedule } from '@/services/methods/schedule';
 import { useFormik } from 'formik';
+import { Plane, TrainFront } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface RouteModalProps {
@@ -115,7 +116,6 @@ const ScheduleForm: React.FC<RouteModalProps> = ({ isOpen, onClose, schedule, is
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             min="00:00"
-                            max="10:00"
                             className="w-full !block"
                             disabled={isReadOnly}
                         />
@@ -131,7 +131,12 @@ const ScheduleForm: React.FC<RouteModalProps> = ({ isOpen, onClose, schedule, is
                                         onCheckedChange={() => handleRouteSelect(route.id)}
                                         disabled={isReadOnly}
                                     />
-                                    <span>{route.destination}</span>
+                                    {route.transport?.type_id === 1 ? (
+                                        <Plane className='w-5 h-5 text-blue-500'/>
+                                    ) : (
+                                        <TrainFront className='w-5 h-5 text-yellow-500' />
+                                    )}
+                                    <span>{route.start_route} - {route.end_route}</span>
                                 </div>
                             ))}
                         </div>

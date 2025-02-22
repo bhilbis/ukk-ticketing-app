@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Calendar, MapPin, ArrowRight, Wallet } from 'lucide-react';
+import { Clock, Calendar, MapPin, ArrowRight, Wallet, Plane, TrainFront } from 'lucide-react';
 
 interface ScheduleDetailProps {
     isOpen: boolean;
@@ -114,7 +114,16 @@ const ScheduleDetailModal: React.FC<ScheduleDetailProps> = ({ isOpen, onClose, s
 
                       <div className="flex items-center text-gray-600">
                         <Wallet className="w-4 h-4 mr-2 text-yellow-500" />
-                        <span>Transport ID: {route.transport_id}</span>
+                        <span>Transport Code: {route.transport?.code}</span>
+                      </div>
+
+                      <div className='flex items-center text-gray-600'>
+                        {route.transport?.type_id === 1 ? (
+                          <Plane className="w-4 h-4 mr-2 text-blue-500" />
+                        ) : (
+                          <TrainFront className="w-4 h-4 mr-2 text-blue-500" />
+                        )}
+                        <span>Transport Name : {route.transport?.name_transport}</span>
                       </div>
                     </div>
                   </div>
@@ -124,7 +133,7 @@ const ScheduleDetailModal: React.FC<ScheduleDetailProps> = ({ isOpen, onClose, s
           </Card>
 
           {/* Timestamps */}
-          <div className="text-sm text-gray-500 space-y-1 flex items-center justify-between">
+          <div className="text-sm text-gray-500 flex items-center justify-between">
             <p>Dibuat: {formatDate(schedule?.created_at)}</p>
             <p>Terakhir diupdate: {formatDate(schedule?.updated_at)}</p>
           </div>

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
 import { Transport } from "./transport";
+import { Schedule } from "./schedule";
 
 export interface Routes {
     id: number;
@@ -11,6 +12,7 @@ export interface Routes {
     travel_duration: string;
     transport_id: number;
     transport?: Transport;
+    schedules?: Schedule[]; 
 }
 
 export const useRoutes = () => {
@@ -38,9 +40,7 @@ export const useSaveRoute = () => {
 
     return useMutation({
         mutationFn: async (route: Routes) => {
-            console.log("Route ID:", route.id);
             if (route.id) {
-                // console.log("Route ID:", route.id);
                 return axiosInstance.put(`/routes/${route.id}`, route);
             } else {
                 return axiosInstance.post("/routes", route);

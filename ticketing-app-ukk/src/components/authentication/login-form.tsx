@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react";
@@ -24,6 +25,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   
   const loginMutation = usePostLogin();
@@ -42,9 +44,9 @@ export function LoginForm({
         router.push("/");
       }
 
-    } catch (error) {
-      // Error handling is managed by the mutation's onError callback
+    } catch (error: any) {
       console.error("Login submission error:", error);
+      setErrorMessage(error.response?.data?.message || "Login gagal, coba lagi nanti");
     }
   };
 
@@ -104,10 +106,8 @@ export function LoginForm({
                     Lupa password?
                   </Link>
                 </div>
-                {loginMutation.error && (
-                  <p className="text-red-500 text-center">
-                    {loginMutation.error.message || "Login gagal, coba lagi nanti"}
-                  </p>
+                {errorMessage && (
+                  <p className="text-red-500 text-center">{errorMessage}</p>
                 )}
                 <Button 
                   type="submit" 

@@ -1,30 +1,76 @@
-// "use client";
-// import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+"use client";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-// const AuthContext = createContext<{ isLoggedIn: boolean; setIsLoggedIn: (value: boolean) => void; logout: () => void } | undefined>(undefined);
+interface AuthContextType {
+  isLoggedIn: boolean;
+  userLevel: number | null;
+  setIsLoggedIn: (value: boolean) => void;
+  logout: () => void;
+}
 
-// export const AuthProvider = ({ children }: { children: ReactNode }) => {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+interface JWTPayload {
+  level_id: number;
+  // tambahkan field lain yang ada di token jika diperlukan
+}
 
-//   useEffect(() => {
-//     const token = localStorage.getItem("token");
-//     setIsLoggedIn(!!token);
-//   }, []);
+const parseJWT = (token: string): JWTPayload | null => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload;
+  } catch (error) {
+    console.error("Error parsing token:", error);
+    return null;
+  }
+}
 
-//   const logout = () => {
-//     localStorage.removeItem("token");
-//     setIsLoggedIn(false);
-//     window.location.href = "/";
-//   };
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-//   return <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, logout }}>{children}</AuthContext.Provider>;
-// };
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userLevel, setUserLevel] = useState<number | null>(null);
 
-// // 3️⃣ Custom Hook untuk menggunakan AuthContext di komponen lain
-// export const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (!context) {
-//     throw new Error("useAuth harus digunakan dalam AuthProvider");
-//   }
-//   return context;
-// };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    
+    if (token) {
+      const payload = parseJWT(token);
+      if (payload) {
+        setIsLoggedIn(true);
+        setUserLevel(payload.level_id);
+      } else {
+        // Handle invalid token
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
+        setUserLevel(null);
+      }
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setUserLevel(null);
+    window.location.href = "/";
+  };
+
+  return (
+    <AuthContext.Provider 
+      value={{ 
+        isLoggedIn, 
+        userLevel,
+        setIsLoggedIn,
+        logout 
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth harus digunakan dalam AuthProvider");
+  }
+  return context;
+};

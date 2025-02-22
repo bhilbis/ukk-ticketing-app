@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import '../globals.css';
-import ProfileLayout from "@/layouts/ProfileLayouts";
 import AuthGuard from "@/hooks/use-auth";
+import Profile from "@/components/profile/Profile";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -13,5 +13,14 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return <AuthGuard><ProfileLayout><div>{children}</div></ProfileLayout></AuthGuard>;
+    return (
+        <AuthGuard>
+            <Profile>
+                <div className="">
+                    {/* <SidebarProfile /> */}
+                    {children}
+                </div>
+            </Profile>
+        </AuthGuard>
+    )
 }   

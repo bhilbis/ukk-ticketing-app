@@ -11,7 +11,7 @@ class TransportScheduleController extends Controller
 {
     public function index(): JsonResponse
     {
-        $schedules = TransportSchedule::with('routes')->get();
+        $schedules = TransportSchedule::with('routes.transport.classes')->get();
 
         return response()->json([
             'message' => 'Data jadwal transport berhasil ditemukan',

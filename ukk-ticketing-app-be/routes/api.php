@@ -29,9 +29,9 @@ Route::prefix('auth')->group(function () {
     Route::post('validate-code', [PasswordResetController::class, 'codeValidationForgotPassword']); //validation code
     Route::post('reset-password', [PasswordResetController::class, 'resetPasswordForgotPassword']); //confirmation reset password
 
-    Route::post('refresh', [AuthController::class, 'refresh'])->middleware('jwt.refresh');
     // 🔒 Hanya bisa diakses jika sudah login
     Route::middleware(['auth:api'])->group(function () {
+        Route::post('refresh', [AuthController::class, 'refresh'])->middleware('jwt.refresh');
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
@@ -40,14 +40,19 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+Route::prefix('routes')->group(function () {
+    Route::get('/', [RouteController::class, 'index']);
+    Route::get('/{id}', [RouteController::class, 'show']);
+});
+Route::prefix('schedules')->group(function () {
+    Route::get('/', [TransportScheduleController::class, 'index']);
+    Route::get('/{id}', [TransportScheduleController::class, 'show']);
+});
 //middleWare access ( authenticated)
 Route::middleware(['auth:api'])->group(function () {
-
-    Route::prefix('routes')->group(function () {
-        Route::get('/', [RouteController::class, 'index']);
-        Route::get('/{id}', [RouteController::class, 'show']);
+    Route::prefix('bookings')->group(function () {
+        Route::get('/', [BookingController::class, 'index']);
     });
-
     // 🟡 Group untuk (Super Admin Only)
     Route::middleware(['role:Super Admin'])->group(function () {
 
@@ -98,13 +103,12 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/{id}', [TransportController::class, 'getById']);
         });
 
-        Route::prefix('schedules')->group(function () {
-            Route::get('/', [TransportScheduleController::class, 'index']);
-            Route::get('/{id}', [TransportScheduleController::class, 'show']);
-        });
+        // Route::prefix('schedules')->group(function () {
+        //     Route::get('/', [TransportScheduleController::class, 'index']);
+        //     Route::get('/{id}', [TransportScheduleController::class, 'show']);
+        // });
 
         Route::prefix('bookings')->group(function () {
-            Route::get('/', [BookingController::class, 'index']);
             Route::put('/validate/{id}', [BookingController::class, 'validatePayment']);
         });
 

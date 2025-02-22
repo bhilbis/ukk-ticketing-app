@@ -6,28 +6,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Mousewheel } from "swiper/modules";
 import { Skeleton } from "./skeleton";
 import { useEffect, useState } from "react";
+import { Routes } from "@/services/methods/route";
 
-export interface Airplane {
-  id: number;
-  image: string;
-  from: string;
-  to: string;
-  date: string;
-  type: string;
-  class: string;
-  price: string;
-  trip: string;
-  typeDiscount?: string;
-  discount?: string;
-}
-
-interface AirplaneListProps {
-  airplanes: Airplane[] | null;
+interface AirplaneRouteCardProps {
+  routes: Routes[] | null;
   filterKey: string;
 }
 
-const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => {
+const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey }) => {
   const [isRendering, setIsRendering] = useState(true);
+  
+  const airplaneRoutes = routes?.filter(route => route.transport?.type_id === 1) ?? null;
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsRendering(false), 1000);
@@ -53,11 +42,11 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
             modules={[Autoplay, FreeMode, Mousewheel]}
             className="flex justify-center items-center xl:min-h-[20rem] !pr-1"
           >
-            {isRendering || !airplanes ? (
-              [...Array(airplanes?.length || 3)].map((_, index) => (
+            {isRendering || !airplaneRoutes ? (
+              [...Array(airplaneRoutes?.length || 3)].map((_, index) => (
                 <SwiperSlide
                   key={index}
-                  className="!w-[16rem] !h-[24rem] bg-transparent rounded-lg shadow-md !flex !gap-16"
+                  className="!w-[16rem] !h-[24rem] bg-transparent !rounded-lg shadow-md !flex !gap-16"
                 >
                   <div>
                     <div className="relative !w-[16rem] h-[12rem] flex items-center justify-center bg-gray-200 rounded-t-lg">
@@ -75,52 +64,43 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
                 </SwiperSlide>
               ))
             ) : (
-              airplanes.map((airplane) => (
-                <SwiperSlide
-                  key={airplane.id}
-                  className="!w-[14rem] !h-[18rem] bg-transparent shadow-md !flex !gap-16"
-                >
-                  <Link href={"/"}>
-                    <div className="relative !w-full h-[10rem]">
-                      <Image
-                        src={airplane.image}
-                        alt={`Flight from ${airplane.from} to ${airplane.to}`}
-                        width={400}
-                        height={400}
-                        draggable={false}
-                        className=" object-cover !w-full !h-full rounded-t-md"
-                      />
-                      <span className="absolute top-2 left-2 bg-blue-base text-white text-xs px-2 py-2 rounded-md">
-                        {airplane.trip}
-                      </span>
-                      {airplane.discount && (
-                        <span className="absolute -bottom-2 -right-1 bg-red-400 text-white text-xs px-2 py-2 rounded-md">
-                          {airplane.discount}
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-4 bg-slate-200 rounded-b-lg flex flex-col justify-between">
-                      <div>
-                        <h2 className="text-sm font-bold text-ellipsis mb-2">
-                          {`${airplane.from} → ${airplane.to}`}
-                        </h2>
-                        <p className="text-gray-600 text-xs">{new Date(airplane.date).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                          })}
-                        </p>
-                        <p className="text-gray-600 text-xs truncate sm:max-w-[13rem]">{`${airplane.type}`}</p>
-                        <p className="text-gray-600 text-xs mb-2 truncate sm:max-w-[13rem]">{`${airplane.class}`}</p>
+              airplaneRoutes.flatMap((route) =>
+                route.schedules?.map((schedule) => (
+                  <SwiperSlide key={`${route.id}-${schedule.id}`} className="!w-[16rem] !h-[18rem] bg-transparent shadow-md !flex !gap-16">
+                    <Link href={`/pesawat/${route.id}/schedule/${schedule.id}`} className="!w-full !h-full bg-transparent rounded-lg">
+                      <div className="relative !w-full h-[10rem]">
+                        <Image
+                          src={route.transport?.image || '/placeholder-transport.jpg'}
+                          alt={`from ${route.start_route} to ${route.end_route}`}
+                          width={400}
+                          height={400}
+                          draggable={false}
+                          className="object-cover !w-full !h-full rounded-t-md"
+                        />
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-600">Mulai Dari</p>
-                        <p className="text-red-500 font-bold text-sm truncate">{`IDR ${airplane.price}`}</p>
+                      <div className="p-4 bg-slate-200 rounded-md flex flex-col justify-between gap-2">
+                        <div>
+                          <h2 className="text-sm font-bold text-ellipsis mb-2">
+                            {`${route.start_route} → ${route.end_route}`}
+                          </h2>
+                          <p className="text-gray-600 text-xs">
+                            {schedule.departure_date || 'No schedule available'}
+                          </p>
+                          <p className="text-gray-600 text-xs truncate sm:max-w-[13rem]">
+                            {route.transport?.name_transport}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-600">Mulai Dari</p>
+                          <p className="text-red-500 font-bold text-sm truncate">
+                            {`IDR ${route.price.toLocaleString('id-ID')}`}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </SwiperSlide>
-              ))
+                    </Link>
+                  </SwiperSlide>
+                ))
+              )
             )}
           </Swiper>
         </motion.div>
@@ -129,4 +109,4 @@ const AirplaneCard: React.FC<AirplaneListProps> = ({ airplanes, filterKey }) => 
   );
 };
 
-export default AirplaneCard;
+export default AirplaneRouteCard;

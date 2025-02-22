@@ -1,27 +1,25 @@
 "use client"
-
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useLogout } from '@/services/methods/auth'
 import { useIsMobile } from '@/hooks/use-mobile'
-import DesktopNav from './DekstopNav'
-import MobileNav from './HamburgerNav'
+import DesktopNav from './DesktopNav'
 import Search from '../ui/search'
-// import { useAuth } from '@/context/AuthContext'
+import HamburgerNav from './buttonHamburger'
+import MobileNav from './MobileNav'
 
 const Navbar = () => {
   const isMobile = useIsMobile();
-  // const { logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const hiddenPaths = ["/admin", "/login", "/daftar", '/reset-password', ];
+  const hiddenPaths = ["/admin", "/login", "/daftar", '/reset-password', '/myaccount'];
   const logoutMutation = useLogout();
-  // const [dropdownOpenMobile, setDropdownOpenMobile] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (pathname === "/") {
@@ -49,8 +47,7 @@ const Navbar = () => {
   const handleLogout = async() => {
       try {
         await logoutMutation.mutate();
-        // logout();
-        window.location.href = ('/login'); 
+        router.push('/login');
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -59,50 +56,57 @@ const Navbar = () => {
   return (
     <div 
       className={`transition-all duration-300 ${
-        pathname === "/" ? scrolled ? "fixed bg-white text-black shadow-md" : "fixed bg-transparent backdrop-blur-sm text-white"
-          : "fixed bg-white text-black shadow-md"} py-2 top-0 left-0 z-50 w-full
+        pathname === "/" 
+          ? scrolled 
+            ? "fixed bg-white text-black shadow-md" 
+            : "absolute bg-transparent backdrop-blur-sm text-white"
+          : "fixed bg-white text-black shadow-md"
+        } py-2 top-0 left-0 z-50 w-full
     `}>
-
       <div className='flex justify-between items-center py-2 px-5 lg:px-20'>
-
-      <div className='flex items-center gap-2 w-full'>
-        <Link 
-          href={'/'} 
-          className='rounded-2xl border border-solid border-transparent transition-colors flex items-center justify-center h-10 px-4 gap-x-5'
-        >
-          <Image
-            src="/travel-ticket-logo.svg"
-            alt='Vercel Logo'
-            width={50}
-            height={50}
-          />
-          {pathname === "/" ? (
-            !scrolled && <h1 className={`${isMobile ? 'hidden' : 'block'} sm:text-xl text-white`}>TravelLink</h1>
-          ) : (
-            <h1 className={`${isMobile ? 'hidden' : 'block'} sm:text-xl text-black`}>TravelLink</h1>
+        <div className='flex items-center gap-2 w-full'>
+          <Link 
+            href={'/'} 
+            className='rounded-2xl border border-solid border-transparent transition-colors flex items-center justify-center h-10 px-4 gap-x-5'
+          >
+            <Image
+              src="/travel-ticket-logo.svg"
+              alt='Vercel Logo'
+              width={50}
+              height={50}
+            />
+            {pathname === "/" ? (
+              !scrolled && <h1 className={`${isMobile ? 'hidden' : 'block'} sm:text-xl text-white`}>TravelLink</h1>
+            ) : (
+              <h1 className={`${isMobile ? 'hidden' : 'block'} sm:text-xl text-black`}>TravelLink</h1>
+            )}
+          </Link>
+          {pathname === "/" && scrolled && (
+              <>
+              {isMobile ? (
+                  <div className='hidden xl:hidden lg:flex'>
+                  <Search />
+                </div>
+              ) : 
+                <div className='hidden lg:flex px-5 py-2 rounded-xl lg:border border-gray-300 w-[30%] items-start'>
+                  <Search />
+                </div>
+              }
+              </>
           )}
-        </Link>
-
-        
-        {pathname === "/" && scrolled && (
-            <>
-            {isMobile ? (
-                <div className='hidden xl:hidden lg:flex'>
-                <Search />
-              </div>
-            ) : 
-              <div className='hidden lg:flex px-5 py-2 rounded-xl lg:border border-gray-300 w-[30%] items-start'>
-                <Search />
-              </div>
-            }
-            </>
-        )}
-      </div>
-
-        {
-          isMobile ? <MobileNav isOpen={isOpen} setIsOpen={setIsOpen} handleLogout={handleLogout} /> 
-          : <DesktopNav scrolled={scrolled} dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} dropdownRef={dropdownRef} handleLogout={handleLogout} pathname={pathname}/>}
-      </div>
+        </div>
+          {
+            isMobile ? (
+              <>
+                <HamburgerNav setIsOpen={setIsOpen} />
+                <MobileNav isOpen={isOpen} setIsOpen={setIsOpen} handleLogout={handleLogout} /> 
+              </>
+            )
+            : (
+            <DesktopNav scrolled={scrolled} dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} dropdownRef={dropdownRef} handleLogout={handleLogout} pathname={pathname}/>
+            )
+          }
+        </div>
     </div>
   )
 }

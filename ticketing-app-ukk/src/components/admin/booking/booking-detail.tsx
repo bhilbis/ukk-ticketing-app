@@ -26,7 +26,11 @@ const statusColors = {
 interface BookingDetailProps {
   isOpen: boolean;
   onClose: () => void;
-  booking: any;
+  booking: {
+    booking_status: keyof typeof statusColors;
+    payment_status: keyof typeof statusColors;
+    [key: string]: any;
+  };
 }
 
 const BookingDetailModal: React.FC<BookingDetailProps> = ({ isOpen, onClose, booking }) => {
@@ -127,7 +131,7 @@ const BookingDetailModal: React.FC<BookingDetailProps> = ({ isOpen, onClose, boo
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">Tanggal Berangkat</p>
                     <div className="flex items-center gap-2">
@@ -139,27 +143,27 @@ const BookingDetailModal: React.FC<BookingDetailProps> = ({ isOpen, onClose, boo
                     <p className="text-sm text-gray-500">Jam Berangkat</p>
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-gray-500" />
-                      <p className="text-sm">{formatTime(booking?.departure_time)}</p>
+                      <p className="text-sm">{formatTime(booking?.departure_time.replace(':', '.'))} WIB</p>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">Check-in</p>
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-gray-500" />
-                      <p className="text-sm">{formatTime(booking?.check_in_time)}</p>
+                      <p className="text-sm">{formatTime(booking?.check_in_time).replace(':', '.')} WIB</p>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">Nomor Kursi</p>
                     <p className="text-sm font-medium">{booking?.seat_code}</p>
                   </div>
+                  <div className="bg-gray-50 rounded-lg space-y-1">
+                    <p className="text-sm text-gray-500">Transportasi</p>
+                    <p className="text-sm font-medium">{booking?.route?.transport?.name_transport}</p>
+                    <p className="text-xs text-gray-500">Kode: {booking?.route?.transport?.code}</p>
+                  </div>
                 </div>
 
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-500 mb-1">Transportasi</p>
-                  <p className="text-sm font-medium">{booking?.route?.transport?.name_transport}</p>
-                  <p className="text-xs text-gray-500">Kode: {booking?.route?.transport?.code}</p>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -173,16 +177,8 @@ const BookingDetailModal: React.FC<BookingDetailProps> = ({ isOpen, onClose, boo
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Total Pembayaran</p>
+                  <p className="text-sm text-gray-500">Total Yang Harus di Bayar</p>
                   <p className="text-sm font-medium">{formatPrice(booking?.total_payment)}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Metode Pembayaran</p>
-                  <p className="text-sm font-medium">{booking?.payment?.payment_method} : {booking?.payment?.bank_name}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-500">ID Transaksi</p>
-                  <p className="text-sm font-medium break-all">{booking?.payment?.transaction_id}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm text-gray-500">Tempat Booking</p>
@@ -197,10 +193,12 @@ const BookingDetailModal: React.FC<BookingDetailProps> = ({ isOpen, onClose, boo
 
           {/* Timestamps */}
           <div className="text-xs lg:text-sm text-gray-500 space-y-1 p-1">
-            <p>Dibuat: {formatDate(booking?.created_at)}</p>
-            <p>Terakhir diupdate: {formatDate(booking?.updated_at)}</p>
+            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
+              <p>Dibuat : {formatDate(booking?.created_at)}</p>
+              <p>Terakhir diupdate : {formatDate(booking?.updated_at)}</p>
+            </div>
             {booking?.completed_at && (
-              <p>Diselesaikan: {formatDate(booking?.completed_at)}</p>
+              <p>Diselesaikan : {formatDate(booking?.completed_at)}</p>
             )}
           </div>
         </div>

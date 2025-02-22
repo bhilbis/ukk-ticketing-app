@@ -119,14 +119,14 @@ const BookingList = ({ isAdmin = true }) => {
                                             </div>
                                         </div>
                                         
-                                        <div className="grid grid-cols-3 gap-4 text-sm">
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm">
                                             <div>
                                                 <p className="text-gray-500">Tanggal Berangkat</p>
-                                                <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
+                                                <p>{new Date(booking.departure_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                                             </div>
                                             <div>
                                                 <p className="text-gray-500">Waktu Berangkat</p>
-                                                <p>{booking.departure_time.slice(0, 5)}</p>
+                                                <p>{booking.departure_time.slice(0, 5).replace(':', '.')} WIB</p>
                                             </div>
                                             <Button
                                                 variant="ghost"
@@ -196,11 +196,11 @@ const BookingList = ({ isAdmin = true }) => {
                                             </div>
                                             <div>
                                                 <p className="text-gray-500">Tanggal</p>
-                                                <p>{new Date(booking.departure_date).toLocaleDateString()}</p>
+                                                <p>{new Date(booking.departure_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                                             </div>
                                             <div>
                                                 <p className="text-gray-500">Waktu</p>
-                                                <p>{booking.departure_time.slice(0, 5)}</p>
+                                                <p>{booking.departure_time.slice(0, 5).replace(':', '.')} WIB</p>
                                             </div>
 
                                             {isAdmin && (
@@ -221,7 +221,7 @@ const BookingList = ({ isAdmin = true }) => {
                 </Tabs>
             </div>
 
-            {isDetailModalOpen && (
+            {isDetailModalOpen && selectedBooking && (
                 <BookingDetailModal
                     isOpen={isDetailModalOpen}
                     onClose={() => setIsDetailModalOpen(false)}
