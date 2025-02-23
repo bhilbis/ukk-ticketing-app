@@ -2,37 +2,54 @@
 
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Cog, CreditCard, HomeIcon, Package } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { Cog, CreditCard, HomeIcon, LogOut, Package } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import { DialogTitle } from '../ui/dialog';
+import { useState } from 'react';
+import { useLogout } from '@/services/methods/auth';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 
 const Profile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const logoutMutation = useLogout();
+  const router = useRouter();
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon className="w-4 h-4" /> },
-    { id: 'your-orders', label: 'Bookings', icon: <Package className="w-4 h-4" /> },
+    { id: 'bookings', label: 'Bookings', icon: <Package className="w-4 h-4" /> },
     { id: 'payment-method', label: 'Payment Method', icon: <CreditCard className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Cog className="w-4 h-4" /> },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await logoutMutation.mutateAsync()
+      setIsLogoutOpen(false);
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const LogoutButton = () => (
+    <button
+      onClick={() => setIsLogoutOpen(true)}
+      className="flex items-center gap-3 rounded-lg px-3 py-2 text-red-500 hover:bg-red-50 transition-all w-full mt-2"
+    >
+      <LogOut className="w-4 h-4" />
+      Logout
+    </button>
+  );
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen w-full">
         
-      <div className="md:hidden fixed left-0 right-0 border-b bg-background z-40">
-        <div className="flex items-center justify-between px-4 h-16">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-xs text-muted-foreground">john.doe@example.com</p>
-            </div>
-          </div>
+      <div className="lg:hidden fixed left-0 right-0 border-b bg-background z-40">
+        <div className="flex flex-col items-end justify-center px-4 h-12">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -40,7 +57,18 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[250px]">
+              <DialogTitle>Navigation Menu</DialogTitle>
               <nav className="grid gap-2 mt-4">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">John Doe</p>
+                    <p className="text-xs text-muted-foreground">john.doe@example.com</p>
+                  </div>
+                </div>
                 {sidebarItems.map((item) => (
                   <Link
                     key={item.id}
@@ -55,6 +83,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
                     {item.label}
                   </Link>
                 ))}
+                <LogoutButton />
               </nav>
             </SheetContent>
           </Sheet>
@@ -62,7 +91,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block fixed left-0 h-full w-[250px] border-r bg-background">
+      <aside className="hidden lg:block fixed left-0 h-full w-[250px] border-r bg-background">
         <div className="p-4">
           <div className="flex items-center gap-3 mb-6">
             <Avatar>
@@ -89,16 +118,34 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
                 {item.label}
               </Link>
             ))}
+            <LogoutButton />
           </nav>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="md:ml-[250px]  p-6 w-full">
+      <main className="lg:ml-[250px] mt-10 lg:mt-0 p-6 w-full">
         <div className="border rounded-lg bg-background p-6">
           {children}
         </div>
       </main>
+
+      <AlertDialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Apakah Anda yakin ingin keluar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Anda perlu login kembali untuk mengakses akun Anda.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout}>
+              Ya, Keluar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

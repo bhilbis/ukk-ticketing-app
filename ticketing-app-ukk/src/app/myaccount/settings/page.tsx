@@ -1,6 +1,7 @@
-"use client";
-
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
+import React, { useState, useEffect } from "react";
+import { useGetMy, useUpdateMy, useUpdatePassword } from "@/services/methods/use-passenger";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -8,29 +9,75 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Page = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const { data: user, isLoading } = useGetMy();
+  const updateUser = useUpdateMy();
+  const updatePassword = useUpdatePassword();
 
-  const handlePasswordUpdate = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    name_passenger: "",
+    email: "",
+    address: "",
+    telp: "",
+    gender: "",
+    birth: "",
+  });
+
+  const [passwordData, setPasswordData] = useState({
+    old_password: "",
+    password: "",
+    password_confirmation: "",
+  });
+  const [error, setError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      setTimeout(() => {
+        setFormData({
+          name_passenger: user.name_passenger || "",
+          email: user.email || "",
+          address: user.address || "",
+          telp: user.telp || "",
+          gender: user.gender || "",
+          birth: user.birth || "",
+        });
+      }, 500);
+    }
+  }, [user, isLoading]);
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordChange = (e: any) => {
+    setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault();
+    updateUser.mutate(formData);
+    setIsEditing(false);
+  };
+
+  const handlePasswordUpdate = (e: any) => {
     e.preventDefault();
     setError("");
 
-    if (newPassword.length < 6) {
+    if (passwordData.password.length < 6) {
       setError("Password baru harus memiliki minimal 6 karakter.");
       return;
     }
-    if (newPassword !== confirmPassword) {
+    if (passwordData.password !== passwordData.password_confirmation) {
       setError("Konfirmasi password tidak cocok.");
       return;
     }
 
-    alert("Password berhasil diperbarui!");
+    updatePassword.mutate(passwordData);
   };
 
+  if (isLoading) return <p>Loading...</p>;
   return (
-    <div className="max-w-4xl mx-auto ">
+    <div className="space-y-6">
       <h1 className="text-3xl font-bold mb-4 text-center">Pengaturan</h1>
       <p className="text-gray-600 mb-6 text-center">Kelola informasi dan keamanan akun Anda.</p>
 
@@ -44,15 +91,34 @@ const Page = () => {
           <Card>
             <CardContent className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Informasi Akun</h2>
-              <div>
-                <Label>Nama</Label>
-                <Input type="text" placeholder="Masukkan nama Anda" />
-              </div>
-              <div>
-                <Label>Email</Label>
-                <Input type="email" placeholder="Masukkan email Anda" />
-              </div>
-              <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">Simpan Perubahan</Button>
+              <Button onClick={() => setIsEditing(true)} className="mb-4 bg-blue-500 hover:bg-blue-600 text-white">Edit Profil</Button>
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <div>
+                  <Label>Nama</Label>
+                  <Input type="text" name="name_passenger" value={formData.name_passenger} onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <div>
+                  <Label>Email</Label>
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <div>
+                  <Label>Alamat</Label>
+                  <Input type="text" name="address" value={formData.address} onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <div>
+                  <Label>Telepon</Label>
+                  <Input type="text" name="telp" value={formData.telp} onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <div>
+                  <Label>Jenis Kelamin</Label>
+                  <Input type="text" name="gender" value={formData.gender} onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <div>
+                  <Label>Tanggal Lahir</Label>
+                  <Input type="date" name="birth" value={formData.birth} defaultValue={user?.birth}  onChange={handleChange} disabled={!isEditing} required />
+                </div>
+                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white" disabled={!isEditing}>Simpan Perubahan</Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -64,40 +130,20 @@ const Page = () => {
               <form onSubmit={handlePasswordUpdate} className="space-y-4">
                 <div>
                   <Label>Password Saat Ini</Label>
-                  <Input
-                    type="password"
-                    placeholder="Masukkan password saat ini"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    required
-                  />
+                  <Input type="password" name="old_password" value={passwordData.old_password} onChange={handlePasswordChange} required />
                 </div>
                 <div>
                   <Label>Password Baru</Label>
-                  <Input
-                    type="password"
-                    placeholder="Masukkan password baru"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                  />
+                  <Input type="password" name="password" value={passwordData.password} onChange={handlePasswordChange} required />
                 </div>
                 <div>
                   <Label>Konfirmasi Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="Masukkan kembali password baru"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
+                  <Input type="password" name="password_confirmation" value={passwordData.password_confirmation} onChange={handlePasswordChange} required />
                 </div>
 
                 {error && <p className="text-red-500">{error}</p>}
 
-                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                  Perbarui Password
-                </Button>
+                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white">Perbarui Password</Button>
               </form>
             </CardContent>
           </Card>

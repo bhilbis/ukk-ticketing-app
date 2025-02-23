@@ -53,6 +53,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('bookings')->group(function () {
         Route::get('/', [BookingController::class, 'index']);
     });
+    Route::prefix('myUser')->group(function () {
+        Route::get('/', [UserController::class, 'getMy']);
+        Route::put('/update-user', [UserController::class, 'updateMy']);
+        Route::put('/update-password', [UserController::class, 'updatePassword']);
+    });
+
     // 🟡 Group untuk (Super Admin Only)
     Route::middleware(['role:Super Admin'])->group(function () {
 
@@ -103,11 +109,6 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/{id}', [TransportController::class, 'getById']);
         });
 
-        // Route::prefix('schedules')->group(function () {
-        //     Route::get('/', [TransportScheduleController::class, 'index']);
-        //     Route::get('/{id}', [TransportScheduleController::class, 'show']);
-        // });
-
         Route::prefix('bookings')->group(function () {
             Route::put('/validate/{id}', [BookingController::class, 'validatePayment']);
         });
@@ -119,8 +120,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['role:Passenger'])->group(function () {
         Route::prefix('bookings')->group(function () {
             Route::post('/', [BookingController::class, 'store']);
-            Route::get('/unpaid', [BookingController::class, 'getUnpaidBookings']);
-            Route::get('/paid', [BookingController::class, 'getPaidBookings']);
+            // Route::get('/unpaid', [BookingController::class, 'getUnpaidBookings']);
+            // Route::get('/paid', [BookingController::class, 'getPaidBookings']);
             Route::put('/{id}', [BookingController::class, 'CancelBooking']);
             Route::get('/my', [BookingController::class, 'getMyBookings']);
         });

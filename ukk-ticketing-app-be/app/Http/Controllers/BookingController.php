@@ -83,65 +83,65 @@ class BookingController extends Controller
         ], 200);
     }
 
-    public function getUnpaidBookings(): JsonResponse
-    {
-        $user = JWTAuth::user(); // Get logged-in user
+    // public function getUnpaidBookings(): JsonResponse
+    // {
+    //     $user = JWTAuth::user(); // Get logged-in user
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
+    //     if (!$user) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Unauthorized'
+    //         ], 401);
+    //     }
 
-        $unpaidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->where('payment_status', 'unpaid')->get();
+    //     $unpaidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
+    //         $query->where('user_id', $user->id);
+    //     })->where('payment_status', 'unpaid')->get();
 
-        if ($unpaidBookings->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No unpaid bookings found.',
-                'data' => []
-            ], 200);
-        }
+    //     if ($unpaidBookings->isEmpty()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No unpaid bookings found.',
+    //             'data' => []
+    //         ], 200);
+    //     }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Unpaid bookings retrieved successfully.',
-            'data' => $unpaidBookings
-        ], 200);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Unpaid bookings retrieved successfully.',
+    //         'data' => $unpaidBookings
+    //     ], 200);
+    // }
 
-    public function getPaidBookings(): JsonResponse
-    {
-        $user = JWTAuth::user(); // Get logged-in user
+    // public function getPaidBookings(): JsonResponse
+    // {
+    //     $user = JWTAuth::user(); // Get logged-in user
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
+    //     if (!$user) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Unauthorized'
+    //         ], 401);
+    //     }
 
-        $paidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->where('payment_status', 'paid')->get();
+    //     $paidBookings = Booking::whereHas('passenger', function ($query) use ($user) {
+    //         $query->where('user_id', $user->id);
+    //     })->where('payment_status', 'paid')->get();
 
-        if ($paidBookings->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No paid bookings found.',
-                'data' => []
-            ], 200);
-        }
+    //     if ($paidBookings->isEmpty()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No paid bookings found.',
+    //             'data' => []
+    //         ], 200);
+    //     }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Paid bookings retrieved successfully.',
-            'data' => $paidBookings
-        ], 200);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Paid bookings retrieved successfully.',
+    //         'data' => $paidBookings
+    //     ], 200);
+    // }
 
     public function validatePayment($id): JsonResponse
     {

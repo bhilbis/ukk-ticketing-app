@@ -7,7 +7,9 @@ use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -29,6 +31,83 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function getMy(): JsonResponse
+    {
+        $user = Auth::user();
+        $passenger = $user->passenger; // Assuming the relationship is defined in the User model
+
+        return response()->json([
+            'message' => 'Data user berhasil ditemukan',
+            'data' => $passenger
+        ], 200);
+    }
+
+    public function updatePassword(Request $request) {
+        try {
+            $user = Auth::user();
+            $request->validate([
+                'old_password' => 'required',
+                'password' => 'required|confirmed|min:6',
+            ]);
+
+            if (!Hash::check($request->old_password, $user->password)) {
+                return response()->json([
+                    'message' => 'Password lama tidak sesuai',
+                ], 400);
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response()->json([
+                'message' => 'Password berhasil diupdate',
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateMy(Request $request) {
+        try {
+            $user = Auth::user();
+            $passenger = $user->passenger; // Assuming the relationship is defined in the User model
+
+            $request->validate([
+                'name_passenger' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'address' => 'required|string',
+                'telp' => 'required|string',
+                'gender' => 'required|in:L,P',
+                'birth' => 'required|date',
+            ]);
+
+            // Update User email
+            $user->email = $request->email;
+            $user->save();
+
+            // Update Passenger details
+            $passenger->name_passenger = $request->name_passenger;
+            $passenger->address = $request->address;
+            $passenger->telp = $request->telp;
+            $passenger->gender = $request->gender;
+            $passenger->birth = $request->birth;
+            $passenger->save();
+
+            return response()->json([
+                'message' => 'Data user berhasil diupdate',
+                'data' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function updateUser(Request $request, $id): JsonResponse
     {
         $validated = $request->validate([
@@ -37,7 +116,7 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8',
             'level_id' => 'sometimes|int|in:1,2,3',
         ]);
-    
+
         $user = User::findOrFail($id);
         $user->update($validated);
 

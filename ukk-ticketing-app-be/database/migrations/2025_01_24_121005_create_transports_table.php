@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transports', function (Blueprint $table) {
             $table->id('id');
-            $table->longText('image')->nullable();
+            $table->string('image')->nullable();
             $table->string('code', 50)->unique();
             $table->string('name_transport', 100);
             $table->boolean('has_discount')->default(false);

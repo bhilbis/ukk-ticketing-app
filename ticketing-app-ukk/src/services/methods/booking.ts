@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
 import { Routes } from "./route";
 
-interface PassengerBookingsResponse {
+export interface PassengerBookingsResponse {
     passenger: 
     {
         name_passenger: string;
@@ -35,6 +35,7 @@ export interface Bookings {
     completed_at?: string;
     passenger? :{
         name_passenger: string;
+        email: string;
     }
     route?: Routes;
     payment?:{

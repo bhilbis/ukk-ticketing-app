@@ -15,6 +15,7 @@ export default function TransportList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleShow = (transport: any) => {
     setSelectedTransport(transport);
@@ -56,7 +57,13 @@ export default function TransportList() {
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
                   <Image
-                    src={"/airplane/clouds.jpg"}
+                    src={typeof transport.image === "string"
+                      ? transport.image.startsWith("http")
+                        ? transport.image
+                        : `${BASE_URL}${transport.image}`
+                      : transport.image instanceof File
+                      ? URL.createObjectURL(transport.image)
+                      : "/airplane/clouds.jpg"}
                     alt={transport.name_transport}
                     width={400}
                     height={200}
@@ -118,7 +125,13 @@ export default function TransportList() {
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
                   <Image
-                    src={transport.image || "/airplane/clouds.jpg"}
+                    src={typeof transport.image === "string"
+                      ? transport.image.startsWith("http")
+                        ? transport.image
+                        : `${BASE_URL}${transport.image}`
+                      : transport.image instanceof File
+                      ? URL.createObjectURL(transport.image)
+                      : "/airplane/clouds.jpg"}
                     alt={transport.name_transport}
                     width={400}
                     height={200}

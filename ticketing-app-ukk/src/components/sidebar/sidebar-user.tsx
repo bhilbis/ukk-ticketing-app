@@ -1,6 +1,6 @@
 "use client"
 
-import { BadgeCheck, ChevronsUpDown } from "lucide-react"
+import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react"
 import { useState } from "react"
 import { useLogout } from "@/services/methods/auth"
 import { 
@@ -93,9 +93,10 @@ export function SidebarUser({
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
-                className="cursor-pointer"
+                className="cursor-pointer text-red-500 transition-all"
                 onClick={() => setIsLogoutOpen(true)}
               >
+                <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>

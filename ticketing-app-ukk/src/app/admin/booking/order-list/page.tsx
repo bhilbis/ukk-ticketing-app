@@ -99,10 +99,10 @@ const BookingList = ({ isAdmin = true }) => {
                                 unpaid.map(booking => (
                                     <Card key={booking.id} className="p-4 flex flex-col gap-4 w-full">
                                         <div className="flex justify-between items-center">
-                                            <Badge className={statusColors[booking.booking_status]}>
+                                            <Badge className={statusColors[booking.booking_status || 'pending']}>
                                                 {booking.booking_status}
                                             </Badge>
-                                            <Badge className={statusColors[booking.payment_status]}>
+                                            <Badge className={statusColors[booking.payment_status || 'pending']}>
                                                 {booking.payment_status}
                                             </Badge>
                                         </div>
@@ -155,10 +155,10 @@ const BookingList = ({ isAdmin = true }) => {
                                 confirmed.map(booking => (
                                     <Card key={booking.id} className="p-4 flex flex-col gap-4 w-full">
                                         <div className="flex justify-between items-center">
-                                            <Badge className={statusColors[booking.booking_status]}>
+                                            <Badge className={statusColors[booking.booking_status || 'pending']}>
                                                 {booking.booking_status}
                                             </Badge>
-                                            <Badge className={statusColors[booking.payment_status]}>
+                                            <Badge className={statusColors[booking.payment_status || 'pending']}>
                                                 {booking.payment_status}
                                             </Badge>
                                         </div>
@@ -206,7 +206,7 @@ const BookingList = ({ isAdmin = true }) => {
                                             {isAdmin && (
                                                 <Button 
                                                 size="sm" 
-                                                onClick={() => handleCompleteBooking(booking.id)}
+                                                onClick={() => handleCompleteBooking(Number(booking.id))}
                                                 variant="default"
                                                 >
                                                     Validasi Penyelesaian
