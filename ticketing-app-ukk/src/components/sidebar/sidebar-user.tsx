@@ -33,20 +33,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
+import { useGetMy } from "@/services/methods/use-passenger"
+import { Skeleton } from "../ui/skeleton"
+import { useAuth } from "@/context/AuthContext"
 
-export function SidebarUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+export function SidebarUser() {
   const { isMobile } = useSidebar()
   const logoutMutation = useLogout()
   const [isLogoutOpen, setIsLogoutOpen] = useState(false)
   const router = useRouter();
+  const { isLoggedIn } = useAuth()
+  const { data: userData, isLoading, error } = useGetMy(isLoggedIn);
 
   const handleLogout = async () => {
     try {
@@ -56,6 +53,32 @@ export function SidebarUser({
     } catch (error) {
       console.error("Logout failed:", error)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center space-x-4 px-4 py-3">
+        <Skeleton className="h-8 w-8 rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[120px]" />
+          <Skeleton className="h-3 w-[80px]" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div className="px-4 py-3 text-red-500">Error loading user data</div>
+  }
+
+  console.log(userData)
+
+  const user = {
+    name: userData?.data.user.name || "User",
+    email: userData?.data.user.email || "user@example.com",
+    avatar: userData?.data.user.avatar 
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData.data.user.avatar}`
+      : "https://github.com/shadcn.png"
   }
 
   return (
@@ -73,7 +96,7 @@ export function SidebarUser({
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">{user.name.split(' ')[0]}</span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
                 <ChevronsUpDown className="ml-auto size-4" />

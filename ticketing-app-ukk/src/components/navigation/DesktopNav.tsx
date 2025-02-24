@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { useAuth } from '@/context/AuthContext';
+import { useGetMy } from '@/services/methods/use-passenger';
+import { Skeleton } from '../ui/skeleton';
 
 const DesktopNav = ({
     scrolled,
@@ -21,6 +23,39 @@ const DesktopNav = ({
     pathname: string
   }) => {
     const { isLoggedIn, userLevel } = useAuth();
+    const { data: userData, isLoading, error } = useGetMy(isLoggedIn);
+
+    if (!isLoggedIn) {
+      return (
+        <div className='flex items-center justify-end font-medium gap-x-7 w-full'>
+          <Link href='/kereta-api'>Kereta Api</Link>
+          <Link href='/login'>Masuk</Link>
+          <Button variant={pathname === '/' ? scrolled ? 'sky' : 'secondary' : 'sky'} className={`rounded ${pathname !== '/' ? 'text-white' : ''}`}>
+            <Link href='/daftar'>Daftar</Link>
+          </Button>
+        </div>
+      );
+    }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center space-x-4 px-4 py-3">
+        <Skeleton className="h-8 w-8 rounded-lg" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div className="px-4 py-3 text-red-500">Error loading user data</div>
+  }
+
+  // Pastikan struktur data sesuai dengan response API
+  const user = {
+    name: userData?.data?.passenger?.name_passenger || "User",
+    avatar: userData?.data.user.avatar 
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData.data.user.avatar}`
+      : "https://github.com/shadcn.png"
+  }
 
   return (
     <>
@@ -41,11 +76,11 @@ const DesktopNav = ({
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="dropdown-trigger"
+              className="dropdown-trigger bg-gray-500 rounded-xl"
             >
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarFallback>{user.name[0]}</AvatarFallback>
               </Avatar>
             </button>
 
@@ -73,7 +108,7 @@ const DesktopNav = ({
                     Profil
                   </Link>
                   <Link
-                    href="/myaccount/your-orders"
+                    href="/myaccount/bookings"
                     className="block px-4 pt-2 pb-3 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Order Anda

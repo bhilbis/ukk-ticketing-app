@@ -84,7 +84,7 @@ const ScheduleDetailModal: React.FC<ScheduleDetailProps> = ({ isOpen, onClose, s
                 {schedule?.routes.map((route: any) => (
                   <div
                     key={route.id}
-                    className="bg-gray-50 p-4 rounded-lg border border-gray-100 hover:shadow-md transition-shadow"
+                    className="bg-gray-50 p-4 rounded-lg border border-emerald-200 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-semibold text-gray-800">

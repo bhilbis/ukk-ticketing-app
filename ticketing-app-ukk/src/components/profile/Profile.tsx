@@ -1,7 +1,6 @@
 "use client";
 
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Cog, CreditCard, HomeIcon, LogOut, Package } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,12 +10,15 @@ import { DialogTitle } from '../ui/dialog';
 import { useState } from 'react';
 import { useLogout } from '@/services/methods/auth';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+import { useUser } from '@/hooks/use-useProfile';
+import { UserProfile } from './use-profile';
 
 const Profile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const logoutMutation = useLogout();
   const router = useRouter();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const { user, isLoading, error } = useUser()
   
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon className="w-4 h-4" /> },
@@ -59,16 +61,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
             <SheetContent side="left" className="w-[250px]">
               <DialogTitle>Navigation Menu</DialogTitle>
               <nav className="grid gap-2 mt-4">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">John Doe</p>
-                    <p className="text-xs text-muted-foreground">john.doe@example.com</p>
-                  </div>
-                </div>
+                <UserProfile user={user} isLoading={isLoading} error={error} />
                 {sidebarItems.map((item) => (
                   <Link
                     key={item.id}
@@ -93,16 +86,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block fixed left-0 h-full w-[250px] border-r bg-background">
         <div className="p-4">
-          <div className="flex items-center gap-3 mb-6">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">John Doe</p>
-              <p className="text-sm text-muted-foreground">john.doe@example.com</p>
-            </div>
-          </div>
+          <UserProfile user={user} isLoading={isLoading} error={error} />
           <nav className="grid gap-1">
             {sidebarItems.map((item) => (
               <Link

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 interface TransportModalProps {
     isOpen: boolean;
@@ -20,6 +21,8 @@ interface TransportModalProps {
   const TransportForm: React.FC<TransportModalProps> = ({ isOpen, onClose, transport, isReadOnly }) => {
     const saveMutation = useSaveTransport();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const BASEURL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const formik = useFormik<Transport>({
         enableReinitialize: true,
@@ -53,11 +56,15 @@ interface TransportModalProps {
             setErrorMessage("Setiap kelas harus memiliki nama dan jumlah kursi minimal 20!");
             return;
           }
-          setErrorMessage(null); // Reset error jika validasi lolos
+          setErrorMessage(null);
 
           saveMutation.mutate(values, {
             onSuccess: () => {
+              toast.success(transport ? "Data transportasi berhasil diperbarui!" : "Transportasi berhasil ditambahkan!");
               onClose();
+            },
+            onError: () => {
+              toast.error("Terjadi kesalahan saat menyimpan data!");
             },
           });
         },
@@ -92,11 +99,20 @@ interface TransportModalProps {
       }, [isOpen]);
 
       useEffect(() => {
-        return () => {
-          if (formik.values.image && typeof formik.values.image !== 'string') {
-            URL.revokeObjectURL(URL.createObjectURL(formik.values.image));
+        if (formik.values.image) {
+          if (typeof formik.values.image === "string" && formik.values.image.trim() !== "") {
+            // Jika dari API, tambahkan baseUrl agar menjadi URL lengkap
+            setImagePreview(formik.values.image.startsWith("http") ? formik.values.image : BASEURL + formik.values.image);
+          } else if (formik.values.image instanceof File) {
+            // Jika baru di-upload, buat Object URL
+            const objectUrl = URL.createObjectURL(formik.values.image);
+            setImagePreview(objectUrl);
+      
+            return () => URL.revokeObjectURL(objectUrl);
           }
-        };
+        } else {
+          setImagePreview(null);
+        }
       }, [formik.values.image]);
 
   return (
@@ -176,24 +192,14 @@ interface TransportModalProps {
               }}
               disabled={isReadOnly}
             />
-            {formik.values.image && (
-              typeof formik.values.image === 'string' ? (
-                <Image 
-                  src={formik.values.image} 
-                  alt="Preview" 
-                  width={500}
-                  height={500}
-                  className="mt-2 h-20 w-20 object-cover rounded"
-                />
-              ) : (
-                <Image 
-                  src={URL.createObjectURL(formik.values.image)} 
-                  alt="Preview" 
-                  width={500}
-                  height={500}
-                  className="mt-2 h-20 w-20 object-cover rounded"
-                />
-              )
+            {imagePreview && (
+              <Image 
+                src={imagePreview} 
+                alt="Preview" 
+                width={500}
+                height={500}
+                className="mt-2 h-20 w-20 object-cover rounded"
+              />
             )}
           </div>
 

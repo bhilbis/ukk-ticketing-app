@@ -6,6 +6,7 @@ import HomeSuggest from "@/components/home/home-suggest";
 import { HomeAccordion } from "@/components/home/home-accordion";
 import HomeAds from "@/components/home/home-ads";
 import AirlaneAirplane from "@/components/home/airlane-airplane";
+import TypeTrain from "@/components/home/type-train";
 // import { Routes } from "@/services/methods/route";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
           <HomeCarousel />
           <HomeAds />
           <AirlaneAirplane />
+          <TypeTrain />
           <HomeSuggest />
           <HomeAccordion />
         </div>

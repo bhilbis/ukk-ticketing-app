@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface StatsCardProps {
   title: string;
-  value: number;
+  value: number | string | null;
   icon: React.ReactNode;
   className?: string;
   href?: string;
@@ -31,7 +31,11 @@ const StatsCard = ({
         {icon}
       </CardHeader>
       <CardContent>
-        <p className="text-3xl font-bold">{value}</p>
+        {value === null ? (
+          <Loader2 className="animate-spin h-8 w-8 mx-auto text-gray-500" />
+        ) : (
+          <p className="text-3xl font-bold">{value}</p>
+        )}
       </CardContent>
       
       {/* Hover indicator */}

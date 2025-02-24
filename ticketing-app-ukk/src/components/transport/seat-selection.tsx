@@ -4,10 +4,11 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { SeatMap } from "@/components/airplane/seat-map";
+import { SeatMap } from "@/components/transport/airplane/seat-map";
 import { FormikProps } from "formik";
 import { useEffect } from "react";
 import { Bookings } from "@/services/methods/booking";
+import { TrainSeatMap } from "./train/seat-map";
 
 interface SeatSelectionProps {
   route: any;
@@ -25,12 +26,40 @@ export const SeatSelection = ({
   occupiedSeats,
 }: SeatSelectionProps) => {
 
+  const getClassMultiplier = (className: string): number => {
+    switch (className) {
+      case "Bisnis":
+        return 1.3;
+      case "Eksekutif":
+        return 1.5;
+      case "First Class":
+        return 1.75;
+      case "Premium Ekonomi":
+        return 1.2;
+      case "Luxury":
+        return 2;
+      default:
+        return 1;
+    }
+  };
+  
+
   useEffect(() => {
     if (!selectedClass && route.transport?.classes?.length) {
       setSelectedClass(route.transport.classes[0]);
-      formik.setFieldValue("seat_code", "");
     }
-  }, [route, selectedClass, setSelectedClass, formik]);
+  }, [selectedClass, route.transport?.classes, setSelectedClass]);
+  
+  useEffect(() => {
+    if (selectedClass) {
+      const multiplier = getClassMultiplier(selectedClass.class_name);
+      const total = Math.round((route.price || 0) * multiplier);
+  
+      if (formik.values.total_payment !== total.toString()) {
+        formik.setFieldValue("total_payment", total.toString());
+      }
+    }
+  }, [selectedClass, route.price]);
 
   return (
     <Card className="lg:col-span-2 shadow-lg">
@@ -66,13 +95,23 @@ export const SeatSelection = ({
               </Alert>
 
               <div className="overflow-x-auto pb-2">
-                <SeatMap
-                  seatCount={selectedClass.seat_count}
-                  selectedSeat={formik.values.seat_code}
-                  onSeatSelect={(seat) => formik.setFieldValue('seat_code', seat)}
-                  occupiedSeats={occupiedSeats}
-                  className={selectedClass.class_name}
-                />
+              {route.transport.type_id === 2 ? (
+                  <TrainSeatMap
+                    seatCount={selectedClass.seat_count}
+                    selectedSeat={formik.values.seat_code}
+                    onSeatSelect={(seat) => formik.setFieldValue('seat_code', seat)}
+                    occupiedSeats={occupiedSeats}
+                    className={selectedClass.class_name}
+                  />
+                ) : (
+                  <SeatMap
+                    seatCount={selectedClass.seat_count}
+                    selectedSeat={formik.values.seat_code}
+                    onSeatSelect={(seat) => formik.setFieldValue('seat_code', seat)}
+                    occupiedSeats={occupiedSeats}
+                    className={selectedClass.class_name}
+                  />
+                )}
               </div>
             </>
           )}

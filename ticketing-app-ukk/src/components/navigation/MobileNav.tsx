@@ -89,7 +89,7 @@ const MobileNav = ({
                       Profil
                     </Link>
                     <Link
-                      href="/myaccount/your-orders"
+                      href="/myaccount/bookings"
                       className="w-full py-2 text-center text-lg"
                       onClick={() => setIsOpen(false)}
                     >

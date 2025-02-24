@@ -5,11 +5,13 @@ import ScheduleDetailModal from '@/components/admin/ticket/schedule-detail';
 import ScheduleForm from '@/components/admin/ticket/schedule-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/context/AuthContext';
 import { useDeleteSchedule, useSchedules } from '@/services/methods/schedule'
 import { Eye, Pencil, PlusIcon, Trash } from 'lucide-react';
 import React, { useState } from 'react'
 
 const Page = () => {
+  const {userLevel} = useAuth();
   const { data } = useSchedules();
   const deleteMutation = useDeleteSchedule();
   const [selectedSchedule, setSelectedSchedule] = useState(null);
@@ -70,19 +72,6 @@ const Page = () => {
                             {schedule.departure_time.slice(0, 5)}
                           </p>
                         </div>
-                        {/* <div className="">
-                          <h3 className="font-bold text-lg text-gray-800">Arrival</h3>
-                          <p className="text-sm text-gray-500">
-                            {new Date(schedule.arrival_date).toLocaleDateString('en-US', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </p>
-                          <p className="text-sm font-medium text-gray-700">
-                            {schedule.arrival_time}
-                          </p>
-                        </div> */}
                       </div>
                     </div>
 
@@ -97,25 +86,32 @@ const Page = () => {
                           size="sm"
                           onClick={() => handleShow(schedule)}
                           className="text-gray-600 hover:bg-gray-100"
+                          title='Lihat Detail Jadwal'
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(schedule)}
-                          className="text-blue-600 hover:bg-blue-50"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteMutation.mutate(schedule.id)}
-                          className="text-red-600 hover:bg-red-50"
-                        >
-                          <Trash className="w-4 h-4" />
-                        </Button>
+                        {userLevel && userLevel === 1 && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEdit(schedule)}
+                              className="text-blue-600 hover:bg-blue-50"
+                              title='Edit Jadwal'
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteMutation.mutate(schedule.id)}
+                              className="text-red-600 hover:bg-red-50"
+                              title='Hapus Jadwal'
+                              >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                       <span className="text-xs font-medium text-gray-500">
                         #{schedule.id}
@@ -128,16 +124,18 @@ const Page = () => {
           )}
         </div>
       </div>
-
-      <div className='fixed bottom-8 right-8'>
-        <Button 
-          onClick={handleAdd}
-          className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-        >
-          <PlusIcon className="w-5 h-5 mr-2 text-white" />
-          <span className="text-white font-semibold">Tambah Jadwal Baru</span>
-        </Button>
-      </div>
+        
+      {userLevel && userLevel === 1 && (
+        <div className='fixed bottom-8 right-8'>
+          <Button 
+            onClick={handleAdd}
+            className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            >
+            <PlusIcon className="w-5 h-5 mr-2 text-white" />
+            <span className="text-white font-semibold">Tambah Jadwal Baru</span>
+          </Button>
+        </div>
+      )}
 
       {isModalOpen && (
         <ScheduleForm 

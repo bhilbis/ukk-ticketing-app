@@ -42,7 +42,7 @@ const AirlaneAirplane = () => {
   return (
     <div className='w-full px-[8rem] pb-10 overflow-hidden'>
       <div className='mb-6'>
-        <h2 className='text-2xl font-bold mb-3'>Cari Tipe Pesawat</h2>
+        <h2 className='text-2xl font-bold mb-3'>Cari Pesawat</h2>
         <p className='text-gray-600'>Beli Tiket Pesawat dan pilih pesawat yang ingin anda naiki</p>
       </div>
       <div className='flex mb-6 gap-5 overflow-hidden'>

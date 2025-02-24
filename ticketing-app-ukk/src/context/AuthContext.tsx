@@ -10,7 +10,6 @@ interface AuthContextType {
 
 interface JWTPayload {
   level_id: number;
-  // tambahkan field lain yang ada di token jika diperlukan
 }
 
 const parseJWT = (token: string): JWTPayload | null => {

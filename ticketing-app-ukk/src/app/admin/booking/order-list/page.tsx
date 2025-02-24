@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import BookingDetailModal from '@/components/admin/booking/booking-detail';
 import { Eye } from 'lucide-react';
+import ValidationModal from '@/components/admin/booking/validation';
 
 const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -29,7 +30,8 @@ const BookingList = ({ isAdmin = true }) => {
     const [apiError, setApiError] = useState<string | null>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
-
+    const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
+    const [bookingToValidate, setBookingToValidate] = useState<number | null>(null);
     useEffect(() => {
         if (error) {
             setApiError(error.message || 'Terjadi kesalahan saat memuat data booking');
@@ -37,7 +39,7 @@ const BookingList = ({ isAdmin = true }) => {
     }, [error]);
 
     const formatIDR = (amount: number) => {
-        return amount.toLocaleString("id-ID"); // Format angka ke "ID" (Indonesia)
+        return amount.toLocaleString("id-ID");
     };
     
     const bookingsFilter = allBookings?.map(b => ({
@@ -67,6 +69,18 @@ const BookingList = ({ isAdmin = true }) => {
         setSelectedBooking(booking);
         setIsDetailModalOpen(true);
     };
+
+    const openValidationModal = (bookingId: number) => {
+        setBookingToValidate(bookingId);
+        setIsValidationModalOpen(true);
+      };
+    
+      const confirmValidation = () => {
+        if (bookingToValidate !== null) {
+          handleCompleteBooking(bookingToValidate);
+          setIsValidationModalOpen(false);
+        }
+      };
 
     return (
         <div className='p-8 w-full min-h-screen flex flex-col space-y-6'>
@@ -206,7 +220,7 @@ const BookingList = ({ isAdmin = true }) => {
                                             {isAdmin && (
                                                 <Button 
                                                 size="sm" 
-                                                onClick={() => handleCompleteBooking(Number(booking.id))}
+                                                onClick={() => openValidationModal(Number(booking.id))}
                                                 variant="default"
                                                 >
                                                     Validasi Penyelesaian
@@ -227,7 +241,14 @@ const BookingList = ({ isAdmin = true }) => {
                     onClose={() => setIsDetailModalOpen(false)}
                     booking={selectedBooking}
                 />
-            )}                
+            )}
+            {isValidationModalOpen && (
+                <ValidationModal
+                isOpen={isValidationModalOpen}
+                onClose={() => setIsValidationModalOpen(false)}
+                onConfirm={confirmValidation}
+                />
+            )}
         </div>
     );
 };

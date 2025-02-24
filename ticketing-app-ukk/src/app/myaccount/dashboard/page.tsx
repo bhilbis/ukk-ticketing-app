@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useUserBookings } from '@/services/methods/booking';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, CheckCircle, Clock, Wallet, Plane, Bus } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, Wallet, Plane, TrainFront } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import StatsCard from '@/components/admin/dashboard/statsCard';
 
@@ -105,10 +105,10 @@ export default function Dashboard() {
             <CardHeader className="pb-2">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div className="flex items-center gap-2">
-                  {booking.route?.transport?.name_transport?.toLowerCase().includes('pesawat') ? (
+                  {booking.route?.transport?.type_id === 1 ? (
                     <Plane className="h-5 w-5 text-blue-500" />
                   ) : (
-                    <Bus className="h-5 w-5 text-green-500" />
+                    <TrainFront className="h-5 w-5 text-green-500" />
                   )}
                   <CardTitle className="text-base md:text-lg">#{booking.booking_code}</CardTitle>
                 </div>
@@ -143,7 +143,7 @@ export default function Dashboard() {
                 <div>
                   <p className="text-xs md:text-sm font-medium">Departure</p>
                   <p className="text-xs md:text-sm">
-                    {formatDate(booking.departure_date)} • {booking.departure_time}
+                    {formatDate(booking.departure_date)} • {booking.departure_time.slice(0, 5).replace(':', '.')} WIB 
                   </p>
                 </div>
                 

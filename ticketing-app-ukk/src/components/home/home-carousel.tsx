@@ -25,16 +25,13 @@ const HomeCarousel = () => {
   useEffect(() => {
     if (!routes) return;
 
-    // Filter routes for airplanes (type_id === 1) and by selected type
     const filtered = routes
       .filter(route => {
-        // Only include airplane routes
         if (route.transport?.type_id !== 1) return false;
         
-        // If no filter is selected, include all airplane routes
         if (!filter) return true;
         
-        return route.transport.classes[0].class_name === filter;
+        return route.transport.classes.some(cls => cls.class_name === filter)
       });
 
     const shuffleArray = (array: Routes[]) =>

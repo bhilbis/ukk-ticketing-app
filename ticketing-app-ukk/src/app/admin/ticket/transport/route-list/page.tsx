@@ -5,11 +5,13 @@ import RouteDetailModal from '@/components/admin/ticket/route-detail'
 import RouteForm from '@/components/admin/ticket/route-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { useAuth } from '@/context/AuthContext'
 import { useDeleteRoute, useRoutes } from '@/services/methods/route'
 import { ArrowRight, Clock, Eye, MapPin, Pencil, Plane, PlusIcon, TrainFront, Trash, Wallet } from 'lucide-react'
 import { useState } from 'react'
 
 const Page = () => {
+  const {userLevel} = useAuth();
   const { data } = useRoutes();
   const deleteMutation = useDeleteRoute();
   const [selectedRoute, setSelectedRoute] = useState(null);
@@ -112,33 +114,40 @@ const Page = () => {
 
                     {/* Action Buttons */}
                     <div className="flex justify-end space-x-2 border-t border-gray-100 pt-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDetail(route)}
-                      className="text-gray-600 hover:bg-blue-100 rounded-full"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Detail
-                    </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleEdit(route)}
-                        className="text-blue-600 hover:bg-blue-50 rounded-full"
+                        onClick={() => handleDetail(route)}
+                        className="text-gray-600 hover:bg-blue-100 rounded-full"
+                        title='Lihat Detail Rute'
                       >
-                        <Pencil className="w-4 h-4 mr-2" />
-                        Edit
+                        <Eye className="w-4 h-4 mr-2" />
+                        Detail
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteMutation.mutate(route.id)}
-                        className="text-red-600 hover:bg-red-50 rounded-full"
-                      >
-                        <Trash className="w-4 h-4 mr-2" />
-                        Hapus
-                      </Button>
+                      {userLevel && userLevel === 1 && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(route)}
+                            className="text-blue-600 hover:bg-blue-50 rounded-full"
+                            title='Edit Rute'
+                            >
+                            <Pencil className="w-4 h-4 mr-2" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteMutation.mutate(route.id)}
+                            className="text-red-600 hover:bg-red-50 rounded-full"
+                            title='Hapus Rute'
+                            >
+                            <Trash className="w-4 h-4 mr-2" />
+                            Hapus
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -148,15 +157,17 @@ const Page = () => {
         </div>
       </div>
 
-      <div className='fixed bottom-8 right-8'>
-        <Button 
-          onClick={handleAdd}
-          className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-        >
-          <PlusIcon className="w-5 h-5 mr-2 text-white" />
-          <span className="text-white font-semibold">Tambah Rute Baru</span>
-        </Button>
-      </div>
+      {userLevel && userLevel === 1 && (
+        <div className='fixed bottom-8 right-8'>
+          <Button 
+            onClick={handleAdd}
+            className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            >
+            <PlusIcon className="w-5 h-5 mr-2 text-white" />
+            <span className="text-white font-semibold">Tambah Rute Baru</span>
+          </Button>
+        </div>
+      )}
 
       {isModalOpen && (
         <RouteForm 

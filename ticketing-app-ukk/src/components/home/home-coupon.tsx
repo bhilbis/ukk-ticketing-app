@@ -161,7 +161,7 @@ const HomeCoupon: React.FC = () => {
 
     <div className="py-10 px-[8rem] w-full bg-gradient-to-r from-blue-100 via-white to-green-100 flex flex-col relative">
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 overflow-hidden">
         <div className="flex gap-3">
           <TicketPercent className="w-7 h-7 text-blue-base"/>
           <h2 className="text-xl font-bold mb-4 text-blue-base">Daftar Kupon yang Bisa Dipakai</h2>

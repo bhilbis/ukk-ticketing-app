@@ -20,13 +20,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { SidebarSettings } from "./sidebar-setting"
+import { useAuth } from "@/context/AuthContext"
 const data = {
-  user: {
-    name: "Bilbis",
-    email: "bilbis@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-
   teams: [
     {
       name: "TravelLink",
@@ -96,6 +91,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { userLevel } = useAuth();
   return (
     <div>
       <Sidebar collapsible="icon" className="px-1" {...props}>
@@ -104,10 +100,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMain items={data.navMain} />
+          {userLevel && userLevel === 1 && (
           <SidebarSettings settings={data.Data} />
+          )}
         </SidebarContent>
         <SidebarFooter>
-          <SidebarUser user={data.user} />
+          <SidebarUser/>
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

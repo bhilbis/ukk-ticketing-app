@@ -3,6 +3,7 @@
 use App\Http\Controllers\{
     AuthController,
     BookingController,
+    BookingReportController,
     LevelController,
     PasswordResetController,
     RouteController,
@@ -53,12 +54,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('bookings')->group(function () {
         Route::get('/', [BookingController::class, 'index']);
     });
+
     Route::prefix('myUser')->group(function () {
         Route::get('/', [UserController::class, 'getMy']);
         Route::put('/update-user', [UserController::class, 'updateMy']);
         Route::put('/update-password', [UserController::class, 'updatePassword']);
     });
-
     // 🟡 Group untuk (Super Admin Only)
     Route::middleware(['role:Super Admin'])->group(function () {
 
@@ -112,6 +113,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('bookings')->group(function () {
             Route::put('/validate/{id}', [BookingController::class, 'validatePayment']);
         });
+
+        Route::get('reports/bookings', [BookingReportController::class, 'generateReport']);
+        Route::get('reports/bookings/download', [BookingReportController::class, 'downloadReport']);
 
     });
     //

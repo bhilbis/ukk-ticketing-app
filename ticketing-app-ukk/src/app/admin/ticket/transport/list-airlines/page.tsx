@@ -7,8 +7,10 @@ import { Trash, Pencil, Eye, PlusIcon } from "lucide-react";
 import TransportForm from "@/components/admin/ticket/transport-form";
 import Image from "next/image";
 import TransportDetailModal from "@/components/admin/ticket/transport-detail";
+import { useAuth } from "@/context/AuthContext";
 
 export default function TransportList() {
+  const {userLevel} = useAuth();
   const { data  } = useTransports();
   const deleteMutation = useDeleteTransport();
   const [selectedTransport, setSelectedTransport] = useState(null);
@@ -57,12 +59,14 @@ export default function TransportList() {
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
                   <Image
-                    src={typeof transport.image === "string"
-                      ? transport.image.startsWith("http")
-                        ? transport.image
-                        : `${BASE_URL}${transport.image}`
-                      : transport.image instanceof File
-                      ? URL.createObjectURL(transport.image)
+                    src={transport.image
+                      ? typeof transport.image === "string"
+                        ? transport.image.startsWith("http")
+                          ? transport.image
+                          : `${BASE_URL}${transport.image}`
+                        : transport.image instanceof File
+                        ? URL.createObjectURL(transport.image)
+                        : "/airplane/clouds.jpg"
                       : "/airplane/clouds.jpg"}
                     alt={transport.name_transport}
                     width={400}
@@ -81,27 +85,34 @@ export default function TransportList() {
                       size="sm"
                       onClick={() => handleShow(transport)}
                       className="text-gray-600 hover:bg-blue-100 rounded-full"
+                      title="Detail Transportasi"
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       Detail
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEdit(transport)}
-                      className="text-blue-600 hover:bg-gray-50 rounded-full"
-                    >
-                      <Pencil className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteMutation.mutate(transport.id)}
-                      className="text-red-600 hover:bg-red-50 rounded-full"
-                    >
-                      <Trash className="w-4 h-4 mr-2" />
-                    </Button>
+                    {userLevel && userLevel === 1 && (
+                      <>
+                        <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(transport)}
+                        className="text-blue-600 hover:bg-gray-50 rounded-full"
+                        title="Edit Transportasi"
+                        >
+                          <Pencil className="w-4 h-4 mr-2" />
+                          Edit
+                        </Button>
+                        <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteMutation.mutate(transport.id)}
+                        className="text-red-600 hover:bg-red-50 rounded-full"
+                        title="Hapus Transportasi"
+                        >
+                          <Trash className="w-4 h-4 mr-2" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -125,12 +136,14 @@ export default function TransportList() {
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
                   <Image
-                    src={typeof transport.image === "string"
-                      ? transport.image.startsWith("http")
-                        ? transport.image
-                        : `${BASE_URL}${transport.image}`
-                      : transport.image instanceof File
-                      ? URL.createObjectURL(transport.image)
+                    src={transport.image
+                      ? typeof transport.image === "string"
+                        ? transport.image.startsWith("http")
+                          ? transport.image
+                          : `${BASE_URL}${transport.image}`
+                        : transport.image instanceof File
+                        ? URL.createObjectURL(transport.image)
+                        : "/airplane/clouds.jpg"
                       : "/airplane/clouds.jpg"}
                     alt={transport.name_transport}
                     width={400}
@@ -178,15 +191,17 @@ export default function TransportList() {
         </div>
       </div>
 
-      <div className='fixed bottom-8 right-8'>
-        <Button 
-          onClick={handleAdd}
-          className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-        >
-          <PlusIcon className="w-5 h-5 mr-2 text-white" />
-          <span className="text-white font-semibold">Tambah Transportasi</span>
-        </Button>
-      </div>
+      {userLevel && userLevel === 1 && (
+        <div className='fixed bottom-8 right-8'>
+          <Button 
+            onClick={handleAdd}
+            className="rounded-full px-6 py-6 shadow-xl hover:shadow-2xl transition-all bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+            <PlusIcon className="w-5 h-5 mr-2 text-white" />
+            <span className="text-white font-semibold">Tambah Transportasi</span>
+          </Button>
+        </div>
+      )}
 
       {isModalOpen && (
         <TransportForm

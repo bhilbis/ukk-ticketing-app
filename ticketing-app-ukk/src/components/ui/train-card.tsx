@@ -4,29 +4,25 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Mousewheel } from "swiper/modules";
 import { TrainFront, TrainIcon } from "lucide-react";
+import { Routes } from "@/services/methods/route";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./skeleton";
 
+interface TrainListProps {
+  routes: Routes[] | null;
+  filterKey: string;
+}
 
-export interface Transportation {
-    id: number;
-    image?: string;
-    from: string;
-    to: string;
-    date: string;
-    type: string;
-    class: string;
-    price: string;
-    trip: string;
-    typeDiscount?: string;
-    discount?: string;
-    trainType: string;
-  }
+const TrainCard: React.FC<TrainListProps> = ({ routes, filterKey }) => {
+  const [isRendering, setIsRendering] = useState(true);
+  
+  const trainRoutes = routes?.filter(route => route.transport?.type_id === 2) ?? null;
 
-  interface TrainListProps {
-    train: Transportation[];
-    filterKey: string;
-  }
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsRendering(false), 1000);
+    return () => clearTimeout(timeout);
+  }, [])
 
-const TrainCard: React.FC<TrainListProps> = ({ train, filterKey }) => {
   return (
     <div className="overflow-hidden w-full">
       <AnimatePresence mode="wait">
@@ -46,36 +42,62 @@ const TrainCard: React.FC<TrainListProps> = ({ train, filterKey }) => {
             modules={[Autoplay, FreeMode, Mousewheel]}
             className="flex justify-center items-center xl:min-h-[11rem]"
           >
-            {train.map((train) => (
-              <SwiperSlide
-                key={train.id}
-                className="!w-[18rem] !h-[11rem] bg-white rounded-lg shadow-md !flex !gap-16"
-              >
-                <Link href={"/"} className="w-full">
-                  <div className="p-4 bg-slate-200 rounded-b-lg w-full h-full">
-                    <div className="flex gap-5">
-                        {train.trainType === "Whoosh" ? 
-                        <TrainFront/> : <TrainIcon/> }
-                        <h2 className="text-base font-bold mb-4 text-ellipsis">
-                        {`${train.from} → ${train.to}`}
-                        </h2>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="space-y-1">
-                        <p className="text-gray-600 text-sm">{new Date(train.date).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                          })}</p>
-                        <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${train.type}`}</p>
-                        <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${train.class}`}</p>
-                      </div>
-                      <p className="text-green-500 font-bold mt-2 truncate">{`${train.price}`}</p>
+            {isRendering || !trainRoutes ? (
+              [...Array(trainRoutes?.length || 3)].map((_, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="!w-[18rem] !h-[11rem] bg-transparent !rounded-lg shadow-md !flex !gap-16"
+                >
+                  <div>
+                    <div className="p-4 w-[18rem] bg-gray-300 rounded-b-lg h-full">
+                      <Skeleton className="h-6 w-3/4 mb-4 bg-gray-200" />
+                      <Skeleton className="h-4 w-1/2 mb-2 bg-gray-200" />
+                      <Skeleton className="h-4 w-2/3 mb-6 bg-gray-200" />
+                      <Skeleton className="h-4 w-1/3 mb-2 bg-gray-200" />
+                      <Skeleton className="h-4 w-1/4 bg-gray-200" />
                     </div>
                   </div>
-                </Link>
-              </SwiperSlide>
-            ))}
+                </SwiperSlide>
+              ))
+            ) : (
+              trainRoutes.flatMap((route) =>
+                route.schedules?.map((schedule) => (
+                  <SwiperSlide
+                    key={`${route.id}-${schedule.id}`}
+                    className="!w-[18rem] !h-[11rem] bg-white rounded-lg shadow-md !flex !gap-16"
+                  >
+                    <Link href={`/kereta-api/${route.id}/schedule/${schedule.id}`} className="w-full hover:scale-[1.02] transition-all ease-out duration-500">
+                      <div className="p-4 bg-slate-200 rounded-b-lg w-full h-full">
+                        <div className="flex items-center gap-5  mb-4">
+                            {route.transport?.name_transport === "WHOOSH" ? 
+                            <TrainFront className="w-5 h-5 text-yellow-500"/> : <TrainIcon className="w-5 h-5 text-yellow-500"/> }
+                            <h2 className="text-base font-bold text-ellipsis">
+                            {`${route.start_route} → ${route.end_route}`}
+                            </h2>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="space-y-1">
+                            <p className="text-gray-600 text-sm">{new Date(schedule.departure_date).toLocaleDateString('id-ID', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                              })}</p>
+                            <p className="text-gray-600 text-sm truncate sm:max-w-[13rem]">{`${route.transport?.name_transport}`}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-600">Mulai Dari</p>
+                            <p className="text-red-500 font-bold text-sm truncate">
+                            {`IDR ${Math.floor(route.price).toLocaleString('id-ID')}`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                ))
+              )
+            )}
+            
           </Swiper>
         </motion.div>
       </AnimatePresence>

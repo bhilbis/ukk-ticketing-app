@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useFormik } from "formik";
-import { FlightDetails, FlightDetailsSkeleton } from "@/components/transport/airplane/flight-detail";
+// import { FlightDetails, FlightDetailsSkeleton } from "@/components/transport/airplane/flight-detail";
 import { useGetRoute } from "@/services/methods/route";
 import { Bookings, useBookingMutation, useOccupiedSeats } from "@/services/methods/booking";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,7 @@ import { BookingSchema } from "@/components/transport/booking-schema";
 import { useGetSchedule } from "@/services/methods/schedule";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { TransportDetails, TransportDetailsSkeleton } from "@/components/transport/train/trip-detail";
 
 export default function BookingPage() {
   const params = useParams();
@@ -64,7 +65,7 @@ export default function BookingPage() {
     return (
       <div className="container mx-auto px-1 lg:px-4 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <FlightDetailsSkeleton />
+          <TransportDetailsSkeleton />
           <Card className="p-4 space-y-4">
             <Skeleton className="h-8 w-32" />
             <Skeleton className="h-32 w-full" />
@@ -79,7 +80,7 @@ export default function BookingPage() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Alert variant="destructive">
-          <AlertDescription>Gagal memuat data rute penerbangan</AlertDescription>
+          <AlertDescription>Gagal memuat data rute Kereta</AlertDescription>
         </Alert>
       </div>
     );
@@ -88,7 +89,7 @@ export default function BookingPage() {
   return (
     <div className="container mx-auto px-1 lg:px-4 py-24">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <FlightDetails 
+        <TransportDetails 
           route={route} 
           schedule={schedule}  
         />

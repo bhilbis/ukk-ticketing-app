@@ -88,7 +88,7 @@ const BookingList = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="p-6">
         <div className="space-y-4">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-32 rounded-xl" />
@@ -107,10 +107,18 @@ const BookingList = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="all">Semua</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="completed">Selesai</TabsTrigger>
-          <TabsTrigger value="cancelled">Dibatalkan</TabsTrigger>
+          <TabsTrigger value="all">
+            Semua {bookings?.booking.length ? `( ${bookings.booking.length} )` : ''}
+          </TabsTrigger>
+          <TabsTrigger value="pending">
+            Pending {bookings?.booking.filter((booking: Bookings) => booking.booking_status === 'pending').length ? `( ${bookings.booking.filter((booking: Bookings) => booking.booking_status === 'pending').length} )` : ''}
+          </TabsTrigger>
+          <TabsTrigger value="completed">
+            Selesai {bookings?.booking.filter((booking: Bookings) => booking.booking_status === 'completed').length ? `( ${bookings.booking.filter((booking: Bookings) => booking.booking_status === 'completed').length} )` : ''}
+          </TabsTrigger>
+          <TabsTrigger value="cancelled">
+            Dibatalkan {bookings?.booking.filter((booking: Bookings) => booking.booking_status === 'cancelled').length ? `( ${bookings.booking.filter((booking: Bookings) => booking.booking_status === 'cancelled').length} )` : ''}
+          </TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -127,9 +135,9 @@ const BookingList = () => {
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-lg bg-primary/10">
                     {booking.route?.transport?.type_id === 1 ? (
-                      <Plane className="w-6 h-6 text-primary" />
+                      <Plane className="w-6 h-6 text-blue-500" />
                     ) : (
-                      <Train className="w-6 h-6 text-primary" />
+                      <Train className="w-6 h-6 text-yellow-500" />
                     )}
                   </div>
                   <div>

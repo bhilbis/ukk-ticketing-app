@@ -2,7 +2,7 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Calendar, Plane, PlaneTakeoff } from "lucide-react";
+import { Plane, PlaneTakeoff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
@@ -105,14 +105,14 @@ export const FlightDetails = ({ route, schedule }: FlightDetailsProps) => {
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <span className="text-sm">Check-in dibuka 2 jam sebelum keberangkatan</span>
                 </div>
-                <span className="text-sm text-gray-500">{checkIn(schedule?.departure_time)}</span>
+                <span className="text-sm text-gray-500">{checkIn(schedule?.departure_time)} WIB</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                   <span className="text-sm">Tiba Perkiraan pada pukul</span>
                 </div>
-                <span className="text-sm text-gray-500">{arrivalTime(schedule?.departure_time, route.travel_duration)}</span>
+                <span className="text-sm text-gray-500">{arrivalTime(schedule?.departure_time, route.travel_duration)} WIB</span>
               </div>
             </div>
         </div>

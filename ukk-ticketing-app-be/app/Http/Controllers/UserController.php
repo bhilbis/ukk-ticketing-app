@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -38,7 +39,10 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Data user berhasil ditemukan',
-            'data' => $passenger
+            'data' => [
+                'user' => $user,
+                'passenger' => $passenger
+            ]
         ], 200);
     }
 
@@ -73,28 +77,39 @@ class UserController extends Controller
     public function updateMy(Request $request) {
         try {
             $user = Auth::user();
-            $passenger = $user->passenger; // Assuming the relationship is defined in the User model
+            $passenger = $user->passenger;
 
             $request->validate([
                 'name_passenger' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
+                'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'address' => 'required|string',
                 'telp' => 'required|string',
-                'gender' => 'required|in:L,P',
+                'gender' => 'required|in:Laki-laki,Perempuan',
                 'birth' => 'required|date',
             ]);
+
+            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                if ($user->avatar) {
+                    Storage::disk('public')->delete($request->avatar);
+                }
+
+                $avatarPath = $request->file('avatar')->store('user', 'public');
+                $user->avatar = $avatarPath;
+            }
 
             // Update User email
             $user->email = $request->email;
             $user->save();
 
             // Update Passenger details
-            $passenger->name_passenger = $request->name_passenger;
-            $passenger->address = $request->address;
-            $passenger->telp = $request->telp;
-            $passenger->gender = $request->gender;
-            $passenger->birth = $request->birth;
-            $passenger->save();
+            $passenger->update($request->only([
+                'name_passenger',
+                'address',
+                'telp',
+                'gender',
+                'birth'
+            ]));
 
             return response()->json([
                 'message' => 'Data user berhasil diupdate',
@@ -136,12 +151,12 @@ class UserController extends Controller
         ]);
 
         $randomPassword = Str::random(rand(8, 10));
-
-        return DB::transaction(function () use ($validated, $randomPassword) {
+        $hashedPassword = bcrypt($randomPassword);
+        return DB::transaction(function () use ($validated, $randomPassword, $hashedPassword) {
             $user = User::create([
                 'name' => $validated['username'],
                 'email' => $validated['email'],
-                'password' => bcrypt($randomPassword),
+                'password' => $hashedPassword,
                 'level_id' => $validated['level_id'],
             ]);
 
@@ -151,7 +166,7 @@ class UserController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'level_id' => $validated['level_id'],
-                'password' => bcrypt($randomPassword),
+                'password' => $hashedPassword,
             ]);
 
             Mail::to($user->email)->send(new SendStaffPassword($user, $randomPassword));

@@ -1,20 +1,11 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Bookings } from "@/services/methods/booking";
 
-const RecentTickets = ({ tickets }: {
-  tickets: {
-    id: number;
-    booking_code: string | number; // Accept both string and number
-    booking_status: "pending" | "confirmed" | "completed" | "cancelled";
-    passenger?: {
-      name_passenger: string;
-    };
-    route?: {
-      transport?: {
-        code: string;
-      };
-    };
-  }[];
-}) => {
+interface RecentTicketsProps {
+  tickets: Bookings[];
+}
+
+const RecentTickets: React.FC<RecentTicketsProps> = ({ tickets }) => {
   const getStatusStyle = (status: string) => {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -23,6 +14,8 @@ const RecentTickets = ({ tickets }: {
         return 'bg-yellow-100 text-yellow-800';
       case 'cancelled':
         return 'bg-red-100 text-red-800';
+      case 'confirmed':
+        return 'bg-blue-100 text-blue-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -47,9 +40,9 @@ const RecentTickets = ({ tickets }: {
                 </p>
               </div>
               <span
-                className={`px-3 py-1 text-sm rounded-full ${getStatusStyle(ticket.booking_status)}`}
+                className={`px-3 py-1 text-sm rounded-full ${getStatusStyle(ticket.booking_status || '')}`}
               >
-                {ticket.booking_status.charAt(0).toUpperCase() + ticket.booking_status.slice(1)}
+                {ticket.booking_status ? ticket.booking_status.charAt(0).toUpperCase() + ticket.booking_status.slice(1) : 'Unknown'}
               </span>
             </div>
           ))}

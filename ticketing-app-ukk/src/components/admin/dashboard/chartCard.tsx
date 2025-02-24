@@ -1,24 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bookings } from "@/services/methods/booking";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Legend, Tooltip } from "recharts";
 
-interface Booking {
-  route?: {
-    transport?: {
-      type_id: number;
-    };
-  };
-  booking_date: string;
-}
-
-const TransportTrendComparison = ({ bookings }: { bookings?: Booking[] }) => {
+const TransportTrendComparison = ({ bookings }: { bookings?: Bookings[] }) => {
   // Process bookings to get daily counts
   const processBookings = () => {
     if (!bookings?.length) return [];
 
     // Create a map of dates and their counts
     const countsByDate = bookings.reduce((acc, booking) => {
-      const date = new Date(booking.booking_date).toISOString().split('T')[0];
+      const date = booking.booking_date ? new Date(booking.booking_date).toISOString().split('T')[0] : '';
       if (!acc[date]) {
         acc[date] = { date, plane: 0, train: 0 };
       }

@@ -15,6 +15,7 @@ interface AirplaneRouteCardProps {
 
 const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey }) => {
   const [isRendering, setIsRendering] = useState(true);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   
   const airplaneRoutes = routes?.filter(route => route.transport?.type_id === 1) ?? null;
 
@@ -67,10 +68,18 @@ const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey
               airplaneRoutes.flatMap((route) =>
                 route.schedules?.map((schedule) => (
                   <SwiperSlide key={`${route.id}-${schedule.id}`} className="!w-[16rem] !h-[18rem] bg-transparent shadow-md !flex !gap-16">
-                    <Link href={`/pesawat/${route.id}/schedule/${schedule.id}`} className="!w-full !h-full bg-transparent rounded-lg">
+                    <Link href={`/pesawat/${route.id}/schedule/${schedule.id}`} className="!w-full !h-full bg-transparent rounded-lg  hover:scale-[1.02] transition-all ease-out duration-500">
                       <div className="relative !w-full h-[10rem]">
                         <Image
-                          src={route.transport?.image || '/placeholder-transport.jpg'}
+                          src={
+                            typeof route?.transport?.image === "string"
+                              ? route.transport.image.startsWith("http")
+                                ? route.transport.image
+                                : `${BASE_URL}${route.transport.image}`
+                              : route?.transport?.image instanceof File
+                              ? URL.createObjectURL(route.transport.image)
+                              : "/placeholder-transport.jpg"
+                          }
                           alt={`from ${route.start_route} to ${route.end_route}`}
                           width={400}
                           height={400}
@@ -83,9 +92,11 @@ const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey
                           <h2 className="text-sm font-bold text-ellipsis mb-2">
                             {`${route.start_route} → ${route.end_route}`}
                           </h2>
-                          <p className="text-gray-600 text-xs">
-                            {schedule.departure_date || 'No schedule available'}
-                          </p>
+                          <p className="text-gray-600 text-xs">{new Date(schedule.departure_date).toLocaleDateString('id-ID', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                              })}</p>
                           <p className="text-gray-600 text-xs truncate sm:max-w-[13rem]">
                             {route.transport?.name_transport}
                           </p>
@@ -93,7 +104,7 @@ const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey
                         <div>
                           <p className="text-xs text-gray-600">Mulai Dari</p>
                           <p className="text-red-500 font-bold text-sm truncate">
-                            {`IDR ${route.price.toLocaleString('id-ID')}`}
+                            {`IDR ${Math.floor(route.price).toLocaleString('id-ID')}`}
                           </p>
                         </div>
                       </div>
