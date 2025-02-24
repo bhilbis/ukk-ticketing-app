@@ -40,7 +40,7 @@ const HomeCarousel = () => {
   }, [filter, routes]);
 
   return (
-    <div className="px-[8rem] py-10 items-start relative overflow-hidden">
+    <div className="px-4 md:px-16 py-10 items-start relative overflow-hidden">
       <div className="absolute z-10 sm:mt-32 md:mt-20 lg:-mt-20 -right-20">
         <Image 
           src="/home/flyingillus.png"

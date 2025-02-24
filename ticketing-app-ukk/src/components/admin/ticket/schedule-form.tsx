@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,6 +9,7 @@ import { Schedule, useSaveSchedule } from '@/services/methods/schedule';
 import { useFormik } from 'formik';
 import { Plane, TrainFront } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface RouteModalProps {
     isOpen: boolean;
@@ -53,8 +55,12 @@ const ScheduleForm: React.FC<RouteModalProps> = ({ isOpen, onClose, schedule, is
 
             saveMutation.mutate(values, {
                 onSuccess: () => {
+                    toast.success(schedule ? "Jadwal berhasil diperbarui!" : "Jadwal berhasil ditambahkan!");
                     onClose();
                 },
+                onError: (error: any) => {
+                    toast.error(error?.response?.data?.message || "Failed to save schedule");
+                }
             });
         },
     });

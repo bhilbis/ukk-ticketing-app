@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import React from "react";
-import { useGetMy, useUpdateMy, useUpdatePassword } from "@/services/methods/use-passenger";
+import { useGetMy, useUpdateMy, useUpdatePassword } from "@/services/methods/use-profile";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Input } from "@/components/ui/input";
@@ -15,23 +15,16 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
 interface ProfileFormValues {
-  name_passenger: string;
   email: string;
-  address: string;
-  telp: string;
-  gender: string;
-  birth: string;
   avatar: File | string | null;
+  name_passenger?: string;
+  address?: string;
+  telp?: string;
+  gender?: string;
+  birth?: string;
+  name?: string;
+  username?: string;
 }
-
-const profileValidationSchema = Yup.object().shape({
-  name_passenger: Yup.string().required("Nama wajib diisi"),
-  email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
-  address: Yup.string().required("Alamat wajib diisi"),
-  telp: Yup.string().required("Telepon wajib diisi"),
-  gender: Yup.string().required("Jenis kelamin wajib diisi"),
-  birth: Yup.string().required("Tanggal lahir wajib diisi"),
-});
 
 const passwordValidationSchema = Yup.object().shape({
   old_password: Yup.string().required("Password lama wajib diisi"),
@@ -44,22 +37,27 @@ const passwordValidationSchema = Yup.object().shape({
 });
 
 const Page = () => {
-  const {isLoggedIn} = useAuth();
+  const {isLoggedIn, userLevel} = useAuth();
   const { data: user, isLoading } = useGetMy(isLoggedIn);
   const updateUser = useUpdateMy();
   const updatePassword = useUpdatePassword();
   const [isEditing, setIsEditing] = React.useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  // const initialProfileValues = {
-  //   name_passenger: "",
-  //   email: "",
-  //   address: "",
-  //   telp: "",
-  //   gender: "",
-  //   birth: "",
-  //   avatar: null as string | File | null,
-  // };
+  const profileValidationSchema = Yup.object().shape({
+    email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
+    ...(userLevel === 3 && {
+      name_passenger: Yup.string().required("Nama wajib diisi"),
+      address: Yup.string().required("Alamat wajib diisi"),
+      telp: Yup.string().required("Telepon wajib diisi"),
+      gender: Yup.string().required("Jenis kelamin wajib diisi"),
+      birth: Yup.string().required("Tanggal lahir wajib diisi"),
+    }),
+    ...(userLevel === 2 && {
+      name: Yup.string().required("Nama wajib diisi"),
+      username: Yup.string().required("Username wajib diisi"),
+    }),
+  });
 
   const initialPasswordValues = {
     old_password: "",
@@ -67,60 +65,51 @@ const Page = () => {
     password_confirmation: "",
   };
 
-  const handleProfileSubmit = async (values:  ProfileFormValues, { setSubmitting, setErrors }: any) => {
+  const initialValues: ProfileFormValues = {
+    email: user?.email ?? "",
+    avatar: user?.avatar ?? null,
+    name_passenger: user?.passenger?.name_passenger ?? "",
+    address: user?.passenger?.address ?? "",
+    telp: user?.passenger?.telp ?? "",
+    gender: user?.passenger?.gender ?? "",
+    birth: user?.passenger?.birth ?? "",
+    name: user?.staff?.name ?? "",
+    username: user?.staff?.username ?? "",
+  };
+
+  const handleProfileSubmit = async (values: ProfileFormValues, { setSubmitting }: any) => {
     try {
       const formData = new FormData();
+      formData.append('email', values.email);
+      
+      if (values.avatar instanceof File) {
+        formData.append('avatar', values.avatar);
+      }
 
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === 'avatar') {
-          if (value instanceof File) {
-            formData.append('avatar', value);
-          }
-        }else if (key === 'gender') {
-          formData.append(key, String(value).trim());
-        } else {
-          if (value !== null && value !== undefined) {
-            formData.append(key, value.toString());
-          }
-        }
-      });
+      switch (userLevel) {
+        case 2:
+          formData.append('name', values.name || '');
+          formData.append('username', values.username || '');
+          break;
+        case 3:
+          formData.append('name_passenger', values.name_passenger || '');
+          formData.append('address', values.address || '');
+          formData.append('telp', values.telp || '');
+          formData.append('gender', values.gender || '');
+          formData.append('birth', values.birth || '');
+          break;
+      }
 
-      const response = await updateUser.mutateAsync(formData);
-      console.log('Update response:', response);
+      formData.append('_method', 'PUT');
+      
+      await updateUser.mutateAsync(formData);
       toast.success("Profil berhasil diperbarui");
       setIsEditing(false);
     } catch (error: any) {
-      if (error.response?.data?.message) {
-        // Handle backend validation errors
-        const errorMessage = error.response.data.message;
-        const errors: Record<string, string> = {};
-        
-        // Parse error message and set appropriate field errors
-        if (errorMessage.includes("name passenger field is required")) {
-          errors.name_passenger = "Nama wajib diisi";
-        }
-        if (errorMessage.includes("email field is required")) {
-          errors.email = "Email wajib diisi";
-        }
-        // Add other field error checks as needed
-        
-        setErrors(errors);
-        toast.error("Gagal memperbarui profil");
-      }
+      toast.error(error.response?.data?.message || "Gagal memperbarui profil");
     } finally {
       setSubmitting(false);
     }
-  };
-
-  // Ensure we have default values
-  const initialValues: ProfileFormValues = {
-    name_passenger: user?.name_passenger ?? "",
-    email: user?.email ?? "",
-    address: user?.address ?? "",
-    telp: user?.telp ?? "",
-    gender: user?.gender ?? "",
-    birth: user?.birth ?? "",
-    avatar: user?.avatar ?? null,
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -189,98 +178,119 @@ const Page = () => {
                     </div>
 
                     <div>
-                      <Label>Nama</Label>
-                      <Field
-                        as={Input}
-                        name="name_passenger"
-                        id="name_passenger"
-                        disabled={!isEditing}
-                        // value={values.name_passenger}
-                      />
-                      {errors.name_passenger && touched.name_passenger && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.name_passenger === 'string' ? errors.name_passenger : ''}</div>
-                      )}
-                    </div>
-
-                    <div>
                       <Label>Email</Label>
                       <Field
                         as={Input}
                         name="email"
-                        id="email"
-                        type="email"
                         disabled={!isEditing}
-                        value={values.email}
                       />
                       {errors.email && touched.email && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.email === 'string' ? errors.email : ''}</div>
+                        <div className="text-red-500 text-sm mt-1">{errors.email}</div>
                       )}
                     </div>
 
-                    <div>
-                      <Label>Alamat</Label>
-                      <Field
-                        as={Input}
-                        name="address"
-                        id="address"
-                        disabled={!isEditing}
-                        value={values.address}
-                      />
-                      {errors.address && touched.address && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.address === 'string' ? errors.address : ''}</div>
-                      )}
-                    </div>
+                    {userLevel === 3 && (
+                      <>
+                        <div>
+                          <Label>Nama Lengkap</Label>
+                          <Field
+                            as={Input}
+                            name="name_passenger"
+                            disabled={!isEditing}
+                          />
+                          {errors.name_passenger && touched.name_passenger && (
+                            <div className="text-red-500 text-sm mt-1">{errors.name_passenger}</div>
+                          )}
+                        </div>
 
-                    <div>
-                      <Label>Telepon</Label>
-                      <Field
-                        as={Input}
-                        name="telp"
-                        id="telp"
-                        disabled={!isEditing}
-                        value={values.telp}
-                      />
-                      {errors.telp && touched.telp && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.telp === 'string' ? errors.telp : ''}</div>
-                      )}
-                    </div>
+                        <div>
+                          <Label>Alamat</Label>
+                          <Field
+                            as={Input}
+                            name="address"
+                            disabled={!isEditing}
+                          />
+                          {errors.address && touched.address && (
+                            <div className="text-red-500 text-sm mt-1">{errors.address}</div>
+                          )}
+                        </div>
 
-                    <div>
-                      <Label>Jenis Kelamin</Label>
-                      <Select
-                        name="gender"
-                        value={values.gender}
-                        onValueChange={(value) => setFieldValue("gender", value)}
-                        disabled={!isEditing}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pilih jenis kelamin" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Laki-laki">Laki-laki</SelectItem>
-                          <SelectItem value="Perempuan">Perempuan</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {errors.gender && touched.gender && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.gender === 'string' ? errors.gender : ''}</div>
-                      )}
-                    </div>
+                        <div>
+                          <Label>Telepon</Label>
+                          <Field
+                            as={Input}
+                            name="telp"
+                            disabled={!isEditing}
+                          />
+                          {errors.telp && touched.telp && (
+                            <div className="text-red-500 text-sm mt-1">{errors.telp}</div>
+                          )}
+                        </div>
 
-                    <div>
-                      <Label>Tanggal Lahir</Label>
-                      <Field
-                        as={Input}
-                        type="date"
-                        name="birth"
-                        id="birth"
-                        max={new Date().toISOString().split("T")[0]}
-                        disabled={!isEditing}
-                        value={values.birth}
-                      />
-                      {errors.birth && touched.birth && (
-                        <div className="text-red-500 text-sm mt-1">{typeof errors.birth === 'string' ? errors.birth : ''}</div>
-                      )}
-                    </div>
+                        <div>
+                          <Label>Jenis Kelamin</Label>
+                          <Select
+                            name="gender"
+                            value={values.gender}
+                            onValueChange={(value) => setFieldValue("gender", value)}
+                            disabled={!isEditing}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih jenis kelamin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Laki-laki">Laki-laki</SelectItem>
+                              <SelectItem value="Perempuan">Perempuan</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {errors.gender && touched.gender && (
+                            <div className="text-red-500 text-sm mt-1">{errors.gender}</div>
+                          )}
+                        </div>
+
+                        <div>
+                          <Label>Tanggal Lahir</Label>
+                          <Field
+                            as={Input}
+                            type="date"
+                            name="birth"
+                            max={new Date().toISOString().split("T")[0]}
+                            disabled={!isEditing}
+                          />
+                          {errors.birth && touched.birth && (
+                            <div className="text-red-500 text-sm mt-1">{errors.birth}</div>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+                    {userLevel === 2 && (
+                      <>
+                        <div>
+                          <Label>Nama Staff</Label>
+                          <Field
+                            as={Input}
+                            name="name"
+                            disabled={!isEditing}
+                          />
+                          {errors.name && touched.name && (
+                            <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+                          )}
+                        </div>
+
+                        <div>
+                          <Label>Username</Label>
+                          <Field
+                            as={Input}
+                            name="username"
+                            disabled={!isEditing}
+                          />
+                          {errors.username && touched.username && (
+                            <div className="text-red-500 text-sm mt-1">{errors.username}</div>
+                          )}
+                        </div>
+                      </>
+                    )}
 
                     <Button
                       type="submit"

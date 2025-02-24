@@ -81,7 +81,7 @@ const Page = () => {
                         <Clock className="w-6 h-6 mr-3 text-green-500" />
                         <div>
                           <p className="text-xs text-gray-500">Durasi Perjalanan</p>
-                          <p className="font-semibold text-gray-800">{route.travel_duration.slice(0, 5)} Jam</p>
+                          <p className="font-semibold text-gray-800">{route.travel_duration.slice(0, 5).replace(':', '.')} Jam</p>
                         </div>
                       </div>
 

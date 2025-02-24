@@ -2,6 +2,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axiosInstance';
 import { AxiosError } from 'axios';
+import { useAuth } from '@/context/AuthContext';
 
 export const usePostRegister = () => {
   return useMutation({
@@ -19,6 +20,7 @@ export const usePostRegister = () => {
 };
 
 export const usePostLogin = () => {
+  const {login} = useAuth();
   return useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
       const response = await axiosInstance.post('/auth/login', { email, password });
@@ -32,38 +34,39 @@ export const usePostLogin = () => {
       throw new Error(response.data?.message || 'Login gagal');
     },
     onSuccess: (data) => {
-      localStorage.setItem('token', data.token);
+      login(data.token);
     },
-    onError: () => {
-    },
+    onError: (error: AxiosError) => {
+      const errorMessage = (error.response?.data as { message?: string })?.message;
+      console.error("Login failed:", errorMessage || error.message);
+    }
   });
 };
 
 export const useLogout = () => {
+  const { logout } = useAuth();
   return useMutation({
     mutationFn: async () => {
       try {
         await axiosInstance.post('/auth/logout');
       } catch (error) {
         if (error instanceof AxiosError && error.response?.data?.message === "Unauthenticated.") {
-          
           return;
         }
         throw error;
       }
     },
     onSuccess: () => {
-      localStorage.removeItem('token');
+      logout();
     },
     onMutate: () => {
-      localStorage.removeItem('token');
+      logout();
     },
     onError: (error: AxiosError) => {
-      // Hanya log error jika bukan Unauthenticated
-      const errorMessage = (error.response?.data as { message?: string })?.message;
-        if (errorMessage !== "Unauthenticated.") {
-          console.error("Logout failed:", errorMessage || error.message);
-        }
+      if (error.response?.status !== 401) {
+        console.error("Logout error:", error);
+      }
+      logout();
     },
   });
 };

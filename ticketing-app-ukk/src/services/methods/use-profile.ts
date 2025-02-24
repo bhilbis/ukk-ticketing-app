@@ -33,7 +33,7 @@ export const useUpdateMy = () => {
       });
 
       // Add _method field to indicate this is actually a PUT request
-      formData.append('_method', 'PUT');
+      // formData.append('_method', 'PUT');
 
       const response = await axiosInstance.post('/myUser/update-user', formData, {
         headers: {

@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 interface AuthContextType {
   isLoggedIn: boolean;
   userLevel: number | null;
-  setIsLoggedIn: (value: boolean) => void;
+  login: (token: string) => void;
   logout: () => void;
 }
 
@@ -28,6 +28,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userLevel, setUserLevel] = useState<number | null>(null);
 
+  const login = (token: string) => {
+    localStorage.setItem("token", token);
+    const payload = parseJWT(token);
+    
+    if (payload) {
+      setIsLoggedIn(true);
+      setUserLevel(payload.level_id);
+    } else {
+      logout();
+    }
+  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setUserLevel(null);
+    window.location.href = "/login";
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     
@@ -37,27 +55,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoggedIn(true);
         setUserLevel(payload.level_id);
       } else {
-        // Handle invalid token
-        localStorage.removeItem("token");
-        setIsLoggedIn(false);
-        setUserLevel(null);
+        logout();
       }
     }
   }, []);
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    setUserLevel(null);
-    window.location.href = "/";
-  };
 
   return (
     <AuthContext.Provider 
       value={{ 
         isLoggedIn, 
         userLevel,
-        setIsLoggedIn,
+        login,
         logout 
       }}
     >

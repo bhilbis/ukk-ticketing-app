@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import BookingDetailModal from '@/components/admin/booking/booking-detail';
 import { Eye } from 'lucide-react';
 import ValidationModal from '@/components/admin/booking/validation';
+import { toast } from 'sonner';
 
 const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -59,6 +60,9 @@ const BookingList = ({ isAdmin = true }) => {
 
     const handleCompleteBooking = (bookingId: number) => {
         completeBooking(bookingId, {
+            onSuccess: () => {
+                toast.success('Berhasil memvalidasi penyelesaian');
+            },
             onError: (err) => {
                 setApiError(err.message || 'Gagal validasi penyelesaian');
             }

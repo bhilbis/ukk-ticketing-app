@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGenerateReport, useDownloadReport, ReportParams } from '@/services/methods/use-report';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { SelectTrigger } from '@/components/ui/select';
+import { Toaster ,toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 
 const ReportPage = () => {
     const [formParams, setFormParams] = useState({
@@ -10,15 +12,27 @@ const ReportPage = () => {
         end_date: '',
         status: ''
     });
-
-    // State untuk menyimpan parameter report yang akan digunakan
+    const [error, setError] = useState('');
     const [reportParams, setReportParams] = useState<ReportParams | undefined>(undefined);
-
-    // Hook untuk generate report
-    const { data: reportData, isLoading: isGenerating } = useGenerateReport(reportParams);
-
-    // Hook untuk download langsung (diubah ke mutation)
+    const { data: reportData, isLoading: isGenerating, error: generateError } = useGenerateReport(reportParams);
     const { mutate: downloadReport, isPending: isDownloading } = useDownloadReport();
+    const toastId = useRef<string | number | null>(null);
+
+    useEffect(() => {
+        if (isGenerating) {
+            toastId.current = toast.loading('Generating report...');
+        } else {
+            if (toastId.current !== null) {
+                toast.dismiss(toastId.current);
+                toastId.current = null;
+            }
+            if (generateError) {
+                toast.error('Failed to generate report');
+            } else if (reportData) {
+                toast.success('Report generated successfully');
+            }
+        }
+    }, [isGenerating, generateError, reportData]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string } }) => {
         const { name, value } = e.target;
@@ -26,17 +40,21 @@ const ReportPage = () => {
             ...prev,
             [name]: value
         }));
+        setError('');
     };
 
     const handleGenerateReport = (e: React.FormEvent) => {
         e.preventDefault();
-        // Validasi form
         if (!formParams.start_date || !formParams.end_date) {
-            alert('Please fill start date and end date');
+            toast.error('Please fill start date and end date');
+            return;
+        }
+
+        if (new Date(formParams.end_date) < new Date(formParams.start_date)) {
+            setError('End date cannot be earlier than start date');
             return;
         }
         
-        // Set parameter report
         setReportParams({
             start_date: formParams.start_date,
             end_date: formParams.end_date,
@@ -45,19 +63,24 @@ const ReportPage = () => {
     };
 
     const handleDownload = () => {
-        if (!reportParams) return;
-        downloadReport(reportParams);
+        if (!reportParams) {
+            toast.error('No report parameters set');
+            return;
+        }
+        downloadReport(reportParams, {
+            onSuccess: () => toast.success('Report downloaded successfully'),
+            onError: () => toast.error('Failed to download report')
+        });
     };
 
     return (
         <div className="p-4">
+            <Toaster position="top-right" richColors />
             <h1 className="text-2xl font-bold mb-6">Booking Reports</h1>
-            
-            {/* Form untuk input parameter */}
             <form onSubmit={handleGenerateReport} className="mb-8 space-y-4">
                 <div>
                     <Label className="block mb-2">Start Date:</Label>
-                    <input
+                    <Input
                         type="date"
                         name="start_date"
                         value={formParams.start_date}
@@ -69,7 +92,7 @@ const ReportPage = () => {
 
                 <div>
                     <Label className="block mb-2">End Date:</Label>
-                    <input
+                    <Input
                         type="date"
                         name="end_date"
                         value={formParams.end_date}
@@ -77,6 +100,7 @@ const ReportPage = () => {
                         className="w-full p-2 border rounded"
                         required
                     />
+                    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                 </div>
 
                 <div>
@@ -85,7 +109,6 @@ const ReportPage = () => {
                         name="status"
                         value={formParams.status}
                         onValueChange={(value) => handleInputChange({ target: { name: 'status', value } })}
-                        // className="w-full p-2 border rounded"
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="All Status" />
@@ -107,7 +130,6 @@ const ReportPage = () => {
                 </button>
             </form>
 
-            {/* Hasil Generate Report */}
             {reportData?.data && (
                 <div className="mb-8 p-4 bg-gray-50 rounded">
                     <h2 className="text-xl font-semibold mb-2">Generated Report</h2>
@@ -122,7 +144,6 @@ const ReportPage = () => {
                 </div>
             )}
 
-            {/* Download Langsung */}
             <div className="border-t pt-4">
                 <h2 className="text-xl font-semibold mb-2">Direct Download</h2>
                 <button

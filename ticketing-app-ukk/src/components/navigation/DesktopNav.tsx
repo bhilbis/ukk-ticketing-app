@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { useGetMy } from '@/services/methods/use-passenger';
+import { useGetMy } from '@/services/methods/use-profile';
 import { Skeleton } from '../ui/skeleton';
 
 const DesktopNav = ({
@@ -28,7 +28,6 @@ const DesktopNav = ({
     if (!isLoggedIn) {
       return (
         <div className='flex items-center justify-end font-medium gap-x-7 w-full'>
-          <Link href='/kereta-api'>Kereta Api</Link>
           <Link href='/login'>Masuk</Link>
           <Button variant={pathname === '/' ? scrolled ? 'sky' : 'secondary' : 'sky'} className={`rounded ${pathname !== '/' ? 'text-white' : ''}`}>
             <Link href='/daftar'>Daftar</Link>
@@ -107,12 +106,14 @@ const DesktopNav = ({
                   >
                     Profil
                   </Link>
-                  <Link
-                    href="/myaccount/bookings"
-                    className="block px-4 pt-2 pb-3 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Order Anda
-                  </Link>
+                  {userLevel && userLevel === 3 && (
+                    <Link
+                      href="/myaccount/bookings"
+                      className="block px-4 pt-2 pb-3 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                      Order Anda
+                    </Link>
+                  )}
                   <hr className="my-1 mx-auto w-[90%] border-gray-200" />
                   <Link
                     href="/myaccount/settings"

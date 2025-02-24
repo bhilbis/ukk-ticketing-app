@@ -42,7 +42,6 @@ export const SeatSelection = ({
         return 1;
     }
   };
-  
 
   useEffect(() => {
     if (!selectedClass && route.transport?.classes?.length) {

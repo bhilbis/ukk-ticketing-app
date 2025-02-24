@@ -5,9 +5,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useUserBookings } from '@/services/methods/booking';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, CheckCircle, Clock, Wallet, Plane, TrainFront } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, Wallet, Plane, TrainFront, Compass, ArrowRightCircle, Globe, Gem, BookOpen, RefreshCcw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import StatsCard from '@/components/admin/dashboard/statsCard';
+import axios from 'axios';
+import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const { data, isLoading, isError, error } = useUserBookings();
@@ -59,6 +61,102 @@ export default function Dashboard() {
   }
 
   if (isError) {
+    if (axios.isAxiosError(error)) {
+
+      if (error?.response?.status === 403) {
+        const errorData = error.response.data;
+        return (
+          <div className="max-w-4xl mx-auto p-6 animate-fade-in">
+            <div className="space-y-8">
+              {/* Error Alert Section */}
+              <Alert variant="destructive" className="border-[1.5px]">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-6 w-6 mt-1 text-white" />
+                  <div className="space-y-3">
+                    <AlertTitle className="text-lg font-bold tracking-tight">
+                      🚫 Access Restricted: {errorData.error}
+                    </AlertTitle>
+                    
+                    <AlertDescription className="space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">
+                          Your Role: {errorData.your_role}
+                        </span>
+                        <span className="text-red-300">|</span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                          Required: {errorData.required_roles.join(", ")}
+                        </span>
+                      </div>
+                      
+                      <p className="text-red-700 font-medium flex items-center gap-2">
+                        <ArrowRightCircle className="h-5 w-5" />
+                        Please switch to a passenger account to continue
+                      </p>
+                    </AlertDescription>
+                  </div>
+                </div>
+              </Alert>
+      
+              {/* Alternative Features Section */}
+              <Card className="shadow-lg hover:shadow-xl transition-shadow">
+                <CardHeader className="border-b">
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <Compass className="h-6 w-6 text-emerald-600" />
+                    <span>Discover Travel Possibilities</span>
+                  </CardTitle>
+                </CardHeader>
+                
+                <CardContent className="py-6 grid md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      title: "Travel Inspiration",
+                      icon: <Globe className="h-8 w-8 text-sky-600" />,
+                      desc: "Explore trending destinations and curated experiences"
+                    },
+                    {
+                      title: "Loyalty Program",
+                      icon: <Gem className="h-8 w-8 text-amber-600" />,
+                      desc: "Earn rewards & unlock exclusive benefits"
+                    },
+                    {
+                      title: "Travel Guides",
+                      icon: <BookOpen className="h-8 w-8 text-emerald-600" />,
+                      desc: "Expert tips and local insights for your journey"
+                    }
+                  ].map((feature, idx) => (
+                    <div 
+                      key={idx}
+                      className="group p-5 rounded-xl border hover:border-sky-200 transition-all"
+                    >
+                      <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="p-3 bg-sky-50 rounded-full group-hover:bg-sky-100 transition-colors">
+                          {feature.icon}
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {feature.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {feature.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+      
+              {/* Action Button */}
+              <div className="text-center">
+                <Button className="gap-2 px-8 py-5 text-lg">
+                  <RefreshCcw className="h-5 w-5" />
+                  Switch to Passenger Account
+                </Button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+  }
+
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />

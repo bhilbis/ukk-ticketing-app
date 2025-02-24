@@ -22,7 +22,7 @@ export function HomeAccordion() {
     ]
 
     return (
-        <div className="px-[8rem] py-5">
+        <div className="px-4 md:px-16 py-5">
             <div className="max-w-[79rem] mx-auto">
                 <h2 className="text-3xl font-bold text-center mb-8">Pertanyaan Umum</h2>
                 <Accordion type="single" collapsible className="w-full">

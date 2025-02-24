@@ -77,49 +77,68 @@ class UserController extends Controller
     public function updateMy(Request $request) {
         try {
             $user = Auth::user();
-            $passenger = $user->passenger;
+            $levelId = $user->level_id;
 
+            // Validasi data umum (email dan avatar)
             $request->validate([
-                'name_passenger' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
                 'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'address' => 'required|string',
-                'telp' => 'required|string',
-                'gender' => 'required|in:Laki-laki,Perempuan',
-                'birth' => 'required|date',
             ]);
 
             if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
                 if ($user->avatar) {
-                    Storage::disk('public')->delete($request->avatar);
+                    Storage::disk('public')->delete($user->avatar);
                 }
-
                 $avatarPath = $request->file('avatar')->store('user', 'public');
                 $user->avatar = $avatarPath;
             }
 
-            // Update User email
             $user->email = $request->email;
             $user->save();
 
-            // Update Passenger details
-            $passenger->update($request->only([
-                'name_passenger',
-                'address',
-                'telp',
-                'gender',
-                'birth'
-            ]));
+            switch ($levelId) {
+                case 1:
+                    break;
+                case 2:
+                    $request->validate([
+                        'name' => 'required|string|max:255',
+                        'username' => 'required|string|unique:staff,username,' . $user->staff->id,
+                    ]);
+                    $user->staff->update([
+                        'name' => $request->name,
+                        'username' => $request->username,
+                    ]);
+                    break;
+                case 3:
+                    $request->validate([
+                        'name_passenger' => 'required|string|max:255',
+                        'address' => 'required|string',
+                        'telp' => 'required|string',
+                        'gender' => 'required|in:Laki-laki,Perempuan',
+                        'birth' => 'required|date',
+                    ]);
+
+                    $user->passenger->update([
+                        'name_passenger' => $request->name_passenger,
+                        'address' => $request->address,
+                        'telp' => $request->telp,
+                        'gender' => $request->gender,
+                        'birth' => $request->birth,
+                    ]);
+                    break;
+
+                default:
+                    throw new \Exception('Level pengguna tidak valid');
+            }
+            $responseData = $user->load($levelId == 2 ? 'staff' : ($levelId == 3 ? 'passenger' : []));
 
             return response()->json([
-                'message' => 'Data user berhasil diupdate',
-                'data' => $user
+                'message' => 'Data berhasil diupdate',
+                'data' => $responseData,
             ], 200);
+
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 

@@ -38,13 +38,13 @@ export default function TransportList() {
 
   return (
     <div className="p-8 w-full min-h-screen flex flex-col space-y-6">
-      <div className="max-w-7xl space-y-8">
+      <div className="space-y-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
           Daftar Transportasi
         </h1>
 
         {/* Section Pesawat */}
-        <div className="space-y-5">
+        <div className="space-y-5 w-full">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 rounded-full">
               <svg className="text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -53,75 +53,78 @@ export default function TransportList() {
             </div>
             <h2 className="text-2xl font-bold text-gray-800">Pesawat</h2>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data?.filter(t => t.type_id === 1).map((transport) => (
-              <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div className="relative h-48 overflow-hidden rounded-t-xl">
-                  <Image
-                    src={transport.image
-                      ? typeof transport.image === "string"
-                        ? transport.image.startsWith("http")
-                          ? transport.image
-                          : `${BASE_URL}${transport.image}`
-                        : transport.image instanceof File
-                        ? URL.createObjectURL(transport.image)
-                        : "/airplane/clouds.jpg"
-                      : "/airplane/clouds.jpg"}
-                    alt={transport.name_transport}
-                    width={400}
-                    height={200}
-                    className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">{transport.name_transport}</h3>
-                  <p className="text-gray-600 text-sm min-h-[60px] line-clamp-3">
-                    {transport.description || "Tidak ada deskripsi"}
-                  </p>
-                  <div className="flex justify-end gap-2 mt-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleShow(transport)}
-                      className="text-gray-600 hover:bg-blue-100 rounded-full"
-                      title="Detail Transportasi"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Detail
-                    </Button>
-                    {userLevel && userLevel === 1 && (
-                      <>
-                        <Button
+
+          <div className="flex justify-center items-center w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {data?.filter(t => t.type_id === 1).map((transport) => (
+                <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                  <div className="relative h-48 overflow-hidden rounded-t-xl">
+                    <Image
+                      src={transport.image
+                        ? typeof transport.image === "string"
+                          ? transport.image.startsWith("http")
+                            ? transport.image
+                            : `${BASE_URL}${transport.image}`
+                          : transport.image instanceof File
+                          ? URL.createObjectURL(transport.image)
+                          : "/airplane/clouds.jpg"
+                        : "/airplane/clouds.jpg"}
+                      alt={transport.name_transport}
+                      width={400}
+                      height={200}
+                      className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{transport.name_transport}</h3>
+                    <p className="text-gray-600 text-sm min-h-[60px] line-clamp-3">
+                      {transport.description || "Tidak ada deskripsi"}
+                    </p>
+                    <div className="flex justify-end gap-2 mt-4">
+                      <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleEdit(transport)}
-                        className="text-blue-600 hover:bg-gray-50 rounded-full"
-                        title="Edit Transportasi"
-                        >
-                          <Pencil className="w-4 h-4 mr-2" />
-                          Edit
-                        </Button>
-                        <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteMutation.mutate(transport.id)}
-                        className="text-red-600 hover:bg-red-50 rounded-full"
-                        title="Hapus Transportasi"
-                        >
-                          <Trash className="w-4 h-4 mr-2" />
-                        </Button>
-                      </>
-                    )}
+                        onClick={() => handleShow(transport)}
+                        className="text-gray-600 hover:bg-blue-100 rounded-full"
+                        title="Detail Transportasi"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Detail
+                      </Button>
+                      {userLevel && userLevel === 1 && (
+                        <>
+                          <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(transport)}
+                          className="text-blue-600 hover:bg-gray-50 rounded-full"
+                          title="Edit Transportasi"
+                          >
+                            <Pencil className="w-4 h-4 mr-2" />
+                            Edit
+                          </Button>
+                          <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteMutation.mutate(transport.id)}
+                          className="text-red-600 hover:bg-red-50 rounded-full"
+                          title="Hapus Transportasi"
+                          >
+                            <Trash className="w-4 h-4 mr-2" />
+                            Hapus
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Section Kereta Api */}
-        <div className="space-y-5">
+        <div className="space-y-5 w-full">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-orange-100 rounded-full">
               <svg className="text-orange-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -131,7 +134,7 @@ export default function TransportList() {
             <h2 className="text-2xl font-bold text-gray-800">Kereta Api</h2>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center justify-center gap-6">
             {data?.filter(t => t.type_id === 2).map((transport) => (
               <div key={transport.id} className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="relative h-48 overflow-hidden rounded-t-xl">
@@ -182,6 +185,7 @@ export default function TransportList() {
                       className="text-red-600 hover:bg-red-50 rounded-full"
                     >
                       <Trash className="w-4 h-4 mr-2" />
+                      Hapus
                     </Button>
                   </div>
                 </div>

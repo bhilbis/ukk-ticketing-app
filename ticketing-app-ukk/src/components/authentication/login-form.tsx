@@ -17,6 +17,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
 import { Checkbox } from "../ui/checkbox";
 import { useRouter } from 'next/navigation';
+import { useAuth } from "@/context/AuthContext";
 
 export function LoginForm({
   className,
@@ -27,7 +28,7 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
-  
+  const { login } = useAuth();
   const loginMutation = usePostLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +36,7 @@ export function LoginForm({
 
     try {
       const result = await loginMutation.mutateAsync({ email, password });
-      
+      login(result.token);
       const level = result.user.level_id;
       
       if (level === 1 || level === 2) {

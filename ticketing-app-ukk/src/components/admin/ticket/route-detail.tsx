@@ -60,7 +60,7 @@ const RouteDetailModal: React.FC<RouteDetailModalProps> = ({ isOpen, onClose, ro
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-3 text-green-500" />
-                  <span>Durasi: {route?.travel_duration.slice(0, 5)} Jam</span>
+                  <span>Durasi: {route?.travel_duration.slice(0, 5).replace(":", ".")} Jam</span>
                 </div>
                 <div className="flex items-center">
                   <Wallet className="w-5 h-5 mr-3 text-yellow-500" />

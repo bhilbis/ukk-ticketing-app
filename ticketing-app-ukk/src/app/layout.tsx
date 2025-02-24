@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navigation";
 import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Toaster2 } from "sonner";
 import { LenisProvider } from "@/context/LenisScroll";
 
 import 'swiper/css'
@@ -52,6 +53,7 @@ export default function RootLayout({
                 <LenisProvider>
                 {children}
                 <Toaster />
+                <Toaster2 position="top-right" richColors />
                 </LenisProvider>
               </main>
 

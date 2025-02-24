@@ -43,14 +43,6 @@ const MobileNav = ({
               </button>
 
               <nav className="flex w-full flex-col items-center gap-y-4">
-                <Link 
-                  href="/kereta-api" 
-                  className="w-full py-2 text-center text-lg"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Kereta Api
-                </Link>
-
                 {!isLoggedIn ? (
                   <>
                     <Link
@@ -88,13 +80,15 @@ const MobileNav = ({
                     >
                       Profil
                     </Link>
-                    <Link
-                      href="/myaccount/bookings"
-                      className="w-full py-2 text-center text-lg"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Order Anda
-                    </Link>
+                    {userLevel && userLevel === 3 && (
+                      <Link
+                        href="/myaccount/bookings"
+                        className="w-full py-2 text-center text-lg"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Order Anda
+                      </Link>
+                    )}
                     <Link
                       href="/myaccount/settings"
                       className="w-full py-2 text-center text-lg"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 
 import { Button } from '@/components/ui/button';
@@ -9,22 +10,19 @@ import { Routes, useSaveRoute } from '@/services/methods/route';
 import { useTransports } from '@/services/methods/transport';
 import { useFormik } from 'formik';
 import React, { useState, useEffect } from 'react';
-
+import { toast } from 'sonner';
 interface RouteModalProps {
     isOpen: boolean;
     onClose: () => void;
     route?: Routes | null;
 }
-
 const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
     const { data: transport  } = useTransports();
     const saveMutation = useSaveRoute();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
     const formatTime = (time: string) => {
         return time ? time.slice(0, 5) : "";
     };
-
     const formik = useFormik<Routes>({
         enableReinitialize: false,
         initialValues: {
@@ -37,7 +35,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
             transport_id: route?.transport_id || 2,
         },
         onSubmit: (values) => {
-            // Validasi manual sebelum submit
             if (!values.destination.trim()) {
                 setErrorMessage("Tujuan wajib diisi!");
                 return;
@@ -58,12 +55,18 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                 setErrorMessage("Durasi perjalanan wajib diisi!");
                 return;
             }
-
-            setErrorMessage(null); // Reset error jika validasi lolos
-
-            saveMutation.mutate(values, {
+            setErrorMessage(null); 
+            const formattedValues = {
+                ...values,
+                travel_duration: formatTime(values.travel_duration), // Pastikan hanya HH:MM
+            };
+            saveMutation.mutate(formattedValues, {
                 onSuccess: () => {
+                    toast.success(route ? "Rute berhasil diperbarui!" : "Rute berhasil ditambahkan!");
                     onClose();
+                },
+                onError: (error: any) => {
+                    toast.error(error?.response?.data?.message || "Gagal menyimpan rute!");
                 },
             });
         },
@@ -94,9 +97,7 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                         {route ? "Edit" : "Tambah"} Rute
                     </DialogTitle>
                 </DialogHeader>
-
                 {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-
                     <form onSubmit={formik.handleSubmit} className="space-y-4">
                         <div className="w-full">
                                 <Label className="text-sm font-medium">Tujuan</Label>
@@ -109,7 +110,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                                 />
                         </div>
 
-                        {/*  */}
                         <div className='w-full'>
                             <Label className='text-sm font-medium'>Rute Awal</Label>
                             <Input 
@@ -121,7 +121,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                             />
                         </div>
 
-                        {/*  */}
                         <div className='w-full'>
                             <Label className='text-sm font-medium'>Rute Akhir</Label>
                             <Input 
@@ -133,8 +132,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                             />
                         </div>
 
-                        
-                        {/*  */}
                         <div className='w-full'>
                             <Label className='text-sm font-medium'>Harga</Label>
                             <Input 
@@ -162,7 +159,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                                 />
                             </div>
 
-                            {/*  */}
                             <div>
                                 <Label className='text-sm font-medium'>Transportasi</Label>
                                 <DropdownMenu>
@@ -188,7 +184,6 @@ const RouteForm: React.FC<RouteModalProps> = ({ isOpen, onClose, route }) => {
                                 </DropdownMenu>
                             </div>
                         </div>
-                        {/*  */}
                         <div className="flex justify-end space-x-2">
                         <Button type="button" variant="outline" onClick={onClose}>
                             Batal

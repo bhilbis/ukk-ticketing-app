@@ -12,6 +12,7 @@ import { useLogout } from '@/services/methods/auth';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 import { useUser } from '@/hooks/use-useProfile';
 import { UserProfile } from './use-profile';
+import { useAuth } from '@/context/AuthContext';
 
 const Profile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const { user, isLoading, error } = useUser()
+  const {userLevel} = useAuth();
   
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon className="w-4 h-4" /> },
@@ -26,6 +28,13 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
     { id: 'payment-method', label: 'Payment Method', icon: <CreditCard className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Cog className="w-4 h-4" /> },
   ];
+
+  const filteredSidebarItems = sidebarItems.filter(item => {
+    if ((item.id === 'bookings' || item.id === 'payment-method') && userLevel !== 3) {
+      return false;
+    }
+    return true;
+  });
 
   const handleLogout = async () => {
     try {
@@ -61,8 +70,10 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
             <SheetContent side="left" className="w-[250px]">
               <DialogTitle>Navigation Menu</DialogTitle>
               <nav className="grid gap-2 mt-4">
-                <UserProfile user={user} isLoading={isLoading} error={error} />
-                {sidebarItems.map((item) => (
+                <div className='px-1'>
+                  <UserProfile user={user} isLoading={isLoading} error={error} />
+                </div>
+                {filteredSidebarItems.map((item) => (
                   <Link
                     key={item.id}
                     href={`/myaccount/${item.id}`}
@@ -86,9 +97,11 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block fixed left-0 h-full w-[250px] border-r bg-background">
         <div className="p-4">
-          <UserProfile user={user} isLoading={isLoading} error={error} />
+          <div className='px-1 mb-3'>
+            <UserProfile user={user} isLoading={isLoading} error={error} />
+          </div>
           <nav className="grid gap-1">
-            {sidebarItems.map((item) => (
+            {filteredSidebarItems.map((item) => (
               <Link
                 key={item.id}
                 href={`/myaccount/${item.id}`}

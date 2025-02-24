@@ -1,6 +1,5 @@
 import HomeBanner from "@/components/home/home-banner";
 import HomeCarousel from "@/components/home/home-carousel";
-import HomeCoupon from "@/components/home/home-coupon";
 import HomeSlider from "@/components/home/home-slider";
 import HomeSuggest from "@/components/home/home-suggest";
 import { HomeAccordion } from "@/components/home/home-accordion";
@@ -15,7 +14,7 @@ export default function Home() {
         <div className="gap-8 w-full">
           <HomeBanner />
           <HomeSlider />
-          <HomeCoupon />
+          {/* <HomeCoupon /> */}
           <HomeCarousel />
           <HomeAds />
           <AirlaneAirplane />

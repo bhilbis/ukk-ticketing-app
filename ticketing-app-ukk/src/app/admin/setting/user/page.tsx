@@ -10,10 +10,13 @@ import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetUsers, useUpdateUser, useDeleteUser } from "@/services/methods/user";
+import { toast } from "sonner";
 
 const UserManagement = () => {
   const [editUser, setEditUser] = useState<any>(null);
   const [openEdit, setOpenEdit] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [openDelete, setOpenDelete] = useState(false);
   const { data: users, isLoading } = useGetUsers();
   const { mutate: deleteUser } = useDeleteUser();
   const { mutate: updateUser } = useUpdateUser();
@@ -24,9 +27,24 @@ const UserManagement = () => {
     const userData = Object.fromEntries(formData.entries());
 
     updateUser({ ...editUser ?? {}, ...userData ?? {}}, {
-        onSuccess: () => setOpenEdit(false)
+      onSuccess: () => {
+        toast.success('User berhasil diupdate!');
+        setOpenEdit(false)
+      }
     });
   };
+
+  const handleDeleteUser = () => {
+    if (deleteUserId) {
+      deleteUser(deleteUserId, {
+        onSuccess: () => {
+          toast.success("User berhasil dihapus!");
+          setOpenDelete(false);
+          setDeleteUserId(null);
+        }
+      })
+    }
+  }
 
   const roleColors: { [key: number]: string } = {
     1: 'bg-red-100 text-red-800',
@@ -172,18 +190,37 @@ const UserManagement = () => {
                           </DialogContent>
                         </Dialog>
 
-                        <Button
-                          variant="ghost" 
-                          size="sm"
-                          className="rounded-lg hover:bg-red-50 text-red-600 hover:text-red-700"
-                          onClick={() => {
-                            if(confirm('Are you sure you want to delete this user?')) {
-                              deleteUser(user.id)
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="rounded-lg hover:bg-red-50 text-red-600 hover:text-red-700"
+                              onClick={() => {
+                                setDeleteUserId(user.id);
+                                setOpenDelete(true);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="rounded-2xl max-w-md">
+                            <DialogHeader>
+                              <DialogTitle className="text-lg font-semibold text-gray-900">
+                                Konfirmasi Hapus
+                              </DialogTitle>
+                            </DialogHeader>
+                            <p className="text-gray-600">Apakah Anda yakin ingin menghapus user ini?</p>
+                            <div className="flex justify-end gap-3 mt-4">
+                              <Button variant="outline" className="rounded-lg" onClick={() => setOpenDelete(false)}>
+                                Batal
+                              </Button>
+                              <Button className="bg-red-600 hover:bg-red-700 rounded-lg" onClick={handleDeleteUser}>
+                                Hapus
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </TableCell>
                   </TableRow>

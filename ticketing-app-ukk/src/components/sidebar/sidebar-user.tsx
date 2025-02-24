@@ -33,7 +33,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
-import { useGetMy } from "@/services/methods/use-passenger"
+import { useGetMy } from "@/services/methods/use-profile"
 import { Skeleton } from "../ui/skeleton"
 import { useAuth } from "@/context/AuthContext"
 

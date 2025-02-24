@@ -40,7 +40,7 @@ const TypeTrain = () => {
           }, [filter, routes]);
 
   return (
-    <div className='w-full px-[8rem] py-10'>
+    <div className='w-full px-4 md:px-16 py-10'>
         <div className='mb-6'>
             <h2 className='text-2xl font-bold mb-3'>Jenis Kereta Api</h2>
             <p className='text-gray-600'>Beli Tiket Kereta yang ingin anda naiki</p>

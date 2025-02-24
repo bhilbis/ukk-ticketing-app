@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCreateStaff } from "@/services/methods/user";
 import { Formik, Form, Field } from "formik";
+import { toast } from "sonner";
 
 const CreateStaffForm = () => {
   const { mutate, isPending } = useCreateStaff();
@@ -32,12 +33,12 @@ const CreateStaffForm = () => {
             const payload = { id: 0, ...values, level_id: Number(values.level_id) };
             mutate(payload, {
               onSuccess: () => {
-                // toast.success("Staff created successfully! Password sent to email");
+                toast.success("User baru berhasil ditambahkan");
                 resetForm();
               },
-            //   onError: (error: any) => {
-            //     // toast.error(error.response?.data?.message || "Error creating staff");
-            //   },
+              onError: (error: any) => {
+                toast.error(error.response?.data?.message || "Error creating staff");
+              },
             });
           }}
         >
