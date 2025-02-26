@@ -17,7 +17,7 @@ const HomeBanner = () => {
     if (routes && routes.length > 0) {
       const shuffled = [...routes]
         .sort(() => Math.random() - 0.5)
-        .slice(0, 3) // Ambil 3 rute acak
+        .slice(0, 3)
         .map(route => ({
           from: route.start_route,
           to: route.end_route,
@@ -29,7 +29,6 @@ const HomeBanner = () => {
     }
   }, [routes])
 
-  // Animations
   const fadeIn = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.8 } },
@@ -118,7 +117,6 @@ const HomeBanner = () => {
           />
         </motion.div>
 
-        {/* How It Works */}
         <motion.div
           initial="hidden"
           animate="visible"

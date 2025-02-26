@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation"
 import { useGetMy } from "@/services/methods/use-profile"
 import { Skeleton } from "../ui/skeleton"
 import { useAuth } from "@/context/AuthContext"
+import { toast } from "sonner"
 
 export function SidebarUser() {
   const { isMobile } = useSidebar()
@@ -48,6 +49,7 @@ export function SidebarUser() {
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync()
+      toast.success("Berhasil Logout")
       setIsLogoutOpen(false)
       router.push("/login")
     } catch (error) {

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Checkbox } from "../ui/checkbox";
 import { useRouter } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -38,6 +39,7 @@ export function LoginForm({
       const result = await loginMutation.mutateAsync({ email, password });
       login(result.token);
       const level = result.user.level_id;
+      toast.success("Login Berhasil")
       
       if (level === 1 || level === 2) {
         window.location.href = ("/admin/dashboard");

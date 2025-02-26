@@ -41,7 +41,7 @@ const AirplaneRouteCard: React.FC<AirplaneRouteCardProps> = ({ routes, filterKey
             freeMode={true}
             mousewheel={true}
             modules={[Autoplay, FreeMode, Mousewheel]}
-            className="flex justify-center items-center xl:min-h-[20rem] !pr-1"
+            className="flex justify-center items-center xl:min-h-[20rem] !pr-1 !py-2"
           >
             {isRendering || !airplaneRoutes ? (
               [...Array(airplaneRoutes?.length || 3)].map((_, index) => (

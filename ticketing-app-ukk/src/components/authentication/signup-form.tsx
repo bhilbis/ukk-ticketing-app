@@ -17,6 +17,7 @@ import { Eye, EyeClosed } from "lucide-react"
 import { usePostRegister } from "@/services/methods/auth"
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
 
 export function SignupForm({
   className,
@@ -54,6 +55,7 @@ export function SignupForm({
 
     try {
       await registerMutation.mutateAsync(formData);
+      toast.success('Akun ada berhasil di daftarkan');
       router.push('/login');
     } catch (error) {
       // Error handling is managed by the mutation's onError callback

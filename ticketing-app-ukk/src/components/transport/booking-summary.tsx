@@ -124,7 +124,7 @@ export const BookingSummary = ({
                 className="w-full"
                 onClick={() => {
                   setShowSuccessDialog(false);
-                  router.push("/myaccount-bookings");
+                  router.push("/myaccount/bookings");
                 }}
               >
                 Cek Booking

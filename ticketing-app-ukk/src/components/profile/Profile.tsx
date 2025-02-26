@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useUser } from '@/hooks/use-useProfile';
 import { UserProfile } from './use-profile';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 const Profile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -20,7 +21,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const { user, isLoading, error } = useUser()
-  const {userLevel} = useAuth();
+  const { userLevel } = useAuth();
   
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon className="w-4 h-4" /> },
@@ -39,6 +40,7 @@ const Profile = ({ children }: { children: React.ReactNode }) => {
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync()
+      toast.success("Berhasil Logout")
       setIsLogoutOpen(false);
       router.push("/login");
     } catch (error) {

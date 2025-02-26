@@ -17,7 +17,6 @@ export default function RootLayout({
         <AuthGuard>
             <Profile>
                 <div className="">
-                    {/* <SidebarProfile /> */}
                     {children}
                 </div>
             </Profile>

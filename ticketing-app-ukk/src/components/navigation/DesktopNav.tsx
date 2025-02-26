@@ -59,7 +59,6 @@ const DesktopNav = ({
   return (
     <>
       <div className='flex items-center justify-end font-medium gap-x-7 w-full'>
-        <Link href='/kereta-api'>Kereta Api</Link>
         {!isLoggedIn ? (
           <>
             <Link href='/login'>Masuk</Link>
