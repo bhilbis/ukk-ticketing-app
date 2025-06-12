@@ -6,7 +6,7 @@ import RouteForm from '@/components/admin/ticket/route-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useAuth } from '@/context/AuthContext'
-import { useDeleteRoute, useRoutes } from '@/services/methods/route'
+import { useDeleteRoute, useRoutes } from '@/services/methods/fetch-route'
 import { ArrowRight, Clock, Eye, MapPin, Pencil, Plane, PlusIcon, TrainFront, Trash, Wallet } from 'lucide-react'
 import { useState } from 'react'
 

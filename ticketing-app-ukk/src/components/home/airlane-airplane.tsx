@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import AirplaneCard from '../ui/airplane-card';
-import { useRoutes, Routes } from '@/services/methods/route';
+import { useRoutes, Routes } from '@/services/methods/fetch-route';
 
 const getUniqueAirplaneTypes = (routes: Routes[] | undefined) => {
   if (!routes) return [];

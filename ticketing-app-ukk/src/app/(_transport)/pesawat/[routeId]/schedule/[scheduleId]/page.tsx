@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useFormik } from "formik";
 import { FlightDetails, FlightDetailsSkeleton } from "@/components/transport/airplane/flight-detail";
-import { useGetRoute } from "@/services/methods/route";
+import { useGetRoute } from "@/services/methods/fetch-route";
 import { Bookings, useBookingMutation, useOccupiedSeats } from "@/services/methods/booking";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";

@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useRoutes } from '@/services/methods/route';
+import { useRoutes } from '@/services/methods/fetch-route';
 import { Schedule, useSaveSchedule } from '@/services/methods/schedule';
 import { useFormik } from 'formik';
 import { Plane, TrainFront } from 'lucide-react';

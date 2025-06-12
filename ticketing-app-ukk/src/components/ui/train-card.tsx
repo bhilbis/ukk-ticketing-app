@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Mousewheel } from "swiper/modules";
 import { TrainFront, TrainIcon } from "lucide-react";
-import { Routes } from "@/services/methods/route";
+import { Routes } from "@/services/methods/fetch-route";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 

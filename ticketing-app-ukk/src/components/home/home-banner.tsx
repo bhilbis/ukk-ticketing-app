@@ -6,7 +6,7 @@ import { Plane, Train, Clock, Ticket, ShieldCheck, Sparkles } from 'lucide-react
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Button } from '../ui/button'
-import { useRoutes } from '@/services/methods/route'
+import { useRoutes } from '@/services/methods/fetch-route'
 
 const HomeBanner = () => {
   const [activeTab, setActiveTab] = useState('plane');
@@ -144,36 +144,38 @@ const HomeBanner = () => {
         </motion.div>
 
         {/* Popular Routes */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={slideUp}
-          className="mt-24"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
-            Rute Populer
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {shuffledRoutes.map((route, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ y: -10 }}
-              className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20"
-            >
-              <div className="flex items-center mb-4">
-                <div className={`p-2 rounded-full ${route.type === 'plane' ? 'bg-blue-400' : 'bg-orange-400'}`}>
-                  {route.type === 'plane' ? <Plane size={24} /> : <Train size={24} />}
+        {shuffledRoutes.length > 0 && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={slideUp}
+            className="mt-24"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
+              Rute Populer
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {shuffledRoutes.map((route, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ y: -10 }}
+                className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20"
+              >
+                <div className="flex items-center mb-4">
+                  <div className={`p-2 rounded-full ${route.type === 'plane' ? 'bg-blue-400' : 'bg-orange-400'}`}>
+                    {route.type === 'plane' ? <Plane size={24} /> : <Train size={24} />}
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-xl text-purple-400 font-semibold">{route.from} → {route.to}</h3>
+                    <p className="text-gray-300">Mulai dari</p>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-xl text-purple-400 font-semibold">{route.from} → {route.to}</h3>
-                  <p className="text-gray-300">Mulai dari</p>
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-blue-400">{route.price}</div>
-            </motion.div>
-          ))}
-          </div>
-        </motion.div>
+                <div className="text-2xl font-bold text-blue-400">{route.price}</div>
+              </motion.div>
+            ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* CTA Section */}
         <motion.div
@@ -193,7 +195,7 @@ const HomeBanner = () => {
             <Button className="px-8 py-6 rounded-full text-lg bg-white text-blue-600 hover:bg-gray-100">
               Download App
             </Button>
-            <Button variant="outline" className="px-8 py-6 rounded-full text-lg border-white text-white hover:bg-white/10">
+            <Button variant="outline" className="px-8 py-6 rounded-full text-lg border-white text-blue-600 hover:text-white hover:bg-white/10">
               Lihat Promo
             </Button>
           </div>

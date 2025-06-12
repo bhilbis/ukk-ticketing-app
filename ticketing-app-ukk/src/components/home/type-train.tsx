@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import TrainCard from '../ui/train-card';
-import { Routes, useRoutes } from '@/services/methods/route';
+import { Routes, useRoutes } from '@/services/methods/fetch-route';
 
 const getUniqueTrainTypes = (routes: Routes[] | undefined) => {
   if (!routes) return [];

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import AirplaneCard from '../ui/airplane-card'
 import Image from 'next/image'
-import { useRoutes, Routes } from '@/services/methods/route'
+import { useRoutes, Routes } from '@/services/methods/fetch-route'
 
 const getClassAirplane = (routes: Routes[] | undefined) => {
   if (!routes) return [];

@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Mousewheel } from "swiper/modules";
 import { Skeleton } from "./skeleton";
 import { useEffect, useState } from "react";
-import { Routes } from "@/services/methods/route";
+import { Routes } from "@/services/methods/fetch-route";
 
 interface AirplaneRouteCardProps {
   routes: Routes[] | null;

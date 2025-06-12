@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
-import { Routes } from "./route";
+import { Routes } from "./fetch-route";
 
 export interface Schedule {
     id: number;
