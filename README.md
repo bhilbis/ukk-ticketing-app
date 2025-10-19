@@ -34,7 +34,7 @@ A modern full-stack ticketing application built with Laravel and Next.js, featur
 - PHP >= 8.2
 - Composer
 - Node.js >= 18
-- npm or yarn
+- npm or pnpm or yarn
 - MySQL/PostgreSQL (or your preferred database)
 
 ## 🔧 Installation
